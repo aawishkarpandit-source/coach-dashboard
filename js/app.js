@@ -17,7 +17,7 @@ function goto(page) {
   if (page !== 'team' && typeof resetCredits === 'function') resetCredits();
   if (page === 'students') renderStudents();
   if (page === 'books') renderBooks();
-  if (page === 'present'){ try{ renderLocalPres(); }catch{} }
+  if (page === 'present'){ try{ renderLocalPres(); updateScreenInfo(); }catch{} }
 }
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-goto]');
@@ -33,13 +33,14 @@ $('#classSelect').addEventListener('change', e => {
   renderStudents();
   renderBooks();
   try{ window.Stage && Stage.refreshWelcome(); }catch{}
+  maybeRefreshMarksStage();
   toast((LANG === 'ne' ? 'कक्षा ' : 'Class ') + e.target.value);
 });
 
 /* ---------- 2. Eng / Nep toggle ---------- */
 const I18N = {
-  en: {classLabel:'Class',offline:'Offline Ready',appTitle:'Classroom Dashboard',appSub:'Simple • Offline • Easy to use',students:'Students',books:'Textbooks',present:'Present',home:'Home',studentsTitle:'Students & Marksheet',studentList:'Student List',add:'Add',marksheet:'Marksheet',marksheetHint:'Select a student, enter marks, auto-saved offline.',selectStudent:'Select student',subject:'Subject',total:'Total',percent:'Percent',name:'Name',action:'Action',booksTitle:'Textbooks',govt:'Govt Books',pvt:'Private Books',booksHint:'Put PDFs in /books folder, or Import. Works offline.',importBook:'Import Book',importHint:'Choose a PDF. If the /books folder is linked, it is saved there as a real file.',linkFolder:'Link /books folder',delete:'Delete',imported:'Imported',show2nd:'Show on 2nd screen',pdfControlHint:'You control from this screen — students see only the open page on the 2nd screen.',presentTitle:'Present',presentFiles:'Presentation / Media',presentHint:'Images, videos & PDFs play fully offline. PPT / Google Slides need PowerPoint or internet.',chooseFiles:'Choose files',openPresenter:'Open presenter (2nd screen)',stage:'Stage (what students see)',stageHint:'Pick a file to preview here. Presenter window mirrors this.',newPpt:'New presentation',newPptHint:'“New presentation” opens MS PowerPoint and saves starter file in /presentations.',addStudent:'Add student',cancel:'Cancel',save:'Save',close:'Close',open2nd:'2nd screen',localPres:'Saved on this computer',about:'About',terms:'Terms & Conditions',team:'Team',playCredits:'Play credits',stopCredits:'Stop',roleLead:'LEAD DESIGNER & DEVELOPER',roleTesters:'PLAY TESTERS',thanksWatching:'Thanks for teaching'},
-  ne: {classLabel:'कक्षा',offline:'अफलाइन तयार',appTitle:'कक्षाकोठा ड्यासबोर्ड',appSub:'सरल • अफलाइन • सजिलो',students:'विद्यार्थी',books:'पाठ्यपुस्तक',present:'प्रस्तुत गर्नुहोस्',home:'गृहपृष्ठ',studentsTitle:'विद्यार्थी र मार्कसिट',studentList:'विद्यार्थी सूची',add:'थप्नुहोस्',marksheet:'मार्कसिट',marksheetHint:'विद्यार्थी छान्नुहोस्, नम्बर हाल्नुहोस्, अफलाइन सेभ हुन्छ।',selectStudent:'विद्यार्थी छान्नुहोस्',subject:'विषय',total:'जम्मा',percent:'प्रतिशत',name:'नाम',action:'कार्य',booksTitle:'पाठ्यपुस्तक',govt:'सरकारी किताब',pvt:'निजी किताब',booksHint:'PDF हरू /books मा राख्नुहोस् वा Import गर्नुहोस्। अफलाइन चल्छ।',importBook:'किताब आयात',importHint:'PDF छान्नुहोस्। /books फोल्डर लिंक छ भने वास्तविक फाइल त्यतै सेभ हुन्छ।',linkFolder:'Link /books फोल्डर',delete:'हटाउनुहोस्',imported:'आयातित',show2nd:'दोस्रो स्क्रिनमा देखाउनुहोस्',pdfControlHint:'तपाईं यस स्क्रिनबाट नियन्त्रण गर्नुहोस् — विद्यार्थीले दोस्रो स्क्रिनमा खुला पेज मात्र देख्छन्।',presentTitle:'प्रस्तुत',presentFiles:'प्रस्तुति / मिडिया',presentHint:'फोटो, भिडियो र PDF अफलाइन चल्छ। PPT / Google Slides लाई PowerPoint वा इन्टरनेट चाहिन्छ।',chooseFiles:'फाइल छान्नुहोस्',openPresenter:'प्रस्तोता खोल्नुहोस् (दोस्रो स्क्रिन)',stage:'स्टेज (विद्यार्थीले देख्ने)',stageHint:'यहाँ हेर्न फाइल छान्नुहोस्। प्रस्तोता विन्डोमा उही देखिन्छ।',newPpt:'नयाँ प्रस्तुति',newPptHint:'"नयाँ प्रस्तुति" ले MS PowerPoint खोल्छ र /presentations मा फाइल सेभ गर्छ।',addStudent:'विद्यार्थी थप्नुहोस्',cancel:'रद्द',save:'सेभ',close:'बन्द',open2nd:'दोस्रो स्क्रिन',localPres:'यस कम्प्युटरमा सेभ',about:'बारेमा',terms:'नियम तथा सर्तहरू',team:'टिम',playCredits:'क्रेडिट चलाउनुहोस्',stopCredits:'रोक्नुहोस्',roleLead:'प्रमुख डिजाइनर तथा विकासकर्ता',roleTesters:'प्ले टेस्टरहरू',thanksWatching:'पढाउनुभएकोमा धन्यवाद'}
+  en: {classLabel:'Class',offline:'Offline Ready',appTitle:'Classroom Dashboard',appSub:'Simple • Offline • Easy to use',students:'Students',books:'Textbooks',present:'Present',home:'Home',studentsTitle:'Students & Marksheet',studentList:'Student List',add:'Add',marksheet:'Marksheet',marksheetHint:'Select a student, enter marks, auto-saved offline.',selectStudent:'Select student',subject:'Subject',total:'Total',percent:'Percent',name:'Name',action:'Action',booksTitle:'Textbooks',govt:'Govt Books',pvt:'Private Books',booksHint:'Put PDFs in /books folder, or Import. Works offline.',importBook:'Import Book',importHint:'Choose a PDF. If the /books folder is linked, it is saved there as a real file.',linkFolder:'Link /books folder',delete:'Delete',imported:'Imported',show2nd:'Show on 2nd screen',pdfControlHint:'You control from this screen — students see only the open page on the 2nd screen.',presentTitle:'Present',presentFiles:'Presentation / Media',presentHint:'Images, videos, PDFs & PowerPoint (.pptx) play fully offline. The stage opens by itself.',chooseFiles:'Choose files',openPresenter:'Open presenter (2nd screen)',stage:'Stage (what students see)',stageHint:'Pick a file to preview here. Presenter window mirrors this.',newPpt:'New presentation',newPptHint:'“New presentation” picks files from this computer to present.',addStudent:'Add student',cancel:'Cancel',save:'Save',close:'Close',open2nd:'2nd screen',localPres:'Saved on this computer',about:'About',terms:'Terms & Conditions',team:'Team',playCredits:'Play credits',stopCredits:'Stop',roleLead:'LEAD DESIGNER & DEVELOPER',roleTesters:'PLAY TESTERS',thanksWatching:'Thanks for teaching'},
+  ne: {classLabel:'कक्षा',offline:'अफलाइन तयार',appTitle:'कक्षाकोठा ड्यासबोर्ड',appSub:'सरल • अफलाइन • सजिलो',students:'विद्यार्थी',books:'पाठ्यपुस्तक',present:'प्रस्तुत गर्नुहोस्',home:'गृहपृष्ठ',studentsTitle:'विद्यार्थी र मार्कसिट',studentList:'विद्यार्थी सूची',add:'थप्नुहोस्',marksheet:'मार्कसिट',marksheetHint:'विद्यार्थी छान्नुहोस्, नम्बर हाल्नुहोस्, अफलाइन सेभ हुन्छ।',selectStudent:'विद्यार्थी छान्नुहोस्',subject:'विषय',total:'जम्मा',percent:'प्रतिशत',name:'नाम',action:'कार्य',booksTitle:'पाठ्यपुस्तक',govt:'सरकारी किताब',pvt:'निजी किताब',booksHint:'PDF हरू /books मा राख्नुहोस् वा Import गर्नुहोस्। अफलाइन चल्छ।',importBook:'किताब आयात',importHint:'PDF छान्नुहोस्। /books फोल्डर लिंक छ भने वास्तविक फाइल त्यतै सेभ हुन्छ।',linkFolder:'Link /books फोल्डर',delete:'हटाउनुहोस्',imported:'आयातित',show2nd:'दोस्रो स्क्रिनमा देखाउनुहोस्',pdfControlHint:'तपाईं यस स्क्रिनबाट नियन्त्रण गर्नुहोस् — विद्यार्थीले दोस्रो स्क्रिनमा खुला पेज मात्र देख्छन्।',presentTitle:'प्रस्तुत',presentFiles:'प्रस्तुति / मिडिया',presentHint:'फोटो, भिडियो, PDF र PowerPoint (.pptx) अफलाइन चल्छ। स्टेज आफैं खुल्छ।',chooseFiles:'फाइल छान्नुहोस्',openPresenter:'प्रस्तोता खोल्नुहोस् (दोस्रो स्क्रिन)',stage:'स्टेज (विद्यार्थीले देख्ने)',stageHint:'यहाँ हेर्न फाइल छान्नुहोस्। प्रस्तोता विन्डोमा उही देखिन्छ।',newPpt:'नयाँ प्रस्तुति',newPptHint:'"नयाँ प्रस्तुति" ले यस कम्प्युटरबाट फाइल छानेर प्रस्तुत गर्छ।',addStudent:'विद्यार्थी थप्नुहोस्',cancel:'रद्द',save:'सेभ',close:'बन्द',open2nd:'दोस्रो स्क्रिन',localPres:'यस कम्प्युटरमा सेभ',about:'बारेमा',terms:'नियम तथा सर्तहरू',team:'टिम',playCredits:'क्रेडिट चलाउनुहोस्',stopCredits:'रोक्नुहोस्',roleLead:'प्रमुख डिजाइनर तथा विकासकर्ता',roleTesters:'प्ले टेस्टरहरू',thanksWatching:'पढाउनुभएकोमा धन्यवाद'}
 };
 let LANG = localStorage.getItem('coach-lang') || 'en';
 function applyLang() {
@@ -119,6 +120,7 @@ document.addEventListener('input', e=>{
     store.saveMarks(curClass(), $('#markStudent').value, obj);
     calcTotal();
     try{ window.SB && SB.pushMarks(curClass(), $('#markStudent').value, obj); }catch{}
+    maybeRefreshMarksStage();
   }
   if(e.target.id==='studentSearch') renderStudents();
   if(e.target.id==='bookSearch') renderBooks();
@@ -138,6 +140,37 @@ function removeTomb(cls, roll){
 }
 function isTombed(cls, roll){ return getTombs().includes(cls+'|'+roll); }
 
+/* Book delete tombstones: file_paths that must never come back via cloud pulls. */
+const BTOMB_KEY = 'coach-deleted-books';
+function getBookTombs(){ try{ return JSON.parse(localStorage.getItem(BTOMB_KEY)||'[]'); }catch{ return []; } }
+function addBookTomb(fileName){
+  if(!fileName) return;
+  const t = getBookTombs().filter(x=>x!==fileName); t.push(fileName);
+  try{ localStorage.setItem(BTOMB_KEY, JSON.stringify(t.slice(-500))); }catch{}
+}
+function removeBookTomb(fileName){
+  try{ localStorage.setItem(BTOMB_KEY, JSON.stringify(getBookTombs().filter(x=>x!==fileName))); }catch{}
+}
+function isBookTombed(fileName){ return !!fileName && getBookTombs().includes(fileName); }
+
+/* True delete: browser copy + /books real file + cloud row/file, then tombstone.
+   (The old code only dropped the browser copy, so books kept coming back.) */
+async function deleteBookEverywhere({ id, fileName, label }){
+  if(!confirm(`Delete "${label || fileName}" everywhere (this computer + cloud)?`)) return false;
+  addBookTomb(fileName);
+  if(id != null){
+    try{ await idb.del(id); }catch{}
+    IMPORTED = IMPORTED.filter(b=>b.id!==id);
+    importUrls.delete(id);
+  }
+  CLOUD_BOOKS = CLOUD_BOOKS.filter(x=>(x.file_path||x.fileName)!==fileName);
+  try{ if(booksDir && fileName){ await (await booksDir.getFileHandle(fileName)).remove(); } }catch{}
+  try{ if(window.SB && SB.configured && fileName) await SB.deleteBook(fileName); }catch{}
+  renderBooks();
+  toast('Book deleted ✓');
+  return true;
+}
+
 document.addEventListener('click', e=>{
   const del = e.target.closest('[data-del]');
   if(del){
@@ -149,9 +182,31 @@ document.addEventListener('click', e=>{
     try{ window.SB && SB.deleteStudent(cls, roll); }catch{}        // cloud hard-delete
     try{ window.SB && SB.pushStudents(store.students); }catch{}
     renderStudents();
+    maybeRefreshMarksStage();
     toast('Student removed ✓');
   }
 });
+/* Marksheet on the 2nd screen: white results table, re-pushed live while shown. */
+function marksSnapshot(){
+  const cls = curClass();
+  const rows = store.students.filter(s=>s.cls===cls).sort((a,b)=>a.roll-b.roll).map(s=>{
+    const m = store.marks(cls, s.roll);
+    const tot = SUBJECTS.reduce((a,x)=>a+((+m[x])||0),0);
+    return { roll:s.roll, name:s.name, total:tot, pct:Math.round(tot/(SUBJECTS.length||1))+'%' };
+  });
+  return { title:(LANG==='ne' ? 'मार्कसिट' : 'Marksheet'), rows };
+}
+function pushMarksToStage(){
+  try{
+    const s = marksSnapshot();
+    if(window.Stage) Stage.showMarks(s);
+    toast('Marksheet on 2nd screen ✓');
+  }catch{ toast('Could not open 2nd screen (popup blocked?).'); }
+}
+function maybeRefreshMarksStage(){
+  try{ if(window.Stage && Stage.lastType==='marks') Stage.showMarks(marksSnapshot()); }catch{}
+}
+$('#studentsStageBtn').onclick = pushMarksToStage;
 $('#markStudent')?.addEventListener('change', renderMarks);
 $('#addStudentBtn').onclick = ()=> $('#studentDialog').showModal();
 $('#saveStudent').onclick = ()=>{
@@ -162,6 +217,7 @@ $('#saveStudent').onclick = ()=>{
   removeTomb(curClass(), roll); // re-adding a roll revives it
   try{ window.SB && SB.pushStudents(all); }catch{}
   $('#fRoll').value='';$('#fName').value='';renderStudents();
+  maybeRefreshMarksStage();
 };
 $('#exportCsvBtn').onclick = ()=>{
   const cls = curClass();
@@ -346,7 +402,7 @@ function renderBooks(){
     const tag = b.cloud ? ' • ☁ cloud' : b.imported ? ` • ✅ ${I18N[LANG].imported}` : '';
     const cover = b.cloud ? '📘' : b.imported ? '📗' : '📕';
     const where = b.imported ? (b.savedToBooks ? `<div><span class="badge">📁 /books/${escapeHtml(b.fileName||'')}</span></div>` : `<div><span class="badge" style="background:#fff7ed;color:#9a3412;border-color:#fed7aa">browser only</span></div>`) : b.cloud ? `<div><span class="badge">☁ ${escapeHtml(b.fileName||b.file_path||'')}</span></div>` : '';
-    const actions = b.imported ? `<div style="margin-top:8px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap"><button class="btn ghost save-book" data-savebook="${b.id}" title="Write file into linked /books folder">💾 /books</button><button class="btn ghost del-book" data-delbook="${b.id}">✕ ${I18N[LANG].delete}</button></div>` : '';
+    const actions = b.imported ? `<div style="margin-top:8px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap"><button class="btn ghost save-book" data-savebook="${b.id}" title="Write file into linked /books folder">💾 /books</button><button class="btn ghost del-book" data-delbook="${b.id}">✕ ${I18N[LANG].delete}</button></div>` : b.cloud ? `<div style="margin-top:8px"><button class="btn ghost del-book" data-delcloud="${escapeHtml(b.file_path||b.fileName||'')}">✕ ${I18N[LANG].delete}</button></div>` : '';
     return `<div class="book-card" data-book="${key}"><div class="book-cover">${cover}</div><b>${label}</b><small>${b.class==='all'?'All classes':'Class '+escapeHtml(b.class)} • ${escapeHtml(b.type)}${tag}</small>${where}${actions}</div>`;
   }).join('')
     || `<p class="hint">No books found. Use <b>Import Book</b> or add entries in <code>data/books.json</code>.</p>`;
@@ -359,6 +415,7 @@ const cloudDl = new Set();
 async function cacheCloudBook(cb, silent){
   const key = cb && (cb.file_path || cb.fileName);
   if(!key || cloudDl.has(key)) return null;
+  if(isBookTombed(key)) return null; // deleted here — never re-download
   if(IMPORTED.some(b=>b.fileName===key)) return null;
   if(!navigator.onLine) return null;
   cloudDl.add(key);
@@ -389,11 +446,16 @@ document.addEventListener('click', async e=>{
   const del = e.target.closest('[data-delbook]');
   if(del){
     e.stopPropagation();
-    if(!confirm('Delete this imported book?')) return;
-    await idb.del(+del.dataset.delbook);
-    IMPORTED = IMPORTED.filter(b=>b.id!==+del.dataset.delbook);
-    importUrls.delete(+del.dataset.delbook);
-    renderBooks(); toast('Deleted.');
+    const b = IMPORTED.find(x=>x.id===+del.dataset.delbook);
+    await deleteBookEverywhere({ id:+del.dataset.delbook, fileName:b && b.fileName, label:b && (LANG==='ne'&&b.titleNe?b.titleNe:b.title) });
+    return;
+  }
+  const delc = e.target.closest('[data-delcloud]');
+  if(delc){
+    e.stopPropagation();
+    const fp = delc.dataset.delcloud;
+    const b = CLOUD_BOOKS.find(x=>(x.file_path||x.fileName)===fp);
+    await deleteBookEverywhere({ id:null, fileName:fp, label:b && (LANG==='ne'&&b.titleNe?b.titleNe:b.title) });
     return;
   }
   const sv = e.target.closest('[data-savebook]');
@@ -452,14 +514,10 @@ document.addEventListener('click', async e=>{
 });
 /* --- Books on the UNIFIED stage: teacher controls here, students see only the open page --- */
 let bookBase = '', bookPage = 1, bookBlob = null;
-function pdfWithPage(src, page){
-  const clean = String(src).split('#')[0];
-  return clean + '#page=' + page;
-}
 function stagePdfSrc(){
-  // Stage prefers a transferable URL; dataURL blobs always cross windows.
+  // Strings pass through; Blobs travel to the stage via postMessage natively.
   if(typeof bookBase === 'string' && (bookBase.startsWith('http') || bookBase.startsWith('file:') || bookBase.startsWith('data:'))) return bookBase;
-  if(bookBlob) return bookBlob; // stage.js converts Blob → dataURL
+  if(bookBlob) return bookBlob;
   return bookBase;
 }
 function openBook(src, title, blob){
@@ -521,6 +579,7 @@ $('#saveBook').onclick = async (e)=>{
     const id = await idb.add(rec);
     rec.id = id;
     IMPORTED.push(rec);
+    removeBookTomb(rec.fileName); // (re-)importing revives a deleted filename
     importUrls.set(id, URL.createObjectURL(file));
     $('#bookForm').reset();
     bookFilter = rec.type;
@@ -607,15 +666,6 @@ async function showDeckSlide(s){
     try{ window.Stage && Stage.showDeckHtml({ html:shot.html, w:shot.w, h:shot.h, idx:s.idx, count:pptxDeck.count, title:pptxDeck.name }); }catch{}
   }catch{ toast('Could not render this slide.'); }
 }
-/* Web embeds (Google Slides publish/embed link, etc). Needs internet. */
-$('#addLinkBtn').onclick = ()=>{
-  const u = prompt('Paste presentation link (Google Slides File → Share → Publish to web, copy the link):', 'https://');
-  if(!u) return;
-  if(!/^https:\/\//i.test(u.trim())){ toast('Link must start with https://'); return; }
-  closePptxDeck();
-  slides = [{ name:u.trim(), url:u.trim(), kind:'embed' }];
-  curSlide = 0; renderSlides(); showSlide(0);
-};
 async function saveLocalMedia(file){
   try{ await idb.mediaAdd({ name:file.name, kind:kindOf(file.name), blob:file, date:Date.now() }); }catch{}
   try{
@@ -745,40 +795,19 @@ document.addEventListener('keydown', e=>{
 });
 $('#fullscreenBtn').onclick = ()=>{ const st=$('#stage'); document.fullscreenElement?document.exitFullscreen():st.requestFullscreen?.(); };
 
-/* Unified 2nd screen: Welcome idle when nothing is presented */
-$('#presenterBtn').onclick = ()=>{
-  try{
-    if(!slides.length){ window.Stage && Stage.welcome(); }
-    else showSlide(curSlide);
-    updateScreenInfo();
-  }catch{ toast('Could not open 2nd screen (popup blocked?).'); }
-};
-$('#stopStageBtn').onclick = ()=>{ try{ closePptxDeck(); window.Stage && Stage.welcome(); $('#stage').innerHTML = '<span class="hint">Stopped — 2nd screen shows Welcome.</span>'; }catch{} };
+/* Unified 2nd screen: content auto-opens it; top button shows Welcome idle */
 $('#secondScreenBtnTop').onclick = ()=>{ try{ window.Stage && Stage.welcome(); toast('2nd screen: Welcome. Open a book or slides to present.'); }catch{} };
 async function updateScreenInfo(){
   try{
     if(window.getScreenDetails){
       const d = await window.getScreenDetails();
       $('#screenInfo').textContent = d.screens.length + ' screens';
-      if(d.screens.length < 2) toast('Only 1 screen detected – drag window to projector/TV.');
-    } else $('#screenInfo').textContent = '1 screen (move window manually)';
+    } else $('#screenInfo').textContent = 'screens: ?';
   }catch{}
 }
 
-/* "New presentation" -> desktop PowerPoint. Record kept locally. */
-$('#newPptBtn').onclick = async ()=>{
-  const name = prompt('Presentation name:', `Class-${curClass()}-Lesson-1`);
-  if(!name) return;
-  const rec = JSON.parse(localStorage.getItem('coach-ppts')||'[]');
-  rec.push({name,cls:curClass(),date:new Date().toISOString()});
-  localStorage.setItem('coach-ppts', JSON.stringify(rec));
-  toast(`"${name}" noted. Opening PowerPoint… save it into Presentations.`);
-  try{
-    if(window.electron) await window.electron.openExternal('ms-powerpoint:ofv|u|');
-    else { const a=document.createElement('a'); a.href='ms-powerpoint:ofv|u|'; document.body.appendChild(a); a.click(); a.remove(); }
-  }catch{}
-  setTimeout(()=>toast('Save the .pptx into the Presentations folder so it stays on this computer.'), 2500);
-};
+/* "New presentation" opens this computer's file window (images/video/PDF/.pptx). */
+$('#newPptBtn').onclick = ()=>{ $('#presentFiles').click(); };
 
 /* Team page — movie credits roll 🎬 */
 function resetCredits(){
@@ -852,7 +881,9 @@ function mergeCloud(data){
     }
     if(data.books){
       const known = new Set([...BOOKS.map(b=>b.file), ...IMPORTED.map(b=>b.fileName)]);
-      CLOUD_BOOKS = data.books.filter(b=>!known.has(b.file_path)).map(b=>({ title:b.title, titleNe:b.title_ne, class:b.class, type:b.type, fileName:b.file_path, file_path:b.file_path }));
+      CLOUD_BOOKS = data.books
+        .filter(b=>!known.has(b.file_path) && !isBookTombed(b.file_path))
+        .map(b=>({ title:b.title, titleNe:b.title_ne, class:b.class, type:b.type, fileName:b.file_path, file_path:b.file_path }));
       renderBooks();
     }
   }catch{}

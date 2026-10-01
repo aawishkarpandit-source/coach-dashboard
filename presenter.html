@@ -23,6 +23,15 @@
   #deckBox { width: 100%; height: 100vh; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; }
   #deckScale { transform-origin: center center; flex: none; }
   #err { display:none; color:#fff; background:#000; height:100vh; align-items:center; justify-content:center; font-size:22px; text-align:center; padding:40px; }
+  /* Marksheet results (white page, clean table) */
+  #marksBox { width: 100%; min-height: 100vh; background: #fff; color: #111; padding: 40px 48px; }
+  #marksBox h2 { margin: 0 0 4px; font-size: clamp(26px, 4vw, 44px); }
+  #marksBox .marks-sub { color: #6b7280; margin: 0 0 20px; font-size: clamp(14px, 2vw, 20px); }
+  #marksBox table { width: 100%; border-collapse: collapse; font-size: clamp(15px, 2.2vw, 24px); }
+  #marksBox th, #marksBox td { border-bottom: 2px solid #e5e7eb; padding: 10px 12px; text-align: left; }
+  #marksBox thead th { background: #16a34a; color: #fff; }
+  #marksBox thead th:first-child { border-radius: 10px 0 0 0; }
+  #marksBox thead th:last-child { border-radius: 0 10px 0 0; }
 </style>
 </head>
 <body>
@@ -59,6 +68,12 @@
     // data: URLs must not get a #page fragment mangled — appending is still fine
     return url + '#page=' + (page || 1);
   }
+  function escapeHtmlLite(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => (
+      { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+  // Non-marks content always plays on the black stage; marks use a white page.
+  function stageBg(color) { content.style.background = color; }
   // Scale the fixed-size slide to fill the stage while preserving aspect ratio.
   function fitDeck(holder, w, h) {
     try {
@@ -114,7 +129,7 @@
     if (msg.type === 'video-sync') { syncVideo(msg); return; }
     const url = fileUrl(msg);
     if (!url) return; // metadata-only fallback arrived first; real content follows via postMessage
-    idle.style.display = 'none'; content.classList.add('show');
+    idle.style.display = 'none'; content.classList.add('show'); stageBg('#000');
     if (msg.type === 'pdf') {
       forgetVideo();
       content.innerHTML = '';
@@ -153,6 +168,16 @@
       const holder = document.getElementById('deckScale');
       holder.innerHTML = msg.html;
       fitDeck(holder, msg.w || 1280, msg.h || 720);
+    } else if (msg.type === 'marks') {
+      forgetVideo();
+      idle.style.display = 'none'; content.classList.add('show'); stageBg('#fff');
+      const rows = (msg.rows || []).map((r) =>
+        '<tr><td>' + r.roll + '</td><td>' + escapeHtmlLite(r.name) + '</td><td>' + r.total + '</td><td>' + r.pct + '</td></tr>'
+      ).join('') || '<tr><td colspan="4">No students</td></tr>';
+      content.innerHTML = '<div id="marksBox"><h2>' + escapeHtmlLite(msg.title || 'Marksheet') +
+        '</h2><p class="marks-sub">Class ' + escapeHtmlLite(msg.className || '') + '</p>' +
+        '<table><thead><tr><th>Roll</th><th>Name</th><th>Total</th><th>Percent</th></tr></thead><tbody>' +
+        rows + '</tbody></table></div>';
     }
   }
   function syncVideo(msg) {

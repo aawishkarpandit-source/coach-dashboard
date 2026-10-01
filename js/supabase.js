@@ -89,6 +89,17 @@
         return true;
       } catch { setState('error'); return false; }
     },
+    async deleteBook(filePath) {
+      // Hard-delete catalogue row + stored PDF so a deleted book never comes back.
+      const sb = await getClient(); if (!sb) return false;
+      try {
+        setState('syncing');
+        await sb.storage.from('books').remove([filePath]);
+        await sb.from('book_meta').delete().match({ file_path: filePath });
+        setState('cloud');
+        return true;
+      } catch { setState('error'); return false; }
+    },
 
     // ---- writes (called by app.js store; debounced, fire-and-forget) ----
     pushStudents(allStudents) {

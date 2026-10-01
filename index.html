@@ -233,6 +233,7 @@
         <input id="studentSearch" type="search" placeholder="Search name / roll…" />
         <button id="addStudentBtn" class="btn">+ <span data-i18n="add">Add</span></button>
         <button id="exportCsvBtn" class="btn ghost">⬇ CSV</button>
+        <button id="studentsStageBtn" class="btn">🖥️ <span data-i18n="show2nd">Show on 2nd screen</span></button>
       </div>
       <table class="table" id="studentTable">
         <thead><tr>
@@ -319,12 +320,7 @@
       <h3 data-i18n="presentFiles">Presentation / Media</h3>
       <p class="hint" data-i18n="presentHint">Images, videos & PDFs play fully offline. PPT / Google Slides need PowerPoint or internet.</p>
       <div class="btn-row">
-        <label class="btn file-btn">📁 <span data-i18n="chooseFiles">Choose files</span>
-          <input id="presentFiles" type="file" multiple accept="image/*,video/*,.pdf,.ppt,.pptx" hidden />
-        </label>
-        <button id="addLinkBtn" class="btn" title="Google Slides publish link (needs internet)">🔗 Link</button>
-        <button id="presenterBtn" class="btn">🖥️ <span data-i18n="openPresenter">Open presenter (2nd screen)</span></button>
-        <button id="stopStageBtn" class="btn ghost" title="Show Welcome idle on the 2nd screen">■ Welcome</button>
+        <input id="presentFiles" type="file" multiple accept="image/*,video/*,.pdf,.pptx" hidden />
         <button id="fullscreenBtn" class="btn ghost">⛶ Fullscreen</button>
       </div>
       <div id="slideList" class="slide-list"></div>
@@ -333,7 +329,7 @@
         <button id="nextSlide" class="btn ghost">Next ▶</button>
         <button id="newPptBtn" class="btn primary">＋ <span data-i18n="newPpt">New presentation</span></button>
       </div>
-      <p class="hint small" data-i18n="newPptHint">“New presentation” opens MS PowerPoint and saves starter file in /presentations.</p>
+      <p class="hint small" data-i18n="newPptHint">“New presentation” picks files from this computer to present.</p>
       <h3 style="margin-top:14px">💾 <span data-i18n="localPres">Saved on this computer</span></h3>
       <p class="hint small">Presentations are stored locally (not in the cloud).</p>
       <div id="localPresList" class="local-list"><span class="hint">No saved presentations yet.</span></div>

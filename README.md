@@ -8,9 +8,7 @@ Teacher control window + student 2nd-screen window from **one install**.
 
 **Dev run:** `npm install` → `npm start`
 
-**Build the installer (on your computer):** `npm run dist:win` → installers appear in `release/`:
-- `Coach Dashboard Setup 1.0.0.exe` — give this to schools
-- `Coach Dashboard 1.0.0 portable.exe` — no-install stick version
+**Build the installer (on your computer):** `npm run dist:win` → `release/Coach Dashboard Setup X.exe` — the one file schools need.
 
 ## 2. Push updates through GitHub (auto-update)
 
@@ -28,20 +26,21 @@ Presentations are **never** uploaded — they stay on each computer by design.
    - put them in `.env` (copy from `.env.example`), or
    - open the installed app → **⚙ Sync** → paste → **Connect & Sync** (stored per computer).
    (This copy ships pre-configured with the school project — skip this unless keys rotate.)
-3. From then on: adding a student, entering marks, or importing a book mirrors to the cloud (☁ badge: `local` → `syncing…` → `cloud ✓`). Other installed computers pull it within seconds of coming online.
+3. From then on: adding a student, entering marks, or importing a book mirrors to the cloud (☁ badge: `local` → `syncing…` → `cloud ✓`). Other installed computers pull it within seconds of coming online. Deletes propagate too (student/book + their marks/files are hard-deleted everywhere, with tombstones so nothing resurrects).
 4. Imported book PDFs also upload to the `books` bucket, so other computers get them as ☁ cards — spotted books auto-download in the background and become offline 📗 entries.
 
 ## 4. 2nd screen (projector/TV)
 
-- Extend display in Windows, then press **🖥️ 2nd Screen** (top bar).
+- Extend display in Windows, then press **🖥️ 2nd Screen** (top bar) — the stage auto-moves to the 2nd display, fills it, and attempts true fullscreen (falls back to a filled window if the browser refuses; press F11 on the stage then).
 - **Idle:** white background, **Welcome** centered, green rectangle below with white text **Class 9A** (follows the class dropdown).
-- **Books and presentations share the SAME stage window** — opening either replaces what's shown; **■ Welcome** (or closing the reader) returns to idle.
-- Teacher changes pages/slides on the main screen; students see only the open page — no controls.
+- **Books, presentations AND the marksheet share the SAME stage window** — opening any of them replaces what's shown; closing the reader returns to idle. The Students page has its own “Show on 2nd screen” button (white results table, updates live as you type marks).
+- Teacher changes pages/slides on the main screen; students see only the open content — no controls.
 
 ## 5. Local files & presentations
 
 - **PowerPoint (.pptx):** renders fully **offline in the browser** — no PowerPoint needed, works in the installed app AND plain `index.html`. Slides (text, shapes, images, tables, charts, SmartArt) show on your screen + the 2nd-screen stage with ◀ ▶ page turns. The original file is kept under “Saved on this computer” as 📊 and re-renders on demand. Engine: vendored `js/vendor/pptx-renderer.js` (Apache-2.0 `@aiden0z/pptx-renderer`, rebuilt via `npm run vendor:pptx`), loaded lazily on first use. Old `.ppt` files: Save As `.pptx` first. Fidelity note: complex animations/transitions don't carry over (static slides); fancy embedded fonts fall back to system fonts on the 2nd screen.
-- **Google Slides / web links:** 🔗 Link button pastes a publish/embed `https://` link; shows on teacher preview + stage (needs internet).
+- **Present page:** one **＋ New presentation** button opens the file window (images, video, PDF, `.pptx` — all offline, stage opens by itself). ◀ Prev / Next ▶ turn slides on both screens.
+- **Google Slides / web links:** supported in the engine if you re-add a link button; stock build is offline-first.
 - **Other presentations:** chosen files + PowerPoint records save on the computer (browser IndexedDB; installed app also copies real files to its data folder → “Saved on this computer” list to reopen/delete). Re-installs on the same machine keep them.
 - **Books:** `/books/*.pdf` + `data/books.json` ship with the app; **Import Book** writes a real file into `/books` when the folder is linked (Chrome/Edge) and always keeps a browser copy + cloud copy.
 

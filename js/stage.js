@@ -11,9 +11,11 @@
   let win = null;
   let mode = 'idle'; // idle | content
   let lastMsg = null;
+  let lastType = 'welcome';
 
   function rawSend(msg) {
     lastMsg = msg;
+    lastType = (msg && msg.type) || 'welcome';
     const full = Object.assign({ __coachStage: true, _t: Date.now() }, msg);
     try { localStorage.setItem('coach-class', msg.className || localStorage.getItem('coach-class') || '9A'); } catch {}
     // localStorage fallback: metadata ONLY (no blobs, no huge urls — they can't be stored)
@@ -30,26 +32,46 @@
 
   const Stage = {
     get mode() { return mode; },
+    get lastType() { return lastType; },
     open() {
       if (!win || win.closed) {
         win = window.open('presenter.html', WIN_NAME, 'width=1280,height=800');
         if (!win && window.toast) window.toast('Popup blocked — allow popups for the 2nd screen.');
         // re-send last content (or welcome) once it loads
         setTimeout(() => rawSend(lastMsg || { type: 'welcome', className: Stage.currentClass() }), 600);
-        Stage.moveToSecond();
+        Stage.placeOnSecond().then((n) => {
+          try {
+            const badge = document.querySelector('#screenInfo');
+            if (badge && n) badge.textContent = n + (n > 1 ? ' screens' : ' screen');
+          } catch {}
+          if (!n && window.toast) window.toast('Drag the stage window to the projector/TV, then press F11.');
+        });
       } else { try { win.focus(); } catch {} }
       return win;
     },
-    async moveToSecond() {
+    // Opens the stage, moves it to the 2nd display, fills that screen and
+    // attempts true fullscreen (the "F11 already done" part — browsers may
+    // refuse without a gesture there, in which case the filled window stands).
+    async placeOnSecond() {
       try {
         if (window.getScreenDetails) {
           const d = await window.getScreenDetails();
           const second = d.screens.find((s) => !s.isPrimary) || d.screens[1];
-          if (second && win && !win.closed) { try { win.moveTo(second.availLeft + 20, second.availTop + 20); } catch {} return true; }
+          if (second && win && !win.closed) {
+            try { win.moveTo(second.availLeft, second.availTop); } catch {}
+            try { win.resizeTo(second.availWidth, second.availHeight); } catch {}
+            try {
+              const el = win.document && win.document.documentElement;
+              if (el && el.requestFullscreen) { const p = el.requestFullscreen(); if (p && p.catch) p.catch(() => {}); }
+            } catch {}
+            return d.screens.length;
+          }
+          return d.screens.length;
         }
       } catch {}
-      return false;
+      return 0;
     },
+    async moveToSecond() { await this.placeOnSecond(); return false; },
     currentClass() {
       const el = document.querySelector('#classSelect');
       return (el && el.value) || localStorage.getItem('coach-class') || '9A';
@@ -108,6 +130,13 @@
       this.open();
       rawSend({ type: 'deck', html: d.html || '', w: d.w || 1280, h: d.h || 720,
         idx: d.idx || 0, count: d.count || 0, title: d.title || '', className: this.currentClass() });
+    },
+    // Class marksheet snapshot for the 2nd screen (white results table).
+    showMarks(payload) {
+      mode = 'content';
+      this.open();
+      rawSend({ type: 'marks', title: payload.title || '', rows: payload.rows || [],
+        className: this.currentClass() });
     },
     clear() { this.welcome(); },
     close() { try { win && win.close(); } catch {} win = null; mode = 'idle'; }
