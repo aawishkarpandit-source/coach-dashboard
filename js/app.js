@@ -835,7 +835,8 @@ $('#creditsPlay').onclick = ()=>{
   if(btn) btn.textContent = (I18N[LANG] && I18N[LANG].stopCredits) || 'Stop';
   inner.onanimationend = resetCredits;
 };
-$('#syncBtn').onclick = ()=>{
+const _syncBtn = $('#syncBtn');
+if(_syncBtn) _syncBtn.onclick = ()=>{
   const dlg = $('#syncDialog');
   try{
     const cfg = JSON.parse(localStorage.getItem('coach-supabase')||'null');
