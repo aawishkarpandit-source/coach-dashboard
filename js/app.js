@@ -358,18 +358,11 @@ function downloadBlob(blob, fileName){
   setTimeout(()=>URL.revokeObjectURL(a.href), 5000);
 }
 
-/* Built-in catalogue mirror of data/books.json.
-   fetch() is blocked on file:// (double-click) in most browsers, so without
-   this fallback the shelf would be empty. Keep in sync when editing books.json. */
-const BUILTIN_BOOKS = [
-  { "title": "Mathematics Grade 9", "titleNe": "गणित कक्षा ९", "class": "9", "type": "govt", "file": "math-9.pdf" },
-  { "title": "Science Grade 9", "titleNe": "विज्ञान कक्षा ९", "class": "9", "type": "govt", "file": "science-9.pdf" },
-  { "title": "English Grade 9", "titleNe": "अंग्रेजी कक्षा ९", "class": "9", "type": "govt", "file": "english-9.pdf" },
-  { "title": "Nepali Grade 9", "titleNe": "नेपाली कक्षा ९", "class": "9", "type": "govt", "file": "nepali-9.pdf" },
-  { "title": "Mathematics Grade 10", "titleNe": "गणित कक्षा १०", "class": "10", "type": "govt", "file": "math-10.pdf" },
-  { "title": "Science Grade 10", "titleNe": "विज्ञान कक्षा १०", "class": "10", "type": "govt", "file": "science-10.pdf" },
-  { "title": "Private Practice Book", "titleNe": "निजी अभ्यास पुस्तक", "class": "all", "type": "pvt", "file": "private-practice.pdf" }
-];
+/* Built-in catalogue mirror of data/books.json (currently empty — no static
+   books ship with the app; teachers add their own via Import).
+   fetch() is blocked on file:// (double-click) in most browsers, so this
+   fallback keeps the shelf working everywhere. Keep in sync when editing books.json. */
+const BUILTIN_BOOKS = [];
 
 async function loadBooks(){
   BOOKS = [];
