@@ -1,0 +1,60 @@
+{
+  "name": "coach-dashboard",
+  "productName": "Coach Dashboard",
+  "version": "1.0.0",
+  "description": "Offline classroom teaching dashboard — students, textbooks, presenter with 2nd-screen support",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "dist": "electron-builder --win",
+    "dist:win": "electron-builder --win nsis",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.47.0",
+    "electron-updater": "^6.3.9"
+  },
+  "devDependencies": {
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.awishkar.coachdashboard",
+    "productName": "Coach Dashboard",
+    "afterPack": "./electron/afterPack.js",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "index.html",
+      "presenter.html",
+      "css/**/*",
+      "js/**/*",
+      "data/**/*",
+      "books/**/*",
+      "presentations/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "electron/icon.ico",
+      "signAndEditExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "shortcutName": "Coach Dashboard"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "aawishkarpandit-source",
+        "repo": "coach-dashboard"
+      }
+    ]
+  }
+}

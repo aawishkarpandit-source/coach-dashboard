@@ -1,0 +1,33 @@
+# Coach Dashboard — build & publish installers via GitHub Releases.
+# The installed app auto-updates from these releases (electron-updater).
+#
+# HOW TO FORWARD AN UPDATE TO ALL SCHOOL COMPUTERS:
+#   1. Make your changes, bump "version" in package.json (e.g. 1.0.0 → 1.0.1)
+#   2. Commit + push, then tag:  git tag v1.0.1 ; git push origin v1.0.1
+#      (or press "Run workflow" below for a manual build)
+#   3. This workflow builds the Windows installer (.exe) and attaches it to
+#      the GitHub Release. Installed apps download it automatically when online.
+
+name: Release installer
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build-win:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm install
+      - run: npm run dist -- --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

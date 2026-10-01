@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Coach Dashboard — Stage (students see this)</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: #fff; font-family: "Segoe UI", system-ui, Arial, sans-serif; }
+  #idle {
+    height: 100vh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 26px; background: #fff;
+  }
+  #idle h1 { margin: 0; font-size: clamp(48px, 10vw, 120px); font-weight: 800; color: #111; letter-spacing: 2px; }
+  #classPill {
+    background: #16a34a; color: #fff; font-weight: 700;
+    font-size: clamp(22px, 4vw, 44px); padding: 12px 64px; border-radius: 12px;
+  }
+  #content { display: none; height: 100vh; background: #000; }
+  #content.show { display: block; }
+  #content iframe, #content img, #content video { width: 100%; height: 100vh; border: 0; object-fit: contain; display: block; background: #000; }
+  #err { display:none; color:#fff; background:#000; height:100vh; align-items:center; justify-content:center; font-size:22px; text-align:center; padding:40px; }
+</style>
+</head>
+<body>
+  <!-- IDLE: white background, Welcome center, green Class pill below -->
+  <div id="idle">
+    <h1>Welcome</h1>
+    <div id="classPill">Class 9A</div>
+  </div>
+  <div id="content"></div>
+  <div id="err"></div>
+
+<script>
+'use strict';
+// Single stage window for BOTH books and presentations.
+// Receives {type,...} via postMessage from the teacher window,
+// with a localStorage fallback ('coach-stage-msg') for file:// contexts.
+(function () {
+  const idle = document.getElementById('idle');
+  const pill = document.getElementById('classPill');
+  const content = document.getElementById('content');
+  const err = document.getElementById('err');
+
+  function showIdle(cls) {
+    if (cls) pill.textContent = 'Class ' + cls;
+    idle.style.display = 'flex'; content.classList.remove('show'); content.innerHTML = ''; err.style.display = 'none';
+  }
+  function showError(msg) {
+    idle.style.display = 'none'; content.classList.remove('show');
+    err.style.display = 'flex'; err.textContent = msg;
+  }
+  function pdfSrc(url, page) {
+    url = String(url).split('#')[0];
+    // data: URLs must not get a #page fragment mangled — appending is still fine
+    return url + '#page=' + (page || 1);
+  }
+  function show(msg) {
+    err.style.display = 'none';
+    if (!msg || msg.type === 'welcome' || msg.type === 'clear') { showIdle(msg && msg.className); return; }
+    idle.style.display = 'none'; content.classList.add('show');
+    if (msg.type === 'pdf') {
+      content.innerHTML = '';
+      const f = document.createElement('iframe');
+      f.src = pdfSrc(msg.url, msg.page);
+      f.onerror = () => showError('Could not display this PDF on the 2nd screen.');
+      content.appendChild(f);
+    } else if (msg.type === 'image') {
+      content.innerHTML = '';
+      const img = document.createElement('img');
+      img.src = msg.url; img.onerror = () => showError('Could not display this image.');
+      content.appendChild(img);
+    } else if (msg.type === 'video') {
+      content.innerHTML = '';
+      const v = document.createElement('video');
+      v.src = msg.url; v.controls = true; v.autoplay = true;
+      v.onerror = () => showError('Could not play this video.');
+      content.appendChild(v);
+    }
+  }
+  window.addEventListener('message', (e) => { if (e.data && e.data.__coachStage) show(e.data); });
+  window.addEventListener('storage', (e) => {
+    if (e.key !== 'coach-stage-msg' || !e.newValue) return;
+    try { const m = JSON.parse(e.newValue); if (m && m.__coachStage) show(m); } catch {}
+  });
+  // If opener wrote a message before we loaded, pick it up:
+  try {
+    const raw = localStorage.getItem('coach-stage-msg');
+    if (raw) { const m = JSON.parse(raw); if (m && m.__coachStage) show(m); }
+    else showIdle(localStorage.getItem('coach-class') || '9A');
+  } catch { showIdle('9A'); }
+})();
+</script>
+</body>
+</html>

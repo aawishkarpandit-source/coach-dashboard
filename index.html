@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Coach Dashboard – Classroom Teaching</title>
+<link rel="icon" type="image/png" href="electron/icon.png" />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<!-- ===== TOP BAR (visible on all pages) ===== -->
+<header class="topbar">
+  <div class="topbar-left">
+    <!-- EDIT: add/remove classes here. Format: value = folder/filter key -->
+    <label for="classSelect" data-i18n="classLabel">Class</label>
+    <select id="classSelect">
+      <option value="9A">9A</option>
+      <option value="9B">9B</option>
+      <option value="9C">9C</option>
+      <option value="9D">9D</option>
+      <option value="9E">9E</option>
+      <option value="10A">10A</option>
+      <option value="10B">10B</option>
+      <option value="10C">10C</option>
+      <option value="10D">10D</option>
+      <option value="10E">10E</option>
+    </select>
+    <span id="offlineBadge" class="badge offline" title="Works without internet">● <span data-i18n="offline">Offline Ready</span></span>
+  </div>
+
+  <div class="topbar-right">
+    <span id="clock"></span>
+    <span id="syncBadge" class="badge" data-sync="local" title="Cloud sync status">● <span>☁ local</span></span>
+    <button id="syncBtn" class="pill-btn" title="Cloud sync settings (Supabase)">⚙ Sync</button>
+    <button id="langToggle" class="pill-btn" title="Switch English / नेपाली">EN | NE</button>
+    <button id="secondScreenBtnTop" class="pill-btn" title="Open second-screen window">🖥️ 2nd Screen</button>
+  </div>
+</header>
+
+<main>
+<!-- ============================================================
+     PAGE 1 : HOME
+============================================================ -->
+<section id="page-home" class="page active">
+  <!-- Center squircle menu -->
+  <div class="home-center">
+    <h1 class="app-title" data-i18n="appTitle">Classroom Dashboard</h1>
+    <p class="app-sub" data-i18n="appSub">Simple • Offline • Easy to use</p>
+
+    <div class="squircle-row">
+      <!-- a. Students -->
+      <button class="squircle" data-goto="students">
+        <span class="squircle-icon">
+          <!-- stickman figure -->
+          <svg viewBox="0 0 64 64" width="56" height="56" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round">
+            <circle cx="32" cy="12" r="7" fill="currentColor" stroke="none"/>
+            <line x1="32" y1="21" x2="32" y2="38"/>
+            <line x1="32" y1="26" x2="18" y2="32"/>
+            <line x1="32" y1="26" x2="46" y2="32"/>
+            <line x1="32" y1="38" x2="22" y2="54"/>
+            <line x1="32" y1="38" x2="42" y2="54"/>
+          </svg>
+        </span>
+        <span class="squircle-label" data-i18n="students">Students</span>
+      </button>
+
+      <!-- b. Textbooks -->
+      <button class="squircle" data-goto="books">
+        <span class="squircle-icon">
+          <svg viewBox="0 0 64 64" width="56" height="56" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 8 h24 a8 8 0 0 1 8 8 v40 H20 a8 8 0 0 1 -8 -8 z"/>
+            <path d="M12 8 v40"/>
+            <line x1="20" y1="20" x2="36" y2="20"/>
+            <line x1="20" y1="28" x2="36" y2="28"/>
+          </svg>
+        </span>
+        <span class="squircle-label" data-i18n="books">Textbooks</span>
+      </button>
+
+      <!-- c. Present -->
+      <button class="squircle" data-goto="present">
+        <span class="squircle-icon">
+          <svg viewBox="0 0 64 64" width="56" height="56" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="8" y="8" width="48" height="32" rx="3"/>
+            <line x1="32" y1="40" x2="32" y2="50"/>
+            <line x1="20" y1="50" x2="44" y2="50"/>
+            <line x1="20" y1="18" x2="44" y2="18"/>
+            <line x1="20" y1="25" x2="38" y2="25"/>
+            <line x1="20" y1="32" x2="32" y2="32"/>
+          </svg>
+        </span>
+        <span class="squircle-label" data-i18n="present">Present</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="credit">Created with ❤️ by Awishkar and Team</div>
+</section>
+
+<!-- ============================================================
+     PAGE 2 : STUDENTS + MARKSHEET  (GENERIC TEMPLATE)
+     HOW TO EDIT: copy this <section> block to make a new page.
+============================================================ -->
+<section id="page-students" class="page">
+  <div class="page-head">
+    <button class="back-btn" data-goto="home">← <span data-i18n="home">Home</span></button>
+    <h2 data-i18n="studentsTitle">Students & Marksheet</h2>
+    <span class="class-chip" id="studentsClassChip">9A</span>
+  </div>
+
+  <div class="card-row">
+    <div class="card">
+      <h3 data-i18n="studentList">Student List</h3>
+      <!-- EDIT: students are stored in browser (offline). Add defaults in js/app.js -> DEFAULT_STUDENTS -->
+      <div class="toolbar">
+        <input id="studentSearch" type="search" placeholder="Search name / roll…" />
+        <button id="addStudentBtn" class="btn">+ <span data-i18n="add">Add</span></button>
+        <button id="exportCsvBtn" class="btn ghost">⬇ CSV</button>
+      </div>
+      <table class="table" id="studentTable">
+        <thead><tr>
+          <th>Roll</th><th data-i18n="name">Name</th><th data-i18n="action">Action</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3 data-i18n="marksheet">Marksheet</h3>
+      <p class="hint" data-i18n="marksheetHint">Select a student, enter marks, auto-saved offline.</p>
+      <label data-i18n="selectStudent">Select student</label>
+      <select id="markStudent"></select>
+      <table class="table" id="marksTable">
+        <thead><tr><th data-i18n="subject">Subject</th><th>Marks (/100)</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <div class="total-row"><span data-i18n="total">Total</span>: <b id="marksTotal">0</b> • <span data-i18n="percent">Percent</span>: <b id="marksPct">0%</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     PAGE 3 : TEXTBOOKS + PDF READER
+============================================================ -->
+<section id="page-books" class="page">
+  <div class="page-head">
+    <button class="back-btn" data-goto="home">← <span data-i18n="home">Home</span></button>
+    <h2 data-i18n="booksTitle">Textbooks</h2>
+    <div class="tabs">
+      <button class="tab active" data-filter="govt" data-i18n="govt">Govt Books</button>
+      <button class="tab" data-filter="pvt" data-i18n="pvt">Private Books</button>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <input id="bookSearch" type="search" placeholder="Search books… / किताब खोज्नुहोस्…" />
+    <button id="importBookBtn" class="btn primary">📥 <span data-i18n="importBook">Import Book</span></button>
+    <button id="linkFolderBtn" class="btn" title="Grant access so imports save directly into /books">📁 <span data-i18n="linkFolder">Link /books folder</span></button>
+    <span id="folderStatus" class="badge">📁 not linked</span>
+  </div>
+  <p class="hint" data-i18n="booksHint">Put PDFs in /books folder. Works offline.</p>
+
+  <!-- EDIT: add books in data/books.json  {title, titleNe, class, type:govt/pvt, file} -->
+  <div id="bookGrid" class="book-grid"></div>
+
+  <!-- PDF Reader (offline: uses browser built-in viewer via iframe) -->
+  <!-- TEACHER screen = full controls. STUDENT (2nd screen) = only the open page. -->
+  <div id="pdfModal" class="modal hidden">
+    <div class="modal-bar">
+      <span id="pdfTitle">Book</span>
+      <div class="pdf-controls">
+        <button id="pdfPrev" class="btn ghost" title="Previous page">◀</button>
+        <label class="page-label">Page <input id="pdfPage" type="number" min="1" value="1" /></label>
+        <button id="pdfNext" class="btn ghost" title="Next page">▶</button>
+      </div>
+      <div>
+        <button id="pdfSecondBtn" class="btn primary">🖥️ <span data-i18n="show2nd">Show on 2nd screen</span></button>
+        <button id="pdfClose" class="btn">✕ <span data-i18n="close">Close</span></button>
+      </div>
+    </div>
+    <p class="presenter-hint" data-i18n="pdfControlHint">You control from this screen — students see only the open page on the 2nd screen.</p>
+    <iframe id="pdfFrame" title="PDF Reader"></iframe>
+  </div>
+</section>
+
+<!-- ============================================================
+     PAGE 4 : PRESENT (slides / images / videos + 2 screens)
+============================================================ -->
+<section id="page-present" class="page">
+  <div class="page-head">
+    <button class="back-btn" data-goto="home">← <span data-i18n="home">Home</span></button>
+    <h2 data-i18n="presentTitle">Present</h2>
+    <span id="screenInfo" class="badge">1 screen</span>
+  </div>
+
+  <div class="card-row">
+    <div class="card">
+      <h3 data-i18n="presentFiles">Presentation / Media</h3>
+      <p class="hint" data-i18n="presentHint">Images, videos & PDFs play fully offline. PPT / Google Slides need PowerPoint or internet.</p>
+      <div class="btn-row">
+        <label class="btn file-btn">📁 <span data-i18n="chooseFiles">Choose files</span>
+          <input id="presentFiles" type="file" multiple accept="image/*,video/*,.pdf,.ppt,.pptx" hidden />
+        </label>
+        <button id="presenterBtn" class="btn">🖥️ <span data-i18n="openPresenter">Open presenter (2nd screen)</span></button>
+        <button id="stopStageBtn" class="btn ghost" title="Show Welcome idle on the 2nd screen">■ Welcome</button>
+        <button id="fullscreenBtn" class="btn ghost">⛶ Fullscreen</button>
+      </div>
+      <div id="slideList" class="slide-list"></div>
+      <div class="btn-row">
+        <button id="prevSlide" class="btn ghost">◀ Prev</button>
+        <button id="nextSlide" class="btn ghost">Next ▶</button>
+        <button id="newPptBtn" class="btn primary">＋ <span data-i18n="newPpt">New presentation</span></button>
+      </div>
+      <p class="hint small" data-i18n="newPptHint">“New presentation” opens MS PowerPoint and saves starter file in /presentations.</p>
+      <h3 style="margin-top:14px">💾 <span data-i18n="localPres">Saved on this computer</span></h3>
+      <p class="hint small">Presentations are stored locally (not in the cloud).</p>
+      <div id="localPresList" class="local-list"><span class="hint">No saved presentations yet.</span></div>
+    </div>
+
+    <div class="card dark">
+      <h3 data-i18n="stage">Stage (what students see)</h3>
+      <div id="stage" class="stage"><span class="hint" data-i18n="stageHint">Pick a file to preview here. Presenter window mirrors this.</span></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- Add-student dialog -->
+<dialog id="studentDialog">
+  <form method="dialog">
+    <h3 data-i18n="addStudent">Add student</h3>
+    <label>Roll <input id="fRoll" type="number" min="1" required /></label>
+    <label><span data-i18n="name">Name</span> <input id="fName" type="text" required /></label>
+    <menu>
+      <button value="cancel" class="btn ghost" data-i18n="cancel">Cancel</button>
+      <button id="saveStudent" value="default" class="btn primary" data-i18n="save">Save</button>
+    </menu>
+  </form>
+</dialog>
+
+<!-- Import-book dialog -->
+<dialog id="bookDialog">
+  <form method="dialog" id="bookForm">
+    <h3 data-i18n="importBook">Import Book</h3>
+    <p class="hint" data-i18n="importHint">Choose a PDF from your computer. It is saved in this browser and works offline.</p>
+    <label><span data-i18n="name">Name</span> / Title <input id="bTitle" type="text" required placeholder="e.g. Maths Guide" /></label>
+    <label>नेपाली नाम (optional) <input id="bTitleNe" type="text" placeholder="e.g. गणित गाइड" /></label>
+    <label>Class
+      <select id="bClass">
+        <option value="all">All classes</option>
+        <option value="9">Class 9</option>
+        <option value="10">Class 10</option>
+        <option value="9A">9A</option><option value="9B">9B</option><option value="9C">9C</option><option value="9D">9D</option><option value="9E">9E</option>
+        <option value="10A">10A</option><option value="10B">10B</option><option value="10C">10C</option><option value="10D">10D</option><option value="10E">10E</option>
+      </select>
+    </label>
+    <label>Type
+      <select id="bType"><option value="govt">Govt</option><option value="pvt">Private</option></select>
+    </label>
+    <label>PDF file <input id="bFile" type="file" accept=".pdf,application/pdf" required /></label>
+    <label>Save as in /books <input id="bFileName" type="text" placeholder="e.g. maths-guide-9.pdf" /></label>
+    <p class="hint small" id="importDestHint">If the /books folder is linked, the file is written there. Otherwise it is kept in the browser + downloaded.</p>
+    <menu>
+      <button value="cancel" class="btn ghost" data-i18n="cancel">Cancel</button>
+      <button id="saveBook" value="default" class="btn primary" data-i18n="save">Save</button>
+    </menu>
+  </form>
+</dialog>
+
+<!-- Cloud sync settings dialog (Supabase) -->
+<dialog id="syncDialog">
+  <form method="dialog" id="syncForm">
+    <h3>☁ Cloud Sync (Supabase)</h3>
+    <p class="hint">Students, marks &amp; book catalogue sync to the cloud so any installed computer sees the same data. Presentations stay on each computer. Run <code>supabase/schema.sql</code> once in your Supabase project first.</p>
+    <label>Supabase URL <input id="sbUrl" type="url" placeholder="https://xyzcompany.supabase.co" /></label>
+    <label>Anon public key <input id="sbKey" type="password" placeholder="paste anon key" /></label>
+    <p class="hint small" id="syncStatus">Status: local only</p>
+    <menu>
+      <button value="cancel" class="btn ghost">Close</button>
+      <button id="syncForget" value="forget" class="btn ghost" title="Remove cloud config from this computer">Forget</button>
+      <button id="syncSave" value="default" class="btn primary">Connect &amp; Sync</button>
+    </menu>
+  </form>
+</dialog>
+
+<div id="toast" class="toast hidden"></div>
+<div id="updateBar" class="update-bar hidden">Update downloaded. <button id="updateNow" class="btn primary">Restart to update</button></div>
+
+<script>
+/* Built-in cloud config — every install syncs out of the box.
+   Teachers can override per computer via ⚙ Sync (stored in localStorage). */
+window.__SUPABASE__ = {
+  url: "https://mavcdlzxmscmunweozfd.supabase.co",
+  anonKey: "sb_publishable_6Uxt4Wgcoe8o4yqLC8dwSw_nHYP_FB9"
+};
+</script>
+<script src="js/stage.js"></script>
+<script src="js/supabase.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

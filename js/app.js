@@ -1,0 +1,683 @@
+/* Coach Dashboard – offline single JS file
+   HOW TO EDIT (for teachers):
+   1. Classes: edit <select id="classSelect"> in index.html
+   2. Books: edit data/books.json (title, class, type govt/pvt, file)
+   3. New page: copy a <section class="page"> in index.html, add a button with data-goto="your-id"
+*/
+'use strict';
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => [...document.querySelectorAll(s)];
+
+/* ---------- 1. Simple routing (hash + buttons) ---------- */
+function goto(page) {
+  $$('.page').forEach(p => p.classList.remove('active'));
+  const el = $('#page-' + page);
+  if (el) el.classList.add('active');
+  location.hash = page === 'home' ? '' : page;
+  if (page === 'students') renderStudents();
+  if (page === 'books') renderBooks();
+  if (page === 'present'){ try{ renderLocalPres(); }catch{} }
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-goto]');
+  if (b) goto(b.dataset.goto);
+});
+window.addEventListener('load', () => {
+  const h = location.hash.replace('#', '');
+  if (['students','books','present'].includes(h)) goto(h);
+});
+$('#classSelect').addEventListener('change', e => {
+  $('#studentsClassChip').textContent = e.target.value;
+  try{ localStorage.setItem('coach-class', e.target.value); }catch{}
+  renderStudents();
+  renderBooks();
+  try{ window.Stage && Stage.refreshWelcome(); }catch{}
+  toast((LANG === 'ne' ? 'कक्षा ' : 'Class ') + e.target.value);
+});
+
+/* ---------- 2. Eng / Nep toggle ---------- */
+const I18N = {
+  en: {classLabel:'Class',offline:'Offline Ready',appTitle:'Classroom Dashboard',appSub:'Simple • Offline • Easy to use',students:'Students',books:'Textbooks',present:'Present',home:'Home',studentsTitle:'Students & Marksheet',studentList:'Student List',add:'Add',marksheet:'Marksheet',marksheetHint:'Select a student, enter marks, auto-saved offline.',selectStudent:'Select student',subject:'Subject',total:'Total',percent:'Percent',name:'Name',action:'Action',booksTitle:'Textbooks',govt:'Govt Books',pvt:'Private Books',booksHint:'Put PDFs in /books folder, or Import. Works offline.',importBook:'Import Book',importHint:'Choose a PDF. If the /books folder is linked, it is saved there as a real file.',linkFolder:'Link /books folder',delete:'Delete',imported:'Imported',show2nd:'Show on 2nd screen',pdfControlHint:'You control from this screen — students see only the open page on the 2nd screen.',presentTitle:'Present',presentFiles:'Presentation / Media',presentHint:'Images, videos & PDFs play fully offline. PPT / Google Slides need PowerPoint or internet.',chooseFiles:'Choose files',openPresenter:'Open presenter (2nd screen)',stage:'Stage (what students see)',stageHint:'Pick a file to preview here. Presenter window mirrors this.',newPpt:'New presentation',newPptHint:'“New presentation” opens MS PowerPoint and saves starter file in /presentations.',addStudent:'Add student',cancel:'Cancel',save:'Save',close:'Close',open2nd:'2nd screen',localPres:'Saved on this computer'},
+  ne: {classLabel:'कक्षा',offline:'अफलाइन तयार',appTitle:'कक्षाकोठा ड्यासबोर्ड',appSub:'सरल • अफलाइन • सजिलो',students:'विद्यार्थी',books:'पाठ्यपुस्तक',present:'प्रस्तुत गर्नुहोस्',home:'गृहपृष्ठ',studentsTitle:'विद्यार्थी र मार्कसिट',studentList:'विद्यार्थी सूची',add:'थप्नुहोस्',marksheet:'मार्कसिट',marksheetHint:'विद्यार्थी छान्नुहोस्, नम्बर हाल्नुहोस्, अफलाइन सेभ हुन्छ।',selectStudent:'विद्यार्थी छान्नुहोस्',subject:'विषय',total:'जम्मा',percent:'प्रतिशत',name:'नाम',action:'कार्य',booksTitle:'पाठ्यपुस्तक',govt:'सरकारी किताब',pvt:'निजी किताब',booksHint:'PDF हरू /books मा राख्नुहोस् वा Import गर्नुहोस्। अफलाइन चल्छ।',importBook:'किताब आयात',importHint:'PDF छान्नुहोस्। /books फोल्डर लिंक छ भने वास्तविक फाइल त्यतै सेभ हुन्छ।',linkFolder:'Link /books फोल्डर',delete:'हटाउनुहोस्',imported:'आयातित',show2nd:'दोस्रो स्क्रिनमा देखाउनुहोस्',pdfControlHint:'तपाईं यस स्क्रिनबाट नियन्त्रण गर्नुहोस् — विद्यार्थीले दोस्रो स्क्रिनमा खुला पेज मात्र देख्छन्।',presentTitle:'प्रस्तुत',presentFiles:'प्रस्तुति / मिडिया',presentHint:'फोटो, भिडियो र PDF अफलाइन चल्छ। PPT / Google Slides लाई PowerPoint वा इन्टरनेट चाहिन्छ।',chooseFiles:'फाइल छान्नुहोस्',openPresenter:'प्रस्तोता खोल्नुहोस् (दोस्रो स्क्रिन)',stage:'स्टेज (विद्यार्थीले देख्ने)',stageHint:'यहाँ हेर्न फाइल छान्नुहोस्। प्रस्तोता विन्डोमा उही देखिन्छ।',newPpt:'नयाँ प्रस्तुति',newPptHint:'"नयाँ प्रस्तुति" ले MS PowerPoint खोल्छ र /presentations मा फाइल सेभ गर्छ।',addStudent:'विद्यार्थी थप्नुहोस्',cancel:'रद्द',save:'सेभ',close:'बन्द',open2nd:'दोस्रो स्क्रिन',localPres:'यस कम्प्युटरमा सेभ'}
+};
+let LANG = localStorage.getItem('coach-lang') || 'en';
+function applyLang() {
+  const d = I18N[LANG];
+  $$('[data-i18n]').forEach(el => {
+    const k = el.dataset.i18n;
+    if (d[k]) el.textContent = d[k];
+  });
+  document.documentElement.lang = LANG === 'ne' ? 'ne' : 'en';
+  $('#langToggle').textContent = LANG === 'ne' ? 'NE | EN' : 'EN | NE';
+  localStorage.setItem('coach-lang', LANG);
+}
+$('#langToggle').onclick = () => { LANG = LANG === 'en' ? 'ne' : 'en'; applyLang(); };
+applyLang();
+
+/* ---------- 3. Clock + offline badge ---------- */
+setInterval(() => {
+  const t = new Date();
+  $('#clock').textContent = t.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+}, 1000);
+function updateOnline(){ $('#offlineBadge').classList.toggle('off', !navigator.onLine); }
+window.addEventListener('online', updateOnline);
+window.addEventListener('offline', updateOnline);
+updateOnline();
+
+function toast(msg){
+  const t = $('#toast'); t.textContent = msg; t.classList.remove('hidden');
+  clearTimeout(t._h); t._h = setTimeout(()=>t.classList.add('hidden'), 2200);
+}
+
+/* ---------- 4. Students + Marksheet (offline localStorage) ---------- */
+// EDIT defaults here:
+const DEFAULT_STUDENTS = [
+  {roll:1,name:'Aarav Sharma',cls:'9A'},{roll:2,name:'Diya KC',cls:'9A'},
+  {roll:1,name:'Sneha Thapa',cls:'10A'},
+];
+const SUBJECTS = ['Math','Science','English','Nepali','Social']; // EDIT subjects here
+const store = {
+  get students(){ try{return JSON.parse(localStorage.getItem('coach-students')) ?? DEFAULT_STUDENTS;}catch{return DEFAULT_STUDENTS;} },
+  set students(v){ localStorage.setItem('coach-students', JSON.stringify(v)); },
+  marks(cls,roll){ return JSON.parse(localStorage.getItem(`marks-${cls}-${roll}`) || '{}'); },
+  saveMarks(cls,roll,obj){ localStorage.setItem(`marks-${cls}-${roll}`, JSON.stringify(obj)); }
+};
+const curClass = () => $('#classSelect').value;
+
+function renderStudents(){
+  const cls = curClass();
+  const q = ($('#studentSearch').value||'').toLowerCase();
+  const list = store.students.filter(s=>s.cls===cls && (s.name.toLowerCase().includes(q)||String(s.roll).includes(q))).sort((a,b)=>a.roll-b.roll);
+  $('#studentTable tbody').innerHTML = list.map(s=>
+    `<tr><td>${s.roll}</td><td>${escapeHtml(s.name)}</td><td><button class="btn ghost" data-del="${s.roll}">✕</button></td></tr>`).join('')
+    || `<tr><td colspan="3" class="hint">No students in ${cls} yet. Click + Add.</td></tr>`;
+  const sel = $('#markStudent');
+  sel.innerHTML = list.map(s=>`<option value="${s.roll}">${s.roll} – ${escapeHtml(s.name)}</option>`).join('') || '<option value="">—</option>';
+  renderMarks();
+}
+function renderMarks(){
+  const cls = curClass(), roll = $('#markStudent').value;
+  const saved = store.marks(cls, roll);
+  $('#marksTable tbody').innerHTML = SUBJECTS.map(sub=>
+    `<tr><td>${sub}</td><td><input type="number" min="0" max="100" data-sub="${sub}" value="${saved[sub] ?? ''}" /></td></tr>`).join('');
+  calcTotal();
+}
+function calcTotal(){
+  const vals = $$('#marksTable input').map(i=>+i.value||0);
+  const total = vals.reduce((a,b)=>a+b,0);
+  $('#marksTotal').textContent = total;
+  $('#marksPct').textContent = Math.round(total/(SUBJECTS.length||1)) + '%';
+}
+document.addEventListener('input', e=>{
+  if(e.target.matches('#marksTable input')){
+    const obj = Object.fromEntries($$('#marksTable input').map(i=>[i.dataset.sub,i.value]));
+    store.saveMarks(curClass(), $('#markStudent').value, obj);
+    calcTotal();
+    try{ window.SB && SB.pushMarks(curClass(), $('#markStudent').value, obj); }catch{}
+  }
+  if(e.target.id==='studentSearch') renderStudents();
+  if(e.target.id==='bookSearch') renderBooks();
+});
+document.addEventListener('click', e=>{
+  const del = e.target.closest('[data-del]');
+  if(del){
+    store.students = store.students.filter(s=>!(s.cls===curClass()&&s.roll==del.dataset.del));
+    try{ window.SB && SB.pushStudents(store.students); }catch{}
+    renderStudents();
+  }
+});
+$('#markStudent')?.addEventListener('change', renderMarks);
+$('#addStudentBtn').onclick = ()=> $('#studentDialog').showModal();
+$('#saveStudent').onclick = ()=>{
+  const roll = +$('#fRoll').value, name = $('#fName').value.trim();
+  if(!roll||!name) return;
+  const all = store.students.filter(s=>!(s.cls===curClass()&&s.roll===roll));
+  all.push({roll,name,cls:curClass()}); store.students = all;
+  try{ window.SB && SB.pushStudents(all); }catch{}
+  $('#fRoll').value='';$('#fName').value='';renderStudents();
+};
+$('#exportCsvBtn').onclick = ()=>{
+  const cls = curClass();
+  let csv = 'Roll,Name,'+SUBJECTS.join(',')+',Total\n';
+  store.students.filter(s=>s.cls===cls).forEach(s=>{
+    const m = store.marks(cls,s.roll);
+    const row = SUBJECTS.map(x=>m[x]??'');
+    const tot = row.reduce((a,b)=>a+(+b||0),0);
+    csv += `${s.roll},"${s.name}",${row.join(',')},${tot}\n`;
+  });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download = `marksheet-${cls}.csv`; a.click();
+};
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+/* ---------- 5. Textbooks + offline PDF reader + IMPORT + CLOUD ---------- */
+let BOOKS = [];          // from data/books.json  -> {title,titleNe,class,type,file}
+let IMPORTED = [];       // from IndexedDB      -> {id,title,titleNe,class,type,fileName,blob}
+let CLOUD_BOOKS = [];    // from Supabase book_meta (other computers' imports)
+const importUrls = new Map(); // id -> objectURL (so imported PDFs open offline)
+
+function allBooks(){ return [...BOOKS, ...IMPORTED.map(b=>({...b, imported:true})), ...CLOUD_BOOKS.map(b=>({...b, cloud:true}))]; }
+
+// --- tiny IndexedDB wrapper (no library, works offline) ---
+// v2: 'books' store (imported PDFs) + 'kv' store (linked /books folder handle)
+const idb = {
+  db:null,
+  open(){ return new Promise((res,rej)=>{
+    if(this.db) return res(this.db);
+    const r = indexedDB.open('coach-dashboard',3);
+    r.onupgradeneeded = ()=>{
+      const db = r.result;
+      if(!db.objectStoreNames.contains('books')) db.createObjectStore('books',{keyPath:'id',autoIncrement:true});
+      if(!db.objectStoreNames.contains('kv')) db.createObjectStore('kv');
+      if(!db.objectStoreNames.contains('media')) db.createObjectStore('media',{keyPath:'id',autoIncrement:true});
+    };
+    r.onsuccess = ()=>{this.db=r.result;res(this.db);};
+    r.onerror = ()=>rej(r.error);
+  });},
+  async all(){ const db=await this.open(); return new Promise((res,rej)=>{
+    const tx=db.transaction('books','readonly'); const out=[];
+    tx.objectStore('books').openCursor().onsuccess=e=>{const c=e.target.result; if(c){out.push(c.value);c.continue();} else res(out);};
+    tx.onerror=()=>rej(tx.error);
+  });},
+  async add(v){ const db=await this.open(); return new Promise((res,rej)=>{
+    const tx=db.transaction('books','readwrite'); const q=tx.objectStore('books').add(v);
+    q.onsuccess=()=>res(q.result); tx.onerror=()=>rej(tx.error);
+  });},
+  async put(v){ const db=await this.open(); return new Promise((res,rej)=>{
+    const tx=db.transaction('books','readwrite'); const q=tx.objectStore('books').put(v);
+    q.onsuccess=()=>res(q.result); tx.onerror=()=>rej(tx.error);
+  });},
+  async del(id){ const db=await this.open(); return new Promise((res,rej)=>{
+    const tx=db.transaction('books','readwrite'); tx.objectStore('books').delete(id);
+    tx.oncomplete=res; tx.onerror=()=>rej(tx.error);
+  });},
+  async kvGet(k){ const db=await this.open(); return new Promise((res,rej)=>{
+    const tx=db.transaction('kv','readonly'); const q=tx.objectStore('kv').get(k);
+    q.onsuccess=()=>res(q.result); q.onerror=()=>rej(q.error);
+  });},
+  async kvSet(k,v){ const db=await this.open(); return new Promise((res,rej)=>{
+    const tx=db.transaction('kv','readwrite'); tx.objectStore('kv').put(v,k);
+    tx.oncomplete=res; tx.onerror=()=>rej(tx.error);
+  });},
+  // presentations saved LOCALLY (never cloud): {name, blob, date}
+  async mediaAll(){ const db=await this.open(); return new Promise((res,rej)=>{
+    if(!db.objectStoreNames.contains('media')) return res([]);
+    const tx=db.transaction('media','readonly'); const out=[];
+    tx.objectStore('media').openCursor().onsuccess=e=>{const c=e.target.result; if(c){out.push(c.value);c.continue();} else res(out);};
+    tx.onerror=()=>rej(tx.error);
+  });},
+  async mediaAdd(v){ const db=await this.open(); return new Promise((res,rej)=>{
+    const tx=db.transaction('media','readwrite'); const q=tx.objectStore('media').add(v);
+    q.onsuccess=()=>res(q.result); tx.onerror=()=>rej(tx.error);
+  });},
+  async mediaDel(id){ const db=await this.open(); return new Promise((res,rej)=>{
+    const tx=db.transaction('media','readwrite'); tx.objectStore('media').delete(id);
+    tx.oncomplete=res; tx.onerror=()=>rej(tx.error);
+  });}
+};
+
+/* --- /books folder linking (File System Access API, Chromium/Edge) ---
+   Browsers cannot silently write to /books. Teacher picks the folder ONCE,
+   then every Import is written there as a real .pdf file. */
+let booksDir = null;
+const fsSupported = ()=>'showDirectoryPicker' in window;
+function setFolderStatus(txt, ok){
+  const el = $('#folderStatus'); if(!el) return;
+  el.textContent = txt; el.style.background = ok ? '#ecfdf5' : '#fff7ed';
+  el.style.color = ok ? '#047857' : '#9a3412';
+  el.style.borderColor = ok ? '#a7f3d0' : '#fed7aa';
+}
+async function verifyDirAccess(handle, write){
+  if(!handle) return false;
+  const opts = { mode: write ? 'readwrite' : 'read' };
+  if((await handle.queryPermission(opts)) === 'granted') return true;
+  return (await handle.requestPermission(opts)) === 'granted';
+}
+async function restoreBooksDir(){
+  if(!fsSupported()){ setFolderStatus('📁 manual copy needed (browser)', false); return; }
+  try{
+    const h = await idb.kvGet('booksDir');
+    if(h && await verifyDirAccess(h, false)){ booksDir = h; setFolderStatus('📁 /books linked ✓', true); }
+    else if(h){ booksDir = h; setFolderStatus('📁 click Link to re-allow', false); }
+    else setFolderStatus('📁 not linked', false);
+  }catch{ setFolderStatus('📁 not linked', false); }
+}
+async function linkBooksFolder(){
+  if(!fsSupported()){ toast('This browser cannot write folders directly — import will download instead. Use Chrome/Edge for one-click save to /books.'); return; }
+  try{
+    const h = await window.showDirectoryPicker({ mode:'readwrite' });
+    if(await verifyDirAccess(h, true)){
+      booksDir = h;
+      await idb.kvSet('booksDir', h);
+      setFolderStatus('📁 /books linked ✓ (' + (h.name||'folder') + ')', true);
+      toast('Folder linked ✓ — imports now save as real files into /books.');
+    }
+  }catch(err){ if(err && err.name!=='AbortError') toast('Folder link cancelled/failed.'); }
+}
+function sanitizeFileName(n){
+  n = String(n||'book.pdf').split(/[\\/]/).pop().trim() || 'book.pdf';
+  if(!/\.pdf$/i.test(n)) n += '.pdf';
+  return n.replace(/[<>:"|?*\x00-\x1F]/g,'').replace(/\s+/g,'-').slice(0,120);
+}
+async function writeFileToBooksDir(fileName, blob){
+  if(!booksDir) return false;
+  if(!(await verifyDirAccess(booksDir, true))) return false;
+  const fh = await booksDir.getFileHandle(fileName, { create:true });
+  const w = await fh.createWritable();
+  await w.write(blob); await w.close();
+  return true;
+}
+function downloadBlob(blob, fileName){
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = fileName;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 5000);
+}
+
+async function loadBooks(){
+  try{ BOOKS = await (await fetch('data/books.json')).json(); }catch{ BOOKS = []; }
+  try{
+    IMPORTED = await idb.all();
+    IMPORTED.forEach(b=>{ if(b.blob) importUrls.set(b.id, URL.createObjectURL(b.blob)); });
+  }catch{ IMPORTED = []; }
+  renderBooks();
+  restoreBooksDir();
+}
+loadBooks();
+$('#linkFolderBtn').onclick = linkBooksFolder;
+
+let bookFilter = 'govt';
+$$('.tab').forEach(t=>t.onclick=()=>{$$('.tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');bookFilter=t.dataset.filter;renderBooks();});
+function renderBooks(){
+  if(!$('#bookGrid')) return;
+  const cls = curClass();
+  const q = ($('#bookSearch').value||'').toLowerCase();
+  const grade = cls.replace(/[^0-9]/g,'');
+  const list = allBooks().filter(b=>(b.type===bookFilter)&&(b.class==='all'||b.class===grade||b.class===cls)&&((b.title+' '+(b.titleNe||'')).toLowerCase().includes(q)));
+  $('#bookGrid').innerHTML = list.map(b=>{
+    const key = b.cloud ? 'cloud:'+CLOUD_BOOKS.indexOf(b) : b.imported ? 'imp:'+b.id : 'base:'+BOOKS.indexOf(b);
+    const label = escapeHtml(LANG==='ne'&&b.titleNe?b.titleNe:b.title);
+    const tag = b.cloud ? ' • ☁ cloud' : b.imported ? ` • ✅ ${I18N[LANG].imported}` : '';
+    const cover = b.cloud ? '📘' : b.imported ? '📗' : '📕';
+    const where = b.imported ? (b.savedToBooks ? `<div><span class="badge">📁 /books/${escapeHtml(b.fileName||'')}</span></div>` : `<div><span class="badge" style="background:#fff7ed;color:#9a3412;border-color:#fed7aa">browser only</span></div>`) : b.cloud ? `<div><span class="badge">☁ ${escapeHtml(b.fileName||b.file_path||'')}</span></div>` : '';
+    const actions = b.imported ? `<div style="margin-top:8px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap"><button class="btn ghost save-book" data-savebook="${b.id}" title="Write file into linked /books folder">💾 /books</button><button class="btn ghost del-book" data-delbook="${b.id}">✕ ${I18N[LANG].delete}</button></div>` : '';
+    return `<div class="book-card" data-book="${key}"><div class="book-cover">${cover}</div><b>${label}</b><small>${b.class==='all'?'All classes':'Class '+escapeHtml(b.class)} • ${escapeHtml(b.type)}${tag}</small>${where}${actions}</div>`;
+  }).join('')
+    || `<p class="hint">No books found. Use <b>Import Book</b> or add entries in <code>data/books.json</code>.</p>`;
+  prefetchVisibleCloud(list);
+}
+
+/* Cloud books auto-download when spotted: visible ☁ cards fetch in the
+   background (once per session) and become local 📗 entries. */
+const cloudDl = new Set();
+async function cacheCloudBook(cb, silent){
+  const key = cb && (cb.file_path || cb.fileName);
+  if(!key || cloudDl.has(key)) return null;
+  if(IMPORTED.some(b=>b.fileName===key)) return null;
+  if(!navigator.onLine) return null;
+  cloudDl.add(key);
+  try{
+    if(!(await SB.ready())){ cloudDl.delete(key); return null; }
+    const url = SB.bookPublicUrl(key);
+    if(!url){ cloudDl.delete(key); return null; }
+    const r = await fetch(url);
+    if(!r.ok) throw new Error('fetch ' + r.status);
+    const blob = await r.blob();
+    const rec = { title:cb.title, titleNe:cb.titleNe||'', class:cb.class||'all', type:cb.type||'govt', fileName:key, blob, date:Date.now(), savedToBooks:false, fromCloud:true };
+    try{ if(booksDir){ await writeFileToBooksDir(key, blob); rec.savedToBooks = true; } }catch{}
+    const id = await idb.add(rec); rec.id = id;
+    IMPORTED.push(rec); importUrls.set(id, URL.createObjectURL(blob));
+    CLOUD_BOOKS = CLOUD_BOOKS.filter(x=>(x.file_path||x.fileName)!==key);
+    renderBooks();
+    if(!silent) toast('Downloaded ✓ — now works offline');
+    return rec;
+  }catch{ cloudDl.delete(key); if(!silent) toast('Download failed — check internet'); return null; }
+}
+function prefetchVisibleCloud(list){
+  try{
+    if(!window.SB || !SB.configured || !navigator.onLine) return;
+    (list||[]).filter(b=>b.cloud).slice(0,10).forEach(b=>cacheCloudBook(b, true));
+  }catch{}
+}
+document.addEventListener('click', async e=>{
+  const del = e.target.closest('[data-delbook]');
+  if(del){
+    e.stopPropagation();
+    if(!confirm('Delete this imported book?')) return;
+    await idb.del(+del.dataset.delbook);
+    IMPORTED = IMPORTED.filter(b=>b.id!==+del.dataset.delbook);
+    importUrls.delete(+del.dataset.delbook);
+    renderBooks(); toast('Deleted.');
+    return;
+  }
+  const sv = e.target.closest('[data-savebook]');
+  if(sv){
+    e.stopPropagation();
+    const b = IMPORTED.find(x=>x.id===+sv.dataset.savebook);
+    if(!b || !b.blob){ toast('File data missing.'); return; }
+    if(booksDir){
+      try{
+        await writeFileToBooksDir(b.fileName, b.blob);
+        b.savedToBooks = true; await idb.put(b); renderBooks();
+        toast('Saved to /books/' + b.fileName + ' ✓');
+      }catch{ toast('Could not write — check folder permission.'); }
+    } else {
+      downloadBlob(b.blob, b.fileName || 'book.pdf');
+      toast('Downloaded — move it into the /books folder.');
+    }
+    return;
+  }
+  const c = e.target.closest('[data-book]');
+  if(!c) return;
+  const key = c.dataset.book;
+  let title, src, blob = null;
+  if(key.startsWith('imp:')){
+    const b = IMPORTED.find(x=>x.id===+key.slice(4));
+    if(!b) return;
+    title = LANG==='ne'&&b.titleNe?b.titleNe:b.title;
+    blob = b.blob || null;
+    src = importUrls.get(b.id) || (blob && URL.createObjectURL(blob)) || ('books/' + b.fileName);
+    if(blob) importUrls.set(b.id, src);
+  } else if(key.startsWith('cloud:')){
+    const b = CLOUD_BOOKS[+key.slice(6)];
+    if(!b) return;
+    title = LANG==='ne'&&b.titleNe?b.titleNe:b.title;
+    // Cloud books download on first sight, so they work offline afterwards.
+    toast('Downloading book…');
+    const cached = await cacheCloudBook({ title:b.title, titleNe:b.titleNe, class:b.class, type:b.type, file_path:b.file_path||b.fileName });
+    if(cached){
+      openBook(importUrls.get(cached.id), LANG==='ne'&&cached.titleNe?cached.titleNe:cached.title, cached.blob);
+    } else {
+      const stream = (window.SB && SB.bookPublicUrl(b.file_path)) || '';
+      if(!stream){ toast('Needs connection + Sync setup.'); return; }
+      openBook(stream, title, null);
+    }
+    return;
+  } else {
+    const b = BOOKS[+key.slice(5)];
+    if(!b) return;
+    title = LANG==='ne'&&b.titleNe?b.titleNe:b.title;
+    src = 'books/' + b.file;   // OFFLINE: file must exist locally
+  }
+  openBook(src, title, blob);
+});
+/* --- Books on the UNIFIED stage: teacher controls here, students see only the open page --- */
+let bookBase = '', bookPage = 1, bookBlob = null;
+function pdfWithPage(src, page){
+  const clean = String(src).split('#')[0];
+  return clean + '#page=' + page;
+}
+function stagePdfSrc(){
+  // Stage prefers a transferable URL; dataURL blobs always cross windows.
+  if(typeof bookBase === 'string' && (bookBase.startsWith('http') || bookBase.startsWith('file:') || bookBase.startsWith('data:'))) return bookBase;
+  if(bookBlob) return bookBlob; // stage.js converts Blob → dataURL
+  return bookBase;
+}
+function openBook(src, title, blob){
+  bookBase = src; bookBlob = blob || null; bookPage = 1;
+  $('#pdfTitle').textContent = title;
+  $('#pdfPage').value = 1;
+  $('#pdfFrame').src = pdfWithPage(bookBase, 1);
+  $('#pdfModal').classList.remove('hidden');
+  try{ window.Stage && Stage.showPdf(stagePdfSrc(), 1, title); }catch{}
+}
+function setBookPage(p){
+  bookPage = Math.max(1, p|0 || 1);
+  $('#pdfPage').value = bookPage;
+  $('#pdfFrame').src = pdfWithPage(bookBase, bookPage);
+  try{ window.Stage && Stage.updatePdfPage(stagePdfSrc(), bookPage); }catch{}
+}
+$('#pdfPrev').onclick = ()=> setBookPage(bookPage - 1);
+$('#pdfNext').onclick = ()=> setBookPage(bookPage + 1);
+$('#pdfPage').addEventListener('change', e=> setBookPage(+e.target.value));
+// Arrow keys flip the open page while the reader is open (teacher screen drives both)
+document.addEventListener('keydown', e=>{
+  if($('#pdfModal').classList.contains('hidden')) return;
+  if(e.target.matches('input,select,textarea')) return;
+  if(e.key==='ArrowRight'){ setBookPage(bookPage+1); }
+  if(e.key==='ArrowLeft'){ setBookPage(bookPage-1); }
+});
+$('#pdfSecondBtn').onclick = ()=>{
+  // Same unified stage window used by Present — opens Welcome if nothing loaded.
+  try{
+    if(!bookBase){ window.Stage && Stage.welcome(); }
+    else { window.Stage && Stage.open(); window.Stage && Stage.showPdf(stagePdfSrc(), bookPage, $('#pdfTitle').textContent); }
+    toast('2nd screen shows only the open page. Change pages here.');
+  }catch{ toast('Could not open 2nd screen (popup blocked?).'); }
+};
+$('#pdfClose').onclick = ()=>{ $('#pdfModal').classList.add('hidden'); $('#pdfFrame').src=''; try{ window.Stage && Stage.welcome(); }catch{} bookBase=''; bookBlob=null; };
+
+/* Import flow — writes a real file into /books when the folder is linked */
+$('#importBookBtn').onclick = ()=> $('#bookDialog').showModal();
+$('#bFile').addEventListener('change', ()=>{
+  const f = $('#bFile').files[0];
+  if(f && !$('#bFileName').value) $('#bFileName').value = sanitizeFileName(f.name);
+});
+$('#saveBook').onclick = async (e)=>{
+  const file = $('#bFile').files[0];
+  const title = $('#bTitle').value.trim();
+  if(!title || !file){ toast('Title + PDF required'); e.preventDefault(); return; }
+  if(file.type!=='application/pdf' && !/\.pdf$/i.test(file.name)){ toast('Please choose a PDF file'); e.preventDefault(); return; }
+  const fileName = sanitizeFileName($('#bFileName').value || file.name);
+  const rec = { title, titleNe: $('#bTitleNe').value.trim(), class: $('#bClass').value, type: $('#bType').value, fileName, blob: file, date: Date.now(), savedToBooks:false };
+  // 1) Try writing a REAL file into the linked /books folder
+  if(booksDir){
+    try{
+      await writeFileToBooksDir(fileName, file);
+      rec.savedToBooks = true;
+    }catch{ rec.savedToBooks = false; toast('Folder write failed — keeping in browser. Check permission.'); }
+  }
+  try{
+    const id = await idb.add(rec);
+    rec.id = id;
+    IMPORTED.push(rec);
+    importUrls.set(id, URL.createObjectURL(file));
+    $('#bookForm').reset();
+    bookFilter = rec.type;
+    $$('.tab').forEach(x=>x.classList.toggle('active', x.dataset.filter===bookFilter));
+    renderBooks();
+    // Cloud mirror (other computers) + file upload — presentations stay local.
+    try{
+      if(window.SB && SB.configured){
+        SB.pushBookMeta({ title: rec.title, titleNe: rec.titleNe, class: rec.class, type: rec.type, fileName: rec.fileName });
+        SB.uploadBookFile(rec.fileName, file).then(ok=>{ if(ok) toast('Book in cloud ✓ — visible on all computers'); });
+      }
+    }catch{}
+    if(rec.savedToBooks) toast('Stored in /books/' + fileName + ' ✓');
+    else if(booksDir) toast('Imported ✓ (kept in browser)');
+    else { downloadBlob(file, fileName); toast('Imported ✓ + downloaded — move it into /books, or Link the folder for auto-save.'); }
+  }catch(err){ toast('Import failed: storage full?'); e.preventDefault(); }
+};
+
+/* ---------- 6. Present: files + UNIFIED stage + LOCAL save ---------- */
+// slides: {name, url, blob, kind}  — files are kept on THIS computer (IndexedDB
+// 'media' + real disk copy when running as installed app). Never uploaded.
+let slides = [], curSlide = 0;
+
+$('#presentFiles').addEventListener('change', async e=>{
+  const files = [...e.target.files];
+  slides = files.map(f=>({ name:f.name, url:URL.createObjectURL(f), blob:f, kind:kindOf(f.name) }));
+  renderSlides(); showSlide(0);
+  // persist locally
+  for(const f of files){ await saveLocalMedia(f); }
+  renderLocalPres();
+  e.target.value = '';
+});
+function kindOf(n){ n=n.toLowerCase(); if(/\.(png|jpe?g|gif|webp|bmp|svg)$/.test(n))return'img'; if(/\.(mp4|webm|mov|mkv)$/.test(n))return'video'; if(/\.pdf$/.test(n))return'pdf'; return'other'; }
+async function saveLocalMedia(file){
+  try{ await idb.mediaAdd({ name:file.name, kind:kindOf(file.name), blob:file, date:Date.now() }); }catch{}
+  try{
+    if(window.electron){
+      const buf = await file.arrayBuffer();
+      await window.electron.saveFile('presentations', sanitizeFileName(file.name), buf);
+    }
+  }catch{}
+}
+async function renderLocalPres(){
+  const box = $('#localPresList'); if(!box) return;
+  let items = [];
+  try{ items = await idb.mediaAll(); }catch{}
+  box.innerHTML = items.length ? items.slice().reverse().map(m=>
+    `<div class="local-item"><span>📄 ${escapeHtml(m.name)}</span><button data-openmedia="${m.id}">Open</button><button data-delmedia="${m.id}">✕</button></div>`
+  ).join('') : '<span class="hint">No saved presentations yet.</span>';
+}
+document.addEventListener('click', async e=>{
+  const om = e.target.closest('[data-openmedia]');
+  if(om){
+    let items = []; try{ items = await idb.mediaAll(); }catch{}
+    const m = items.find(x=>x.id===+om.dataset.openmedia);
+    if(!m || !m.blob) return;
+    slides = [{ name:m.name, url:URL.createObjectURL(m.blob), blob:m.blob, kind:m.kind || kindOf(m.name) }];
+    curSlide = 0; renderSlides(); showSlide(0);
+    return;
+  }
+  const dm = e.target.closest('[data-delmedia]');
+  if(dm){ try{ await idb.mediaDel(+dm.dataset.delmedia); }catch{} renderLocalPres(); return; }
+});
+function renderSlides(){
+  $('#slideList').innerHTML = slides.map((s,i)=>{
+    const thumb = s.kind==='img'?`<img class="slide-thumb ${i===curSlide?'active':''}" data-i="${i}" src="${s.url}" title="${escapeHtml(s.name)}"/>`:`<button class="btn ghost" data-i="${i}">${s.kind==='video'?'🎬':'📄'} ${escapeHtml(s.name.slice(0,14))}</button>`;
+    return thumb;
+  }).join('') || '<span class="hint">No files yet.</span>';
+}
+document.addEventListener('click', e=>{
+  const t = e.target.closest('[data-i]');
+  if(t) showSlide(+t.dataset.i);
+});
+function stageHtml(s){
+  if(!s) return '';
+  if(s.kind==='img') return `<img src="${s.url}" alt="slide"/>`;
+  if(s.kind==='video') return `<video src="${s.url}" controls autoplay></video>`;
+  if(s.kind==='pdf') return `<iframe src="${s.url}"></iframe>`;
+  return `<p class="hint">Preview not available offline for ${escapeHtml(s.name)}. Open in PowerPoint.</p>`;
+}
+function showSlide(i){
+  if(!slides.length) return;
+  curSlide = (i+slides.length)%slides.length;
+  const s = slides[curSlide];
+  $('#stage').innerHTML = stageHtml(s);
+  renderSlides();
+  // SAME unified 2nd-screen window as books:
+  try{
+    if(!window.Stage) return;
+    if(s.kind==='img') Stage.showImage(s.blob || s.url);
+    else if(s.kind==='video') Stage.showVideo(s.blob || s.url);
+    else if(s.kind==='pdf') Stage.showPdf(s.blob || s.url, 1, s.name);
+    else toast('This file type opens in PowerPoint, not on the stage.');
+  }catch{}
+}
+$('#prevSlide').onclick = ()=>showSlide(curSlide-1);
+$('#nextSlide').onclick = ()=>showSlide(curSlide+1);
+document.addEventListener('keydown', e=>{
+  if(!$('#page-present').classList.contains('active')) return;
+  if($('#pdfModal') && !$('#pdfModal').classList.contains('hidden')) return;
+  if(e.target.matches('input,select,textarea')) return;
+  if(e.key==='ArrowRight') showSlide(curSlide+1);
+  if(e.key==='ArrowLeft') showSlide(curSlide-1);
+});
+$('#fullscreenBtn').onclick = ()=>{ const st=$('#stage'); document.fullscreenElement?document.exitFullscreen():st.requestFullscreen?.(); };
+
+/* Unified 2nd screen: Welcome idle when nothing is presented */
+$('#presenterBtn').onclick = ()=>{
+  try{
+    if(!slides.length){ window.Stage && Stage.welcome(); }
+    else showSlide(curSlide);
+    updateScreenInfo();
+  }catch{ toast('Could not open 2nd screen (popup blocked?).'); }
+};
+$('#stopStageBtn').onclick = ()=>{ try{ window.Stage && Stage.welcome(); $('#stage').innerHTML = '<span class="hint">Stopped — 2nd screen shows Welcome.</span>'; }catch{} };
+$('#secondScreenBtnTop').onclick = ()=>{ try{ window.Stage && Stage.welcome(); toast('2nd screen: Welcome. Open a book or slides to present.'); }catch{} };
+async function updateScreenInfo(){
+  try{
+    if(window.getScreenDetails){
+      const d = await window.getScreenDetails();
+      $('#screenInfo').textContent = d.screens.length + ' screens';
+      if(d.screens.length < 2) toast('Only 1 screen detected – drag window to projector/TV.');
+    } else $('#screenInfo').textContent = '1 screen (move window manually)';
+  }catch{}
+}
+
+/* "New presentation" -> desktop PowerPoint. Record kept locally. */
+$('#newPptBtn').onclick = async ()=>{
+  const name = prompt('Presentation name:', `Class-${curClass()}-Lesson-1`);
+  if(!name) return;
+  const rec = JSON.parse(localStorage.getItem('coach-ppts')||'[]');
+  rec.push({name,cls:curClass(),date:new Date().toISOString()});
+  localStorage.setItem('coach-ppts', JSON.stringify(rec));
+  toast(`"${name}" noted. Opening PowerPoint… save it into Presentations.`);
+  try{
+    if(window.electron) await window.electron.openExternal('ms-powerpoint:ofv|u|');
+    else { const a=document.createElement('a'); a.href='ms-powerpoint:ofv|u|'; document.body.appendChild(a); a.click(); a.remove(); }
+  }catch{}
+  setTimeout(()=>toast('Save the .pptx into the Presentations folder so it stays on this computer.'), 2500);
+};
+
+/* ---------- 7. Cloud sync UI + merge + auto-update ---------- */
+$('#syncBtn').onclick = ()=>{
+  const dlg = $('#syncDialog');
+  try{
+    const cfg = JSON.parse(localStorage.getItem('coach-supabase')||'null');
+    if(cfg){ $('#sbUrl').value = cfg.url||''; $('#sbKey').value = cfg.anonKey||''; }
+  }catch{}
+  updateSyncStatusLine();
+  dlg.showModal();
+};
+function updateSyncStatusLine(){
+  const el = $('#syncStatus'); if(!el) return;
+  const on = window.SB && SB.configured;
+  el.textContent = 'Status: ' + (on ? 'connected (' + SB.state + ') — students/marks/books sync across computers' : 'local only — enter Supabase details to sync');
+}
+$('#syncSave').onclick = async (e)=>{
+  const url = $('#sbUrl').value.trim(), key = $('#sbKey').value.trim();
+  if(!url || !key){ toast('Paste Supabase URL + anon key'); e.preventDefault(); return; }
+  try{
+    await SB.configure(url, key);
+    const data = await SB.pullAll();
+    if(data) mergeCloud(data);
+    updateSyncStatusLine();
+    toast('Connected ✓ — synced with cloud');
+  }catch{ toast('Connect failed — check URL/key + internet'); e.preventDefault(); }
+};
+$('#syncForget').onclick = ()=>{ try{ window.SB && SB.forget(); }catch{} updateSyncStatusLine(); };
+// Cloud → local merge (local-first: only fills in what this computer lacks)
+function mergeCloud(data){
+  try{
+    if(data.students && data.students.length){
+      const local = store.students;
+      const have = new Set(local.map(s=>s.cls+'|'+s.roll));
+      const add = data.students.filter(s=>!have.has(s.class+'|'+s.roll)).map(s=>({roll:s.roll,name:s.name,cls:s.class}));
+      if(add.length){ store.students = [...local, ...add]; renderStudents(); }
+    }
+    if(data.marks && data.marks.length){
+      for(const m of data.marks){
+        const cur = store.marks(m.class, m.roll);
+        if(!(m.subject in cur)){ cur[m.subject] = m.score; store.saveMarks(m.class, m.roll, cur); }
+      }
+      renderMarks();
+    }
+    if(data.books){
+      const known = new Set([...BOOKS.map(b=>b.file), ...IMPORTED.map(b=>b.fileName)]);
+      CLOUD_BOOKS = data.books.filter(b=>!known.has(b.file_path)).map(b=>({ title:b.title, titleNe:b.title_ne, class:b.class, type:b.type, fileName:b.file_path, file_path:b.file_path }));
+      renderBooks();
+    }
+  }catch{}
+}
+window.addEventListener('coach:cloud-pull', e=>{ if(e.detail) mergeCloud(e.detail); });
+// First pull shortly after start (if configured + online)
+setTimeout(async ()=>{
+  try{
+    if(window.SB && SB.configured && navigator.onLine){
+      const data = await SB.pullAll();
+      if(data) mergeCloud(data);
+    }
+  }catch{}
+  renderLocalPres();
+}, 2500);
+// In-app update notice (installed app only)
+try{
+  if(window.electron && window.electron.onUpdateDownloaded){
+    window.electron.onUpdateDownloaded(()=>{ $('#updateBar').classList.remove('hidden'); });
+    $('#updateNow').onclick = ()=> window.electron.quitAndInstall();
+  }
+}catch{}
