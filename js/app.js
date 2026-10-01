@@ -39,8 +39,8 @@ $('#classSelect').addEventListener('change', e => {
 
 /* ---------- 2. Eng / Nep toggle ---------- */
 const I18N = {
-  en: {classLabel:'Class',offline:'Offline Ready',appTitle:'Classroom Dashboard',appSub:'Simple • Offline • Easy to use',students:'Students',books:'Textbooks',present:'Present',home:'Home',studentsTitle:'Students & Marksheet',studentList:'Student List',add:'Add',marksheet:'Marksheet',marksheetHint:'Select a student, enter marks, auto-saved offline.',selectStudent:'Select student',subject:'Subject',total:'Total',percent:'Percent',name:'Name',action:'Action',booksTitle:'Textbooks',govt:'Govt Books',pvt:'Private Books',booksHint:'Put PDFs in /books folder, or Import. Works offline.',importBook:'Import Book',importHint:'Choose a PDF. If the /books folder is linked, it is saved there as a real file.',linkFolder:'Link /books folder',delete:'Delete',imported:'Imported',show2nd:'Show on 2nd screen',pdfControlHint:'You control from this screen — students see only the open page on the 2nd screen.',presentTitle:'Present',presentFiles:'Presentation / Media',presentHint:'Images, videos, PDFs & PowerPoint (.pptx) play fully offline. The stage opens by itself.',chooseFiles:'Choose files',openPresenter:'Open presenter (2nd screen)',stage:'Stage (what students see)',stageHint:'Pick a file to preview here. Presenter window mirrors this.',newPpt:'New presentation',newPptHint:'“New presentation” picks files from this computer to present.',addStudent:'Add student',cancel:'Cancel',save:'Save',close:'Close',open2nd:'2nd screen',localPres:'Saved on this computer',about:'About',terms:'Terms & Conditions',team:'Team',playCredits:'Play credits',stopCredits:'Stop',roleLead:'LEAD DESIGNER & DEVELOPER',roleTesters:'PLAY TESTERS',thanksWatching:'Thanks for teaching'},
-  ne: {classLabel:'कक्षा',offline:'अफलाइन तयार',appTitle:'कक्षाकोठा ड्यासबोर्ड',appSub:'सरल • अफलाइन • सजिलो',students:'विद्यार्थी',books:'पाठ्यपुस्तक',present:'प्रस्तुत गर्नुहोस्',home:'गृहपृष्ठ',studentsTitle:'विद्यार्थी र मार्कसिट',studentList:'विद्यार्थी सूची',add:'थप्नुहोस्',marksheet:'मार्कसिट',marksheetHint:'विद्यार्थी छान्नुहोस्, नम्बर हाल्नुहोस्, अफलाइन सेभ हुन्छ।',selectStudent:'विद्यार्थी छान्नुहोस्',subject:'विषय',total:'जम्मा',percent:'प्रतिशत',name:'नाम',action:'कार्य',booksTitle:'पाठ्यपुस्तक',govt:'सरकारी किताब',pvt:'निजी किताब',booksHint:'PDF हरू /books मा राख्नुहोस् वा Import गर्नुहोस्। अफलाइन चल्छ।',importBook:'किताब आयात',importHint:'PDF छान्नुहोस्। /books फोल्डर लिंक छ भने वास्तविक फाइल त्यतै सेभ हुन्छ।',linkFolder:'Link /books फोल्डर',delete:'हटाउनुहोस्',imported:'आयातित',show2nd:'दोस्रो स्क्रिनमा देखाउनुहोस्',pdfControlHint:'तपाईं यस स्क्रिनबाट नियन्त्रण गर्नुहोस् — विद्यार्थीले दोस्रो स्क्रिनमा खुला पेज मात्र देख्छन्।',presentTitle:'प्रस्तुत',presentFiles:'प्रस्तुति / मिडिया',presentHint:'फोटो, भिडियो, PDF र PowerPoint (.pptx) अफलाइन चल्छ। स्टेज आफैं खुल्छ।',chooseFiles:'फाइल छान्नुहोस्',openPresenter:'प्रस्तोता खोल्नुहोस् (दोस्रो स्क्रिन)',stage:'स्टेज (विद्यार्थीले देख्ने)',stageHint:'यहाँ हेर्न फाइल छान्नुहोस्। प्रस्तोता विन्डोमा उही देखिन्छ।',newPpt:'नयाँ प्रस्तुति',newPptHint:'"नयाँ प्रस्तुति" ले यस कम्प्युटरबाट फाइल छानेर प्रस्तुत गर्छ।',addStudent:'विद्यार्थी थप्नुहोस्',cancel:'रद्द',save:'सेभ',close:'बन्द',open2nd:'दोस्रो स्क्रिन',localPres:'यस कम्प्युटरमा सेभ',about:'बारेमा',terms:'नियम तथा सर्तहरू',team:'टिम',playCredits:'क्रेडिट चलाउनुहोस्',stopCredits:'रोक्नुहोस्',roleLead:'प्रमुख डिजाइनर तथा विकासकर्ता',roleTesters:'प्ले टेस्टरहरू',thanksWatching:'पढाउनुभएकोमा धन्यवाद'}
+  en: {classLabel:'Class',offline:'Offline Ready',appTitle:'Classroom Dashboard',appSub:'Simple • Offline • Easy to use',students:'Students',books:'Textbooks',present:'Present',home:'Home',studentsTitle:'Students & Marksheet',studentList:'Student List',add:'Add',marksheet:'Marksheet',marksheetHint:'Select a student, enter marks, auto-saved offline.',selectStudent:'Select student',subject:'Subject',total:'Total',percent:'Percent',name:'Name',action:'Action',booksTitle:'Textbooks',govt:'Govt Books',pvt:'Private Books',booksHint:'Put PDFs in /books folder, or Import. Works offline.',importBook:'Import Book',importHint:'Choose a PDF. It is saved in the browser and, in the installed app, as a real file.',linkFolder:'Link /books folder',delete:'Delete',imported:'Imported',show2nd:'Show on 2nd screen',pdfControlHint:'You control from this screen — students see only the open page on the 2nd screen.',presentTitle:'Present',presentFiles:'Presentation / Media',presentHint:'Images, videos, PDFs & PowerPoint (.pptx) play fully offline. The stage opens by itself.',chooseFiles:'Choose files',openPresenter:'Open presenter (2nd screen)',stage:'Stage (what students see)',stageHint:'Pick a file to preview here. Presenter window mirrors this.',newPpt:'New presentation',newPptHint:'“New presentation” picks files from this computer to present.',addStudent:'Add student',cancel:'Cancel',save:'Save',close:'Close',open2nd:'2nd screen',localPres:'Saved on this computer',about:'About',terms:'Terms & Conditions',team:'Team',playCredits:'Play credits',stopCredits:'Stop',roleLead:'LEAD DESIGNER & DEVELOPER',roleTesters:'PLAY TESTERS',thanksWatching:'Thanks for teaching'},
+  ne: {classLabel:'कक्षा',offline:'अफलाइन तयार',appTitle:'कक्षाकोठा ड्यासबोर्ड',appSub:'सरल • अफलाइन • सजिलो',students:'विद्यार्थी',books:'पाठ्यपुस्तक',present:'प्रस्तुत गर्नुहोस्',home:'गृहपृष्ठ',studentsTitle:'विद्यार्थी र मार्कसिट',studentList:'विद्यार्थी सूची',add:'थप्नुहोस्',marksheet:'मार्कसिट',marksheetHint:'विद्यार्थी छान्नुहोस्, नम्बर हाल्नुहोस्, अफलाइन सेभ हुन्छ।',selectStudent:'विद्यार्थी छान्नुहोस्',subject:'विषय',total:'जम्मा',percent:'प्रतिशत',name:'नाम',action:'कार्य',booksTitle:'पाठ्यपुस्तक',govt:'सरकारी किताब',pvt:'निजी किताब',booksHint:'PDF हरू /books मा राख्नुहोस् वा Import गर्नुहोस्। अफलाइन चल्छ।',importBook:'किताब आयात',importHint:'PDF छान्नुहोस्। ब्राउजरमा र इन्स्टल गरिएको एपमा वास्तविक फाइलका रूपमा सेभ हुन्छ।',linkFolder:'Link /books फोल्डर',delete:'हटाउनुहोस्',imported:'आयातित',show2nd:'दोस्रो स्क्रिनमा देखाउनुहोस्',pdfControlHint:'तपाईं यस स्क्रिनबाट नियन्त्रण गर्नुहोस् — विद्यार्थीले दोस्रो स्क्रिनमा खुला पेज मात्र देख्छन्।',presentTitle:'प्रस्तुत',presentFiles:'प्रस्तुति / मिडिया',presentHint:'फोटो, भिडियो, PDF र PowerPoint (.pptx) अफलाइन चल्छ। स्टेज आफैं खुल्छ।',chooseFiles:'फाइल छान्नुहोस्',openPresenter:'प्रस्तोता खोल्नुहोस् (दोस्रो स्क्रिन)',stage:'स्टेज (विद्यार्थीले देख्ने)',stageHint:'यहाँ हेर्न फाइल छान्नुहोस्। प्रस्तोता विन्डोमा उही देखिन्छ।',newPpt:'नयाँ प्रस्तुति',newPptHint:'"नयाँ प्रस्तुति" ले यस कम्प्युटरबाट फाइल छानेर प्रस्तुत गर्छ।',addStudent:'विद्यार्थी थप्नुहोस्',cancel:'रद्द',save:'सेभ',close:'बन्द',open2nd:'दोस्रो स्क्रिन',localPres:'यस कम्प्युटरमा सेभ',about:'बारेमा',terms:'नियम तथा सर्तहरू',team:'टिम',playCredits:'क्रेडिट चलाउनुहोस्',stopCredits:'रोक्नुहोस्',roleLead:'प्रमुख डिजाइनर तथा विकासकर्ता',roleTesters:'प्ले टेस्टरहरू',thanksWatching:'पढाउनुभएकोमा धन्यवाद'}
 };
 let LANG = localStorage.getItem('coach-lang') || 'en';
 function applyLang() {
@@ -158,13 +158,15 @@ function isBookTombed(fileName){ return !!fileName && getBookTombs().includes(fi
 async function deleteBookEverywhere({ id, fileName, label }){
   if(!confirm(`Delete "${label || fileName}" everywhere (this computer + cloud)?`)) return false;
   addBookTomb(fileName);
+  const doomed = id != null ? IMPORTED.find(b=>b.id===id) : null;
+  const doomedPath = doomed && doomed.diskPath;
   if(id != null){
     try{ await idb.del(id); }catch{}
     IMPORTED = IMPORTED.filter(b=>b.id!==id);
     importUrls.delete(id);
   }
   CLOUD_BOOKS = CLOUD_BOOKS.filter(x=>(x.file_path||x.fileName)!==fileName);
-  try{ if(booksDir && fileName){ await (await booksDir.getFileHandle(fileName)).remove(); } }catch{}
+  try{ if(doomedPath && window.electron) await window.electron.deleteFile(doomedPath); }catch{}
   try{ if(window.SB && SB.configured && fileName) await SB.deleteBook(fileName); }catch{}
   renderBooks();
   toast('Book deleted ✓');
@@ -300,56 +302,23 @@ const idb = {
   });}
 };
 
-/* --- /books folder linking (File System Access API, Chromium/Edge) ---
-   Browsers cannot silently write to /books. Teacher picks the folder ONCE,
-   then every Import is written there as a real .pdf file. */
-let booksDir = null;
-const fsSupported = ()=>'showDirectoryPicker' in window;
-function setFolderStatus(txt, ok){
-  const el = $('#folderStatus'); if(!el) return;
-  el.textContent = txt; el.style.background = ok ? '#ecfdf5' : '#fff7ed';
-  el.style.color = ok ? '#047857' : '#9a3412';
-  el.style.borderColor = ok ? '#a7f3d0' : '#fed7aa';
-}
-async function verifyDirAccess(handle, write){
-  if(!handle) return false;
-  const opts = { mode: write ? 'readwrite' : 'read' };
-  if((await handle.queryPermission(opts)) === 'granted') return true;
-  return (await handle.requestPermission(opts)) === 'granted';
-}
-async function restoreBooksDir(){
-  if(!fsSupported()){ setFolderStatus('📁 manual copy needed (browser)', false); return; }
-  try{
-    const h = await idb.kvGet('booksDir');
-    if(h && await verifyDirAccess(h, false)){ booksDir = h; setFolderStatus('📁 /books linked ✓', true); }
-    else if(h){ booksDir = h; setFolderStatus('📁 click Link to re-allow', false); }
-    else setFolderStatus('📁 not linked', false);
-  }catch{ setFolderStatus('📁 not linked', false); }
-}
-async function linkBooksFolder(){
-  if(!fsSupported()){ toast('This browser cannot write folders directly — import will download instead. Use Chrome/Edge for one-click save to /books.'); return; }
-  try{
-    const h = await window.showDirectoryPicker({ mode:'readwrite' });
-    if(await verifyDirAccess(h, true)){
-      booksDir = h;
-      await idb.kvSet('booksDir', h);
-      setFolderStatus('📁 /books linked ✓ (' + (h.name||'folder') + ')', true);
-      toast('Folder linked ✓ — imports now save as real files into /books.');
-    }
-  }catch(err){ if(err && err.name!=='AbortError') toast('Folder link cancelled/failed.'); }
-}
+/* Book files live in the APP's books folder (installed app) + browser copy.
+   Same pattern as presentations: window.electron.saveFile('books', ...).
+   Plain-browser use keeps the IndexedDB copy (+ download fallback). */
 function sanitizeFileName(n){
   n = String(n||'book.pdf').split(/[\\/]/).pop().trim() || 'book.pdf';
   if(!/\.pdf$/i.test(n)) n += '.pdf';
   return n.replace(/[<>:"|?*\x00-\x1F]/g,'').replace(/\s+/g,'-').slice(0,120);
 }
-async function writeFileToBooksDir(fileName, blob){
-  if(!booksDir) return false;
-  if(!(await verifyDirAccess(booksDir, true))) return false;
-  const fh = await booksDir.getFileHandle(fileName, { create:true });
-  const w = await fh.createWritable();
-  await w.write(blob); await w.close();
-  return true;
+async function saveToAppBooks(fileName, blob){
+  // Returns the saved disk path, or '' when not in the installed app.
+  try{
+    if(window.electron){
+      const p = await window.electron.saveFile('books', fileName, await blob.arrayBuffer());
+      return p || '';
+    }
+  }catch{}
+  return '';
 }
 function downloadBlob(blob, fileName){
   const a = document.createElement('a');
@@ -376,10 +345,8 @@ async function loadBooks(){
     IMPORTED.forEach(b=>{ if(b.blob) importUrls.set(b.id, URL.createObjectURL(b.blob)); });
   }catch{ IMPORTED = []; }
   renderBooks();
-  restoreBooksDir();
 }
 loadBooks();
-$('#linkFolderBtn').onclick = linkBooksFolder;
 
 let bookFilter = 'govt';
 $$('.tab').forEach(t=>t.onclick=()=>{$$('.tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');bookFilter=t.dataset.filter;renderBooks();});
@@ -394,7 +361,7 @@ function renderBooks(){
     const label = escapeHtml(LANG==='ne'&&b.titleNe?b.titleNe:b.title);
     const tag = b.cloud ? ' • ☁ cloud' : b.imported ? ` • ✅ ${I18N[LANG].imported}` : '';
     const cover = b.cloud ? '📘' : b.imported ? '📗' : '📕';
-    const where = b.imported ? (b.savedToBooks ? `<div><span class="badge">📁 /books/${escapeHtml(b.fileName||'')}</span></div>` : `<div><span class="badge" style="background:#fff7ed;color:#9a3412;border-color:#fed7aa">browser only</span></div>`) : b.cloud ? `<div><span class="badge">☁ ${escapeHtml(b.fileName||b.file_path||'')}</span></div>` : '';
+    const where = b.imported ? (b.savedToBooks ? `<div><span class="badge" title="Saved as a real file in the app books folder">📁 ${escapeHtml(b.fileName||'')}</span></div>` : `<div><span class="badge" style="background:#fff7ed;color:#9a3412;border-color:#fed7aa">browser only</span></div>`) : b.cloud ? `<div><span class="badge">☁ ${escapeHtml(b.fileName||b.file_path||'')}</span></div>` : '';
     const actions = b.imported ? `<div style="margin-top:8px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap"><button class="btn ghost save-book" data-savebook="${b.id}" title="Write file into linked /books folder">💾 /books</button><button class="btn ghost del-book" data-delbook="${b.id}">✕ ${I18N[LANG].delete}</button></div>` : b.cloud ? `<div style="margin-top:8px"><button class="btn ghost del-book" data-delcloud="${escapeHtml(b.file_path||b.fileName||'')}">✕ ${I18N[LANG].delete}</button></div>` : '';
     return `<div class="book-card" data-book="${key}"><div class="book-cover">${cover}</div><b>${label}</b><small>${b.class==='all'?'All classes':'Class '+escapeHtml(b.class)} • ${escapeHtml(b.type)}${tag}</small>${where}${actions}</div>`;
   }).join('')
@@ -420,7 +387,7 @@ async function cacheCloudBook(cb, silent){
     if(!r.ok) throw new Error('fetch ' + r.status);
     const blob = await r.blob();
     const rec = { title:cb.title, titleNe:cb.titleNe||'', class:cb.class||'all', type:cb.type||'govt', fileName:key, blob, date:Date.now(), savedToBooks:false, fromCloud:true };
-    try{ if(booksDir){ await writeFileToBooksDir(key, blob); rec.savedToBooks = true; } }catch{}
+    try{ const p = await saveToAppBooks(key, blob); if(p){ rec.savedToBooks = true; rec.diskPath = p; } }catch{}
     const id = await idb.add(rec); rec.id = id;
     IMPORTED.push(rec); importUrls.set(id, URL.createObjectURL(blob));
     CLOUD_BOOKS = CLOUD_BOOKS.filter(x=>(x.file_path||x.fileName)!==key);
@@ -456,16 +423,16 @@ document.addEventListener('click', async e=>{
     e.stopPropagation();
     const b = IMPORTED.find(x=>x.id===+sv.dataset.savebook);
     if(!b || !b.blob){ toast('File data missing.'); return; }
-    if(booksDir){
-      try{
-        await writeFileToBooksDir(b.fileName, b.blob);
-        b.savedToBooks = true; await idb.put(b); renderBooks();
-        toast('Saved to /books/' + b.fileName + ' ✓');
-      }catch{ toast('Could not write — check folder permission.'); }
-    } else {
-      downloadBlob(b.blob, b.fileName || 'book.pdf');
-      toast('Downloaded — move it into the /books folder.');
-    }
+    try{
+      const p = await saveToAppBooks(b.fileName, b.blob);
+      if(p){
+        b.savedToBooks = true; b.diskPath = p; await idb.put(b); renderBooks();
+        toast('Saved to the app books folder ✓');
+      } else {
+        downloadBlob(b.blob, b.fileName || 'book.pdf');
+        toast('Downloaded — move it into the books folder.');
+      }
+    }catch{ toast('Could not save.'); }
     return;
   }
   const c = e.target.closest('[data-book]');
@@ -561,13 +528,11 @@ $('#saveBook').onclick = async (e)=>{
   if(file.type!=='application/pdf' && !/\.pdf$/i.test(file.name)){ toast('Please choose a PDF file'); e.preventDefault(); return; }
   const fileName = sanitizeFileName($('#bFileName').value || file.name);
   const rec = { title, titleNe: $('#bTitleNe').value.trim(), class: $('#bClass').value, type: $('#bType').value, fileName, blob: file, date: Date.now(), savedToBooks:false };
-  // 1) Try writing a REAL file into the linked /books folder
-  if(booksDir){
-    try{
-      await writeFileToBooksDir(fileName, file);
-      rec.savedToBooks = true;
-    }catch{ rec.savedToBooks = false; toast('Folder write failed — keeping in browser. Check permission.'); }
-  }
+  // 1) Save a REAL file into the app's books folder (installed app, like presentations)
+  try{
+    const p = await saveToAppBooks(fileName, file);
+    if(p){ rec.savedToBooks = true; rec.diskPath = p; }
+  }catch{ rec.savedToBooks = false; }
   try{
     const id = await idb.add(rec);
     rec.id = id;
@@ -585,9 +550,9 @@ $('#saveBook').onclick = async (e)=>{
         SB.uploadBookFile(rec.fileName, file).then(ok=>{ if(ok) toast('Book in cloud ✓ — visible on all computers'); });
       }
     }catch{}
-    if(rec.savedToBooks) toast('Stored in /books/' + fileName + ' ✓');
-    else if(booksDir) toast('Imported ✓ (kept in browser)');
-    else { downloadBlob(file, fileName); toast('Imported ✓ + downloaded — move it into /books, or Link the folder for auto-save.'); }
+    if(rec.savedToBooks) toast('Stored in the app books folder ✓');
+    else if(window.electron) toast('Imported ✓ (kept in browser)');
+    else { downloadBlob(file, fileName); toast('Imported ✓ + downloaded — move it into the books folder.'); }
   }catch(err){ toast('Import failed: storage full?'); e.preventDefault(); }
 };
 

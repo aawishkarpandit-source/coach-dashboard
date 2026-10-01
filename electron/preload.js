@@ -8,6 +8,7 @@ contextBridge.exposeInMainWorld('electron', {
   saveFile: (folder, fileName, arrayBuffer) => ipcRenderer.invoke('coach:save-file', { folder, fileName, data: arrayBuffer }),
   listFiles: (folder) => ipcRenderer.invoke('coach:list-files', folder),
   removeDir: (dir) => ipcRenderer.invoke('coach:remove-dir', dir),
+  deleteFile: (fullPath) => ipcRenderer.invoke('coach:delete-file', fullPath),
   openExternal: (target) => ipcRenderer.invoke('coach:open-external', target),
   openPath: (fullPath) => ipcRenderer.invoke('coach:open-path', fullPath),
   quitAndInstall: () => ipcRenderer.invoke('coach:quit-and-install'),

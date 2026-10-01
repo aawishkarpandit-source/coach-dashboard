@@ -77,6 +77,16 @@ ipcMain.handle('coach:remove-dir', async (_evt, dir) => {
   } catch { return false; }
 });
 
+ipcMain.handle('coach:delete-file', async (_evt, fullPath) => {
+  try {
+    const base = path.resolve(app.getPath('userData'));
+    const full = path.resolve(String(fullPath));
+    if (!full.startsWith(base)) return false; // never delete outside app data
+    await fs.promises.unlink(full);
+    return true;
+  } catch { return false; }
+});
+
 // ---- auto-update from GitHub Releases (only when installed, not in dev) ----
 function setupAutoUpdate() {
   if (!app.isPackaged) return; // skip in `npm start`

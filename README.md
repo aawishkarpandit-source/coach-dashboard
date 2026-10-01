@@ -42,7 +42,7 @@ Presentations are **never** uploaded — they stay on each computer by design.
 - **Present page:** one **＋ New presentation** button opens the file window (images, video, PDF, `.pptx` — all offline, stage opens by itself). ◀ Prev / Next ▶ turn slides on both screens.
 - **Google Slides / web links:** supported in the engine if you re-add a link button; stock build is offline-first.
 - **Other presentations:** chosen files + PowerPoint records save on the computer (browser IndexedDB; installed app also copies real files to its data folder → “Saved on this computer” list to reopen/delete). Re-installs on the same machine keep them.
-- **Books:** `/books/*.pdf` + `data/books.json` ship with the app; **Import Book** writes a real file into `/books` when the folder is linked (Chrome/Edge) and always keeps a browser copy + cloud copy.
+- **Books:** **Import Book** saves the PDF in the browser + (installed app) as a real file in the app's books folder — same pattern as presentations. Cloud copy included. Delete removes all of them.
 
 ## 6. How to edit
 

@@ -271,8 +271,6 @@
   <div class="toolbar">
     <input id="bookSearch" type="search" placeholder="Search books… / किताब खोज्नुहोस्…" />
     <button id="importBookBtn" class="btn primary">📥 <span data-i18n="importBook">Import Book</span></button>
-    <button id="linkFolderBtn" class="btn" title="Grant access so imports save directly into /books">📁 <span data-i18n="linkFolder">Link /books folder</span></button>
-    <span id="folderStatus" class="badge">📁 not linked</span>
   </div>
   <p class="hint" data-i18n="booksHint">Put PDFs in /books folder. Works offline.</p>
 
@@ -375,7 +373,7 @@
     </label>
     <label>PDF file <input id="bFile" type="file" accept=".pdf,application/pdf" required /></label>
     <label>Save as in /books <input id="bFileName" type="text" placeholder="e.g. maths-guide-9.pdf" /></label>
-    <p class="hint small" id="importDestHint">If the /books folder is linked, the file is written there. Otherwise it is kept in the browser + downloaded.</p>
+    <p class="hint small" id="importDestHint">Saved in the browser + the app's books folder (installed app).</p>
     <menu>
       <button value="cancel" class="btn ghost" data-i18n="cancel">Cancel</button>
       <button id="saveBook" value="default" class="btn primary" data-i18n="save">Save</button>
