@@ -465,15 +465,16 @@ function stagePdfSrc(){
 function openBook(src, title, blob){
   bookBase = src; bookBlob = blob || null; bookPage = 1;
   $('#pdfTitle').textContent = title;
+  $('#pdfBookName').textContent = title;
   $('#pdfPage').value = 1;
-  $('#pdfFrame').src = pdfWithPage(bookBase, 1);
+  $('#pdfBigPage').textContent = '1';
   $('#pdfModal').classList.remove('hidden');
   try{ window.Stage && Stage.showPdf(stagePdfSrc(), 1, title); }catch{}
 }
 function setBookPage(p){
   bookPage = Math.max(1, p|0 || 1);
   $('#pdfPage').value = bookPage;
-  $('#pdfFrame').src = pdfWithPage(bookBase, bookPage);
+  $('#pdfBigPage').textContent = String(bookPage);
   try{ window.Stage && Stage.updatePdfPage(stagePdfSrc(), bookPage); }catch{}
 }
 $('#pdfPrev').onclick = ()=> setBookPage(bookPage - 1);
@@ -494,7 +495,7 @@ $('#pdfSecondBtn').onclick = ()=>{
     toast('2nd screen shows only the open page. Change pages here.');
   }catch{ toast('Could not open 2nd screen (popup blocked?).'); }
 };
-$('#pdfClose').onclick = ()=>{ $('#pdfModal').classList.add('hidden'); $('#pdfFrame').src=''; try{ window.Stage && Stage.welcome(); }catch{} bookBase=''; bookBlob=null; };
+$('#pdfClose').onclick = ()=>{ $('#pdfModal').classList.add('hidden'); try{ window.Stage && Stage.welcome(); }catch{} bookBase=''; bookBlob=null; };
 
 /* Import flow — writes a real file into /books when the folder is linked */
 $('#importBookBtn').onclick = ()=> $('#bookDialog').showModal();

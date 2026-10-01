@@ -280,8 +280,8 @@
   <!-- EDIT: add books in data/books.json  {title, titleNe, class, type:govt/pvt, file} -->
   <div id="bookGrid" class="book-grid"></div>
 
-  <!-- PDF Reader (offline: uses browser built-in viewer via iframe) -->
-  <!-- TEACHER screen = full controls. STUDENT (2nd screen) = only the open page. -->
+  <!-- PDF Reader controls ONLY (no page preview here — pages show on the 2nd screen) -->
+  <!-- TEACHER screen = title + page controls. STUDENT (2nd screen) = only the open page. -->
   <div id="pdfModal" class="modal hidden">
     <div class="modal-bar">
       <span id="pdfTitle">Book</span>
@@ -295,8 +295,12 @@
         <button id="pdfClose" class="btn">✕ <span data-i18n="close">Close</span></button>
       </div>
     </div>
-    <p class="presenter-hint" data-i18n="pdfControlHint">You control from this screen — students see only the open page on the 2nd screen.</p>
-    <iframe id="pdfFrame" title="PDF Reader"></iframe>
+    <div class="pdf-control-panel">
+      <div class="pdf-big-page"><span id="pdfBigPage">1</span></div>
+      <div class="pdf-book-name" id="pdfBookName">Book</div>
+      <p class="presenter-hint" data-i18n="pdfControlHint">You control from this screen — students see only the open page on the 2nd screen.</p>
+      <p class="hint small">◀ ▶ / arrow keys turn the stage page. No preview here — use your physical book.</p>
+    </div>
   </div>
 </section>
 
