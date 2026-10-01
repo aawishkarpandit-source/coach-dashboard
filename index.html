@@ -246,9 +246,14 @@
       <h3 data-i18n="marksheet">Marksheet</h3>
       <p class="hint" data-i18n="marksheetHint">Select a student, enter marks, auto-saved offline.</p>
       <div class="toolbar">
+        <label style="flex:1;min-width:140px"><span data-i18n="exams">Exams</span>
+        <select id="examSelect" style="width:100%"></select></label>
+        <button id="examsBtn" class="btn ghost">⚙ <span data-i18n="exams">Exams</span></button>
+      </div>
+      <div class="toolbar">
         <label style="flex:1;min-width:160px"><span data-i18n="selectStudent">Select student</span>
         <select id="markStudent" style="width:100%"></select></label>
-        <button id="fullMarksBtn" class="btn ghost" title="Set theory/practical full marks per subject">⚙ <span data-i18n="fullMarks">Full marks</span></button>
+        <button id="fullMarksBtn" class="btn ghost" title="Subjects: rename, full marks, delete, add">⚙ <span data-i18n="fullMarks">Full marks</span></button>
       </div>
       <table class="table" id="marksTable">
         <thead><tr><th data-i18n="subject">Subject</th><th><span data-i18n="theory">Theory</span></th><th><span data-i18n="practical">Practical</span></th><th data-i18n="total">Total</th></tr></thead>
@@ -417,7 +422,21 @@
   </form>
 </dialog>
 
-<!-- Full marks dialog (theory / practical per subject) -->
+<!-- Exams dialog (Exam 1, Exam 2… — rename / delete / add) -->
+<dialog id="examsDialog">
+  <form method="dialog" id="examsForm">
+    <h3>⚙ <span data-i18n="exams">Exams</span></h3>
+    <p class="hint" data-i18n="examsHint">Each exam keeps its own marksheet. Rename freely; deleting an exam erases its marks everywhere.</p>
+    <div id="examRows"></div>
+    <div style="display:flex;gap:6px;margin-top:10px"><input id="newExamName" type="text" placeholder="Exam 3…" style="flex:1" /><button type="button" class="btn" id="addExamBtn">+ <span data-i18n="add">Add</span></button></div>
+    <menu>
+      <button value="cancel" class="btn ghost" data-i18n="cancel">Cancel</button>
+      <button id="saveExams" value="default" class="btn primary" data-i18n="save">Save</button>
+    </menu>
+  </form>
+</dialog>
+
+<!-- Full marks dialog (subjects: rename / theory+pratical / delete / add) -->
 <dialog id="fullMarksDialog">
   <form method="dialog" id="fullMarksForm">
     <h3>⚙ <span data-i18n="fullMarks">Full marks</span> (<span data-i18n="theory">Theory</span> + <span data-i18n="practical">Practical</span>)</h3>

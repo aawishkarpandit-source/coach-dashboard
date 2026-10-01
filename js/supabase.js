@@ -111,12 +111,14 @@
         setState('cloud');
       });
     },
-    pushMarks(cls, roll, marksObj) {
+    pushMarks(cls, roll, marksObj, exam) {
       // Theory + practical ride as two rows: "Math::TH" / "Math::PR".
       // Plain legacy rows ("Math") are read back as theory.
+      // Needs supabase/migrate-exams.sql applied (adds the exam column).
       schedulePush(async () => {
         const sb = await getClient(); if (!sb) return;
         setState('syncing');
+        const ex = exam || 'e1';
         const norm = (v) => (v != null && typeof v === 'object')
           ? { th: v.th ?? '', pr: v.pr ?? '' } : { th: v ?? '', pr: '' };
         for (const [subject, val] of Object.entries(marksObj)) {
@@ -124,12 +126,31 @@
           for (const part of ['th', 'pr']) {
             if (n[part] === '' || n[part] == null) continue;
             await sb.from('marks').upsert(
-              { class: cls, roll: Number(roll), subject: subject + '::' + part.toUpperCase(), score: Number(n[part]) || 0, updated_at: new Date().toISOString() },
-              { onConflict: 'class,roll,subject' });
+              { class: cls, roll: Number(roll), exam: ex, subject: subject + '::' + part.toUpperCase(), score: Number(n[part]) || 0, updated_at: new Date().toISOString() },
+              { onConflict: 'class,roll,subject,exam' });
           }
         }
         setState('cloud');
       });
+    },
+    async deleteSubjectRows(subject) {
+      // All TH/PR rows of one subject, every exam (rename/delete support).
+      const sb = await getClient(); if (!sb) return false;
+      try {
+        setState('syncing');
+        await sb.from('marks').delete().in('subject', [subject, subject + '::TH', subject + '::PR']);
+        setState('cloud');
+        return true;
+      } catch { setState('error'); return false; }
+    },
+    async deleteExam(examId) {
+      const sb = await getClient(); if (!sb) return false;
+      try {
+        setState('syncing');
+        await sb.from('marks').delete().match({ exam: examId });
+        setState('cloud');
+        return true;
+      } catch { setState('error'); return false; }
     },
     pushBookMeta(rec) {
       // rec: {title,titleNe,class,type,fileName}
@@ -161,7 +182,7 @@
       try {
         const [{ data: students }, { data: marks }, { data: books }] = await Promise.all([
           sb.from('students').select('class,roll,name'),
-          sb.from('marks').select('class,roll,subject,score'),
+          sb.from('marks').select('class,roll,exam,subject,score'),
           sb.from('book_meta').select('title,title_ne,class,type,file_path')
         ]);
         setState('cloud');

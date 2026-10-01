@@ -58,5 +58,5 @@ Presentations are **never** uploaded — they stay on each computer by design.
 1. **Classes** – `<select id="classSelect">` in `index.html`.
 2. **New page** – copy a `<section id="page-xxx" class="page">` block, link with `<button data-goto="xxx">`.
 3. **Books** – drop PDFs in `/books/`, add rows in `data/books.json` (`class`: `9`/`10`/`9A`/`all`, `type`: `govt`/`pvt`).
-4. **Subjects** – `SUBJECTS` in `js/app.js`. **Language** – `I18N` in `js/app.js` + `data-i18n`.
+4. **Subjects & full marks** – in-app via ⚙ Full marks (rename, Th/Pr full marks, delete, add). **Exams** – Exam 1, Exam 2… each with its own marksheet (⚙ Exams; cloud needs `supabase/migrate-exams.sql` run once — old rows become Exam 1). **Language** – `I18N` in `js/app.js` + `data-i18n`.
 5. **Stage idle screen** – `presenter.html`. **Stage logic** – `js/stage.js`. **Cloud** – `js/supabase.js`.

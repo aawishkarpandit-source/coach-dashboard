@@ -39,8 +39,8 @@ $('#classSelect').addEventListener('change', e => {
 
 /* ---------- 2. Eng / Nep toggle ---------- */
 const I18N = {
-  en: {classLabel:'Class',offline:'Offline Ready',appTitle:'Classroom Dashboard',appSub:'Simple • Offline • Easy to use',students:'Students',books:'Textbooks',present:'Present',home:'Home',studentsTitle:'Students & Marksheet',studentList:'Student List',add:'Add',marksheet:'Marksheet',marksheetHint:'Select a student, enter marks, auto-saved offline.',selectStudent:'Select student',subject:'Subject',total:'Total',percent:'Percent',name:'Name',action:'Action',booksTitle:'Textbooks',govt:'Govt Books',pvt:'Private Books',booksHint:'Put PDFs in /books folder, or Import. Works offline.',importBook:'Import Book',importHint:'Choose a PDF. It is saved in the browser and, in the installed app, as a real file.',linkFolder:'Link /books folder',delete:'Delete',imported:'Imported',show2nd:'Show on 2nd screen',pdfControlHint:'You control from this screen — students see only the open page on the 2nd screen.',presentTitle:'Present',presentFiles:'Presentation / Media',presentHint:'Images, videos, PDFs & PowerPoint (.pptx) play fully offline. The stage opens by itself.',chooseFiles:'Choose files',openPresenter:'Open presenter (2nd screen)',stage:'Stage (what students see)',stageHint:'Pick a file to preview here. Presenter window mirrors this.',newPpt:'New presentation',newPptHint:'“New presentation” picks files from this computer to present.',addStudent:'Add student',cancel:'Cancel',save:'Save',close:'Close',open2nd:'2nd screen',localPres:'Saved on this computer',about:'About',terms:'Terms & Conditions',team:'Team',playCredits:'Play credits',stopCredits:'Stop',roleLead:'LEAD DESIGNER & DEVELOPER',roleTesters:'PLAY TESTERS',thanksWatching:'Thanks for teaching',backup:'Backup',restore:'Restore',backupHint:'One file holds everything: students, theory/practical marks, books, presentations, settings.',exportBk:'Export',importBk:'Import',fullMarks:'Full marks',fullMarksHint:'Set full marks per subject. Totals and percent follow automatically.',theory:'Theory',practical:'Practical'},
-  ne: {classLabel:'कक्षा',offline:'अफलाइन तयार',appTitle:'कक्षाकोठा ड्यासबोर्ड',appSub:'सरल • अफलाइन • सजिलो',students:'विद्यार्थी',books:'पाठ्यपुस्तक',present:'प्रस्तुत गर्नुहोस्',home:'गृहपृष्ठ',studentsTitle:'विद्यार्थी र मार्कसिट',studentList:'विद्यार्थी सूची',add:'थप्नुहोस्',marksheet:'मार्कसिट',marksheetHint:'विद्यार्थी छान्नुहोस्, नम्बर हाल्नुहोस्, अफलाइन सेभ हुन्छ।',selectStudent:'विद्यार्थी छान्नुहोस्',subject:'विषय',total:'जम्मा',percent:'प्रतिशत',name:'नाम',action:'कार्य',booksTitle:'पाठ्यपुस्तक',govt:'सरकारी किताब',pvt:'निजी किताब',booksHint:'PDF हरू /books मा राख्नुहोस् वा Import गर्नुहोस्। अफलाइन चल्छ।',importBook:'किताब आयात',importHint:'PDF छान्नुहोस्। ब्राउजरमा र इन्स्टल गरिएको एपमा वास्तविक फाइलका रूपमा सेभ हुन्छ।',linkFolder:'Link /books फोल्डर',delete:'हटाउनुहोस्',imported:'आयातित',show2nd:'दोस्रो स्क्रिनमा देखाउनुहोस्',pdfControlHint:'तपाईं यस स्क्रिनबाट नियन्त्रण गर्नुहोस् — विद्यार्थीले दोस्रो स्क्रिनमा खुला पेज मात्र देख्छन्।',presentTitle:'प्रस्तुत',presentFiles:'प्रस्तुति / मिडिया',presentHint:'फोटो, भिडियो, PDF र PowerPoint (.pptx) अफलाइन चल्छ। स्टेज आफैं खुल्छ।',chooseFiles:'फाइल छान्नुहोस्',openPresenter:'प्रस्तोता खोल्नुहोस् (दोस्रो स्क्रिन)',stage:'स्टेज (विद्यार्थीले देख्ने)',stageHint:'यहाँ हेर्न फाइल छान्नुहोस्। प्रस्तोता विन्डोमा उही देखिन्छ।',newPpt:'नयाँ प्रस्तुति',newPptHint:'"नयाँ प्रस्तुति" ले यस कम्प्युटरबाट फाइल छानेर प्रस्तुत गर्छ।',addStudent:'विद्यार्थी थप्नुहोस्',cancel:'रद्द',save:'सेभ',close:'बन्द',open2nd:'दोस्रो स्क्रिन',localPres:'यस कम्प्युटरमा सेभ',about:'बारेमा',terms:'नियम तथा सर्तहरू',team:'टिम',playCredits:'क्रेडिट चलाउनुहोस्',stopCredits:'रोक्नुहोस्',roleLead:'प्रमुख डिजाइनर तथा विकासकर्ता',roleTesters:'प्ले टेस्टरहरू',thanksWatching:'पढाउनुभएकोमा धन्यवाद',backup:'ब्याकअप',restore:'रिस्टोर',backupHint:'एउटै फाइलमा सबै: विद्यार्थी, थ्योरी/प्राक्टिकल नम्बर, किताब, प्रस्तुति, सेटिङ।',exportBk:'एक्सपोर्ट',importBk:'इम्पोर्ट',fullMarks:'पूर्णाङ्क',fullMarksHint:'प्रत्येक विषयको पूर्णाङ्क तोक्नुहोस्। जम्मा र प्रतिशत आफैं मिल्छ।',theory:'थ्योरी',practical:'प्राक्टिकल'}
+  en: {classLabel:'Class',offline:'Offline Ready',appTitle:'Classroom Dashboard',appSub:'Simple • Offline • Easy to use',students:'Students',books:'Textbooks',present:'Present',home:'Home',studentsTitle:'Students & Marksheet',studentList:'Student List',add:'Add',marksheet:'Marksheet',marksheetHint:'Select a student, enter marks, auto-saved offline.',selectStudent:'Select student',subject:'Subject',total:'Total',percent:'Percent',name:'Name',action:'Action',booksTitle:'Textbooks',govt:'Govt Books',pvt:'Private Books',booksHint:'Put PDFs in /books folder, or Import. Works offline.',importBook:'Import Book',importHint:'Choose a PDF. It is saved in the browser and, in the installed app, as a real file.',linkFolder:'Link /books folder',delete:'Delete',imported:'Imported',show2nd:'Show on 2nd screen',pdfControlHint:'You control from this screen — students see only the open page on the 2nd screen.',presentTitle:'Present',presentFiles:'Presentation / Media',presentHint:'Images, videos, PDFs & PowerPoint (.pptx) play fully offline. The stage opens by itself.',chooseFiles:'Choose files',openPresenter:'Open presenter (2nd screen)',stage:'Stage (what students see)',stageHint:'Pick a file to preview here. Presenter window mirrors this.',newPpt:'New presentation',newPptHint:'“New presentation” picks files from this computer to present.',addStudent:'Add student',cancel:'Cancel',save:'Save',close:'Close',open2nd:'2nd screen',localPres:'Saved on this computer',about:'About',terms:'Terms & Conditions',team:'Team',playCredits:'Play credits',stopCredits:'Stop',roleLead:'LEAD DESIGNER & DEVELOPER',roleTesters:'PLAY TESTERS',thanksWatching:'Thanks for teaching',backup:'Backup',restore:'Restore',backupHint:'One file holds everything: students, theory/practical marks, books, presentations, settings.',exportBk:'Export',importBk:'Import',fullMarks:'Full marks',fullMarksHint:'Rename subjects, set full marks, delete, or add new ones. Totals follow automatically.',theory:'Theory',practical:'Practical',exams:'Exams',examsHint:'Each exam keeps its own marksheet. Rename freely; deleting an exam erases its marks everywhere.'},
+  ne: {classLabel:'कक्षा',offline:'अफलाइन तयार',appTitle:'कक्षाकोठा ड्यासबोर्ड',appSub:'सरल • अफलाइन • सजिलो',students:'विद्यार्थी',books:'पाठ्यपुस्तक',present:'प्रस्तुत गर्नुहोस्',home:'गृहपृष्ठ',studentsTitle:'विद्यार्थी र मार्कसिट',studentList:'विद्यार्थी सूची',add:'थप्नुहोस्',marksheet:'मार्कसिट',marksheetHint:'विद्यार्थी छान्नुहोस्, नम्बर हाल्नुहोस्, अफलाइन सेभ हुन्छ।',selectStudent:'विद्यार्थी छान्नुहोस्',subject:'विषय',total:'जम्मा',percent:'प्रतिशत',name:'नाम',action:'कार्य',booksTitle:'पाठ्यपुस्तक',govt:'सरकारी किताब',pvt:'निजी किताब',booksHint:'PDF हरू /books मा राख्नुहोस् वा Import गर्नुहोस्। अफलाइन चल्छ।',importBook:'किताब आयात',importHint:'PDF छान्नुहोस्। ब्राउजरमा र इन्स्टल गरिएको एपमा वास्तविक फाइलका रूपमा सेभ हुन्छ।',linkFolder:'Link /books फोल्डर',delete:'हटाउनुहोस्',imported:'आयातित',show2nd:'दोस्रो स्क्रिनमा देखाउनुहोस्',pdfControlHint:'तपाईं यस स्क्रिनबाट नियन्त्रण गर्नुहोस् — विद्यार्थीले दोस्रो स्क्रिनमा खुला पेज मात्र देख्छन्।',presentTitle:'प्रस्तुत',presentFiles:'प्रस्तुति / मिडिया',presentHint:'फोटो, भिडियो, PDF र PowerPoint (.pptx) अफलाइन चल्छ। स्टेज आफैं खुल्छ।',chooseFiles:'फाइल छान्नुहोस्',openPresenter:'प्रस्तोता खोल्नुहोस् (दोस्रो स्क्रिन)',stage:'स्टेज (विद्यार्थीले देख्ने)',stageHint:'यहाँ हेर्न फाइल छान्नुहोस्। प्रस्तोता विन्डोमा उही देखिन्छ।',newPpt:'नयाँ प्रस्तुति',newPptHint:'"नयाँ प्रस्तुति" ले यस कम्प्युटरबाट फाइल छानेर प्रस्तुत गर्छ।',addStudent:'विद्यार्थी थप्नुहोस्',cancel:'रद्द',save:'सेभ',close:'बन्द',open2nd:'दोस्रो स्क्रिन',localPres:'यस कम्प्युटरमा सेभ',about:'बारेमा',terms:'नियम तथा सर्तहरू',team:'टिम',playCredits:'क्रेडिट चलाउनुहोस्',stopCredits:'रोक्नुहोस्',roleLead:'प्रमुख डिजाइनर तथा विकासकर्ता',roleTesters:'प्ले टेस्टरहरू',thanksWatching:'पढाउनुभएकोमा धन्यवाद',backup:'ब्याकअप',restore:'रिस्टोर',backupHint:'एउटै फाइलमा सबै: विद्यार्थी, थ्योरी/प्राक्टिकल नम्बर, किताब, प्रस्तुति, सेटिङ।',exportBk:'एक्सपोर्ट',importBk:'इम्पोर्ट',fullMarks:'पूर्णाङ्क',fullMarksHint:'विषयको नाम बदल्नुहोस्, पूर्णाङ्क तोक्नुहोस्, हटाउनुहोस् वा नयाँ थप्नुहोस्।',theory:'थ्योरी',practical:'प्राक्टिकल',exams:'परीक्षाहरू',examsHint:'प्रत्येक परीक्षाको छुट्टै मार्कसिट हुन्छ। नाम स्वतन्त्र रूपमा बदल्नुहोस्; परीक्षा हटाउँदा त्यसका सबै नम्बर मेटिन्छ।'}
 };
 let LANG = localStorage.getItem('coach-lang') || 'en';
 function applyLang() {
@@ -81,7 +81,16 @@ const DEFAULT_STUDENTS = [
   {roll:1,name:'Aarav Sharma',cls:'9A'},{roll:2,name:'Diya KC',cls:'9A'},
   {roll:1,name:'Sneha Thapa',cls:'10A'},
 ];
-const SUBJECTS = ['Math','Science','English','Nepali','Social']; // EDIT subjects here
+const DEFAULT_SUBJECTS = ['Math','Science','English','Nepali','Social'];
+const SUBJLIST_KEY = 'coach-subject-list';
+function getSubjects(){
+  try{
+    const l = JSON.parse(localStorage.getItem(SUBJLIST_KEY) || 'null');
+    if(Array.isArray(l) && l.length) return l.filter(s=>typeof s === 'string' && s.trim()).map(s=>s.trim());
+  }catch{}
+  return DEFAULT_SUBJECTS.slice();
+}
+function setSubjects(l){ localStorage.setItem(SUBJLIST_KEY, JSON.stringify(l)); }
 const SUBJ_KEY = 'coach-subjects';
 // Full marks per subject: {Sub:{th,pr}}. Customizable via ⚙ Full marks. Default 75+25.
 function getSubjConfig(){
@@ -90,12 +99,12 @@ function getSubjConfig(){
     if(c && typeof c === 'object') return c;
   }catch{}
   const d = {};
-  SUBJECTS.forEach(s=>{ d[s] = { th:75, pr:25 }; });
+  getSubjects().forEach(s=>{ d[s] = { th:75, pr:25 }; });
   return d;
 }
 function saveSubjConfig(c){ localStorage.setItem(SUBJ_KEY, JSON.stringify(c)); }
 function subjFull(sub){ const c = getSubjConfig()[sub] || { th:75, pr:25 }; return { th:+c.th||0, pr:+c.pr||0 }; }
-function subjFullTotal(){ return SUBJECTS.reduce((a,s)=>a+subjFull(s).th+subjFull(s).pr, 0); }
+function subjFullTotal(){ return getSubjects().reduce((a,s)=>a+subjFull(s).th+subjFull(s).pr, 0); }
 // One subject's marks, any stored shape -> {th, pr} (legacy plain numbers count as theory).
 function normSubj(v){
   if(v == null) return { th:null, pr:null };
@@ -106,9 +115,48 @@ function subjTotal(v){ const n = normSubj(v); return (+n.th || 0) + (+n.pr || 0)
 const store = {
   get students(){ try{return JSON.parse(localStorage.getItem('coach-students')) ?? DEFAULT_STUDENTS;}catch{return DEFAULT_STUDENTS;} },
   set students(v){ localStorage.setItem('coach-students', JSON.stringify(v)); },
-  marks(cls,roll){ return JSON.parse(localStorage.getItem(`marks-${cls}-${roll}`) || '{}'); },
-  saveMarks(cls,roll,obj){ localStorage.setItem(`marks-${cls}-${roll}`, JSON.stringify(obj)); }
+  marks(cls,roll,exam){ return readMarks(exam || activeExamId(), cls, roll); },
+  saveMarks(cls,roll,obj,exam){ localStorage.setItem(marksKey(exam || activeExamId(), cls, roll), JSON.stringify(obj)); }
 };
+/* Exams: [{id, name}] — each exam keeps its own marksheet. Legacy unprefixed
+   marks-* keys are first-exam data and migrate automatically on startup. */
+const EXAMS_KEY = 'coach-exams';
+const ACTIVE_EXAM_KEY = 'coach-exam';
+function getExams(){
+  try{
+    const l = JSON.parse(localStorage.getItem(EXAMS_KEY) || 'null');
+    if(Array.isArray(l) && l.length) return l.filter(e=>e && e.id && e.name);
+  }catch{}
+  return [{ id:'e1', name:'Exam 1' }];
+}
+function setExams(l){ localStorage.setItem(EXAMS_KEY, JSON.stringify(l)); }
+function activeExamId(){
+  const id = localStorage.getItem(ACTIVE_EXAM_KEY);
+  const ex = getExams();
+  return ex.some(e=>e.id === id) ? id : ex[0].id;
+}
+function activeExam(){ const ex = getExams(); return ex.find(e=>e.id === activeExamId()) || ex[0]; }
+function setActiveExam(id){ localStorage.setItem(ACTIVE_EXAM_KEY, id); }
+function marksKey(exam, cls, roll){ return `marks-${exam}-${cls}-${roll}`; }
+function readMarks(exam, cls, roll){
+  try{
+    const v = localStorage.getItem(marksKey(exam, cls, roll));
+    if(v != null) return JSON.parse(v);
+    const leg = localStorage.getItem(`marks-${cls}-${roll}`); // pre-exam data
+    if(leg != null) return JSON.parse(leg);
+  }catch{}
+  return {};
+}
+function migrateLegacyMarks(){
+  const ex = getExams()[0].id;
+  for(const s of store.students){
+    const leg = `marks-${s.cls}-${s.roll}`;
+    try{
+      if(localStorage.getItem(leg) != null && localStorage.getItem(marksKey(ex, s.cls, s.roll)) == null)
+        localStorage.setItem(marksKey(ex, s.cls, s.roll), localStorage.getItem(leg));
+    }catch{}
+  }
+}
 const curClass = () => $('#classSelect').value;
 
 function renderStudents(){
@@ -125,7 +173,7 @@ function renderStudents(){
 function renderMarks(){
   const cls = curClass(), roll = $('#markStudent').value;
   const saved = store.marks(cls, roll);
-  $('#marksTable tbody').innerHTML = SUBJECTS.map(sub=>{
+  $('#marksTable tbody').innerHTML = getSubjects().map(sub=>{
     const fm = subjFull(sub), v = normSubj(saved[sub]);
     const tot = (+v.th || 0) + (+v.pr || 0);
     return `<tr><td>${sub}<br/><small class="hint">/${fm.th}+${fm.pr}</small></td>` +
@@ -156,7 +204,7 @@ document.addEventListener('input', e=>{
     const sub = e.target.dataset.sub;
     const cell = document.querySelector(`[data-rowtotal="${sub}"]`);
     if(cell) cell.textContent = subjTotal(obj[sub]);
-    try{ window.SB && SB.pushMarks(curClass(), $('#markStudent').value, obj); }catch{}
+    try{ window.SB && SB.pushMarks(curClass(), $('#markStudent').value, obj, activeExamId()); }catch{}
     maybeRefreshMarksStage();
   }
   if(e.target.id==='studentSearch') renderStudents();
@@ -231,10 +279,11 @@ function marksSnapshot(){
   const full = subjFullTotal() || 1;
   const rows = store.students.filter(s=>s.cls===cls).sort((a,b)=>a.roll-b.roll).map(s=>{
     const m = store.marks(cls, s.roll);
-    const tot = SUBJECTS.reduce((a,x)=>a+subjTotal(m[x]),0);
+    const tot = getSubjects().reduce((a,x)=>a+subjTotal(m[x]),0);
     return { roll:s.roll, name:s.name, total:tot, pct:Math.round(tot/full*100)+'%' };
   });
-  return { title:(LANG==='ne' ? 'मार्कसिट' : 'Marksheet'), rows };
+  const exName = activeExam().name;
+  return { title:((LANG==='ne' ? 'मार्कसिट' : 'Marksheet') + ' — ' + exName), rows };
 }
 function pushMarksToStage(){
   try{
@@ -262,12 +311,13 @@ $('#saveStudent').onclick = ()=>{
 $('#exportCsvBtn').onclick = ()=>{
   const cls = curClass();
   const full = subjFullTotal();
-  let csv = 'Roll,Name,' + SUBJECTS.flatMap(s=>[`${s} Th (/${subjFull(s).th})`,`${s} Pr (/${subjFull(s).pr})`,`${s} Total`]).join(',') + `,Grand Total (/${full}),Percent\n`;
+  const subs = getSubjects();
+  let csv = 'Roll,Name,' + subs.flatMap(s=>[`${s} Th (/${subjFull(s).th})`,`${s} Pr (/${subjFull(s).pr})`,`${s} Total`]).join(',') + `,Grand Total (/${full}),Percent\n`;
   store.students.filter(s=>s.cls===cls).forEach(s=>{
     const m = store.marks(cls,s.roll);
     const cells = [];
     let grand = 0;
-    SUBJECTS.forEach(x=>{
+    subs.forEach(x=>{
       const v = normSubj(m[x]);
       const th = +v.th || 0, pr = +v.pr || 0;
       grand += th + pr;
@@ -277,29 +327,165 @@ $('#exportCsvBtn').onclick = ()=>{
   });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
-  a.download = `marksheet-${cls}.csv`; a.click();
+  const safeExam = activeExam().name.replace(/[^\w\-]+/g, '-').slice(0, 30) || 'exam';
+  a.download = `marksheet-${cls}-${safeExam}.csv`; a.click();
 };
-/* ⚙ Full marks dialog */
+/* ---------- Exams: Exam 1, Exam 2… — each with its own marksheet ----------
+   (Subjects manager with rename/full-marks/delete/add follows right below.) */
+function renderExamSelect(){
+  const sel = $('#examSelect');
+  if(!sel) return;
+  const ex = getExams();
+  sel.innerHTML = ex.map(e=>`<option value="${e.id}">${escapeHtml(e.name)}</option>`).join('');
+  sel.value = activeExamId();
+}
+$('#examSelect')?.addEventListener('change', e=>{
+  setActiveExam(e.target.value);
+  renderMarks();
+  maybeRefreshMarksStage();
+});
+$('#examsBtn').onclick = ()=>{
+  $('#examRows').innerHTML = getExams().map(e=>
+    `<div style="display:flex;gap:6px;align-items:center;margin:8px 0">` +
+    `<input data-examold="${e.id}" data-examname type="text" value="${escapeHtml(e.name)}" style="flex:1" />` +
+    `<button type="button" class="btn ghost" data-delexam="${e.id}" title="Delete exam + its marks">✕</button></div>`
+  ).join('');
+  $('#examsDialog').showModal();
+};
+document.addEventListener('click', e=>{
+  if(e.target.closest('#addExamBtn')){
+    const inp = $('#newExamName');
+    const name = (inp.value || '').trim() || `Exam ${getExams().length + 1}`;
+    const id = 'e' + Date.now().toString(36);
+    setExams([...getExams(), { id, name }]);
+    setActiveExam(id);
+    $('#examsBtn').onclick();
+    renderExamSelect(); renderMarks();
+    toast(`"${name}" added ✓`);
+  }
+  const delEx = e.target.closest('[data-delexam]');
+  if(delEx){
+    const ex = getExams();
+    if(ex.length <= 1){ toast('Keep at least one exam'); return; }
+    const target = ex.find(x=>x.id === delEx.dataset.delexam);
+    if(!target) return;
+    if(!confirm(`Delete "${target.name}" and ALL its marks (every class, cloud too)?`)) return;
+    // purge local exam marks (all classes/rolls)
+    const keys = [];
+    for(let i = 0; i < localStorage.length; i++){
+      const k = localStorage.key(i);
+      if(k.startsWith(`marks-${target.id}-`)) keys.push(k);
+    }
+    keys.forEach(k=>{ try{ localStorage.removeItem(k); }catch{} });
+    try{ if(window.SB && SB.configured) SB.deleteExam(target.id); }catch{}
+    const rest = ex.filter(x=>x.id !== target.id);
+    setExams(rest);
+    if(activeExamId() === target.id) setActiveExam(rest[0].id);
+    $('#examsBtn').onclick();
+    renderExamSelect(); renderMarks();
+    maybeRefreshMarksStage();
+    toast(`"${target.name}" deleted ✓`);
+  }
+});
+$('#saveExams').onclick = (e)=>{
+  // renames only (add/delete apply immediately above)
+  const rows = [...document.querySelectorAll('#examRows [data-examname]')].map(inp=>({
+    id: inp.dataset.examold, name: inp.value.trim()
+  }));
+  if(rows.some(r=>!r.name) || new Set(rows.map(r=>r.name)).size !== rows.length){ toast('Exam names must be unique and non-empty'); e.preventDefault(); return; }
+  setExams(rows);
+  renderExamSelect(); renderMarks();
+  maybeRefreshMarksStage();
+  toast('Exams saved ✓');
+};
 $('#fullMarksBtn').onclick = ()=>{
   const cfg = getSubjConfig();
-  $('#fullMarksRows').innerHTML = SUBJECTS.map(s=>{
+  $('#fullMarksRows').innerHTML = getSubjects().map(s=>{
     const f = subjFull(s);
-    return `<label style="display:flex;gap:8px;align-items:center;margin:8px 0">${s}` +
-      `<span style="flex:1"></span>Th <input data-fm="${s}" data-part="th" type="number" min="0" max="1000" value="${f.th}" style="width:80px" />` +
-      `Pr <input data-fm="${s}" data-part="pr" type="number" min="0" max="1000" value="${f.pr}" style="width:80px" /></label>`;
-  }).join('') || '<p class="hint">No subjects.</p>';
+    return `<div style="display:flex;gap:6px;align-items:center;margin:8px 0">` +
+      `<input data-subold="${escapeHtml(s)}" data-subname type="text" value="${escapeHtml(s)}" style="flex:1;min-width:90px" />` +
+      `Th <input data-fm="${escapeHtml(s)}" data-part="th" type="number" min="0" max="1000" value="${f.th}" style="width:64px" />` +
+      `Pr <input data-fm="${escapeHtml(s)}" data-part="pr" type="number" min="0" max="1000" value="${f.pr}" style="width:64px" />` +
+      `<button type="button" class="btn ghost" data-delsub="${escapeHtml(s)}" title="Delete subject">✕</button></div>`;
+  }).join('') +
+  `<div style="display:flex;gap:6px;margin-top:10px"><input id="newSubName" type="text" placeholder="New subject…" style="flex:1" /><button type="button" class="btn" id="addSubBtn">+ <span>Add</span></button></div>`;
   $('#fullMarksDialog').showModal();
 };
-$('#saveFullMarks').onclick = ()=>{
+document.addEventListener('click', e=>{
+  if(e.target.closest('#addSubBtn')){
+    const inp = $('#newSubName');
+    const name = (inp.value || '').trim();
+    if(!name) return;
+    const subs = getSubjects();
+    if(subs.includes(name)){ toast('Subject already exists'); return; }
+    setSubjects([...subs, name]);
+    const cfg = getSubjConfig(); cfg[name] = { th:75, pr:25 }; saveSubjConfig(cfg);
+    $('#fullMarksBtn').onclick();
+    renderMarks();
+  }
+  const delSub = e.target.closest('[data-delsub]');
+  if(delSub){
+    const old = delSub.dataset.delsub;
+    if(!confirm(`Delete subject "${old}" everywhere (all exams, all students, cloud)?`)) return;
+    deleteSubjectEverywhere(old);
+  }
+});
+/* Rename one subject's key inside every stored marksheet (all exams + legacy). */
+function eachMarksRecord(cb){
+  const keys = [];
+  for(let i = 0; i < localStorage.length; i++){
+    const k = localStorage.key(i);
+    if(/^marks-/.test(k)) keys.push(k);
+  }
+  for(const k of keys){
+    try{
+      const o = JSON.parse(localStorage.getItem(k));
+      if(o && typeof o === 'object' && cb(k, o)) localStorage.setItem(k, JSON.stringify(o));
+    }catch{}
+  }
+}
+async function deleteSubjectEverywhere(old){
+  setSubjects(getSubjects().filter(s=>s!==old));
+  const cfg = getSubjConfig(); delete cfg[old]; saveSubjConfig(cfg);
+  eachMarksRecord((k, o)=>{ if(old in o){ delete o[old]; return true; } return false; });
+  try{ if(window.SB && SB.configured) await SB.deleteSubjectRows(old); }catch{}
+  $('#fullMarksBtn').onclick(); // refresh dialog rows
+  renderMarks();
+  maybeRefreshMarksStage();
+  toast(`Subject "${old}" deleted ✓`);
+}
+$('#saveFullMarks').onclick = async (e)=>{
+  const rows = [...document.querySelectorAll('#fullMarksRows [data-subname]')].map(inp=>({
+    old: inp.dataset.subold, name: inp.value.trim(),
+    th: Math.max(0, +document.querySelector(`#fullMarksRows [data-fm="${CSS.escape(inp.dataset.subold)}"][data-part="th"]`).value || 0),
+    pr: Math.max(0, +document.querySelector(`#fullMarksRows [data-fm="${CSS.escape(inp.dataset.subold)}"][data-part="pr"]`).value || 0)
+  }));
+  const names = rows.map(r=>r.name);
+  if(names.some(n=>!n) || new Set(names).size !== names.length){ toast('Names must be unique and non-empty'); e.preventDefault(); return; }
   const cfg = getSubjConfig();
-  $$('#fullMarksRows input').forEach(i=>{
-    cfg[i.dataset.fm] = cfg[i.dataset.fm] || { th:75, pr:25 };
-    cfg[i.dataset.fm][i.dataset.part] = Math.max(0, +i.value || 0);
-  });
+  const newSubs = [];
+  for(const r of rows){
+    newSubs.push(r.name);
+    cfg[r.name] = { th:r.th, pr:r.pr };
+    if(r.old !== r.name){
+      // migrate local marks + config, then cloud
+      delete cfg[r.old];
+      eachMarksRecord((k, o)=>{ if(r.old in o){ o[r.name] = o[r.old]; delete o[r.old]; return true; } return false; });
+      try{
+        if(window.SB && SB.configured){
+          await SB.deleteSubjectRows(r.old);
+          for(const ex of getExams())
+            for(const s of store.students)
+              SB.pushMarks(s.cls, s.roll, store.marks(s.cls, s.roll, ex.id), ex.id);
+        }
+      }catch{}
+    }
+  }
+  setSubjects(newSubs);
   saveSubjConfig(cfg);
   renderMarks();
   maybeRefreshMarksStage();
-  toast('Full marks saved ✓');
+  toast('Subjects saved ✓');
 };
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 
@@ -920,7 +1106,7 @@ async function idbClear(storeName){
     tx.oncomplete = res; tx.onerror = ()=>rej(tx.error);
   });
 }
-const BACKUP_LS_PREFIXES = ['coach-students', 'marks-', 'coach-subjects', 'coach-ppts', 'coach-class', 'coach-lang', 'coach-supabase', 'coach-deleted-students', 'coach-deleted-books'];
+const BACKUP_LS_PREFIXES = ['coach-students', 'marks-', 'coach-subjects', 'coach-subject-list', 'coach-exams', 'coach-exam', 'coach-ppts', 'coach-class', 'coach-lang', 'coach-supabase', 'coach-deleted-students', 'coach-deleted-books'];
 $('#backupBtn').onclick = ()=>{
   $('#backupStatus').textContent = '—';
   $('#backupDialog').showModal();
@@ -983,12 +1169,15 @@ $('#backupFile').addEventListener('change', async e=>{
     IMPORTED.forEach(b=>{ if(b.blob instanceof Blob) importUrls.set(b.id, URL.createObjectURL(b.blob)); });
     applyLang();
     try{ $('#studentsClassChip').textContent = curClass(); }catch{}
+    try{ migrateLegacyMarks(); }catch{}
+    renderExamSelect();
     renderStudents(); renderBooks(); renderLocalPres(); renderMarks();
     // push the restored state to the cloud so other PCs catch up
     try{
       if(window.SB && SB.configured){
         SB.pushStudents(store.students);
-        for(const s of store.students) SB.pushMarks(s.cls, s.roll, store.marks(s.cls, s.roll));
+        for(const ex of getExams())
+          for(const s of store.students) SB.pushMarks(s.cls, s.roll, store.marks(s.cls, s.roll, ex.id), ex.id);
         for(const b of IMPORTED) SB.pushBookMeta({ title:b.title, titleNe:b.titleNe, class:b.class, type:b.type, fileName:b.fileName });
       }
     }catch{}
@@ -1008,18 +1197,20 @@ function mergeCloud(data){
       if(add.length){ store.students = [...local, ...add]; renderStudents(); }
     }
     if(data.marks && data.marks.length){
+      let touchedActive = false;
       for(const m of data.marks){
-        const cur = store.marks(m.class, m.roll);
+        const ex = m.exam || 'e1';
+        const cur = store.marks(m.class, m.roll, ex);
         const suf = /^(.+)::(TH|PR)$/.exec(m.subject || '');
         if(suf){
           const sub = suf[1], part = suf[2].toLowerCase();
           const curV = (cur[sub] != null && typeof cur[sub] === 'object') ? { ...cur[sub] }
             : (cur[sub] === undefined ? {} : { th:cur[sub] });
           // fill only parts never set here; null = teacher cleared it on purpose
-          if(curV[part] === undefined){ curV[part] = m.score; cur[sub] = curV; store.saveMarks(m.class, m.roll, cur); }
-        } else if(!(m.subject in cur)){ cur[m.subject] = m.score; store.saveMarks(m.class, m.roll, cur); } // legacy theory
+          if(curV[part] === undefined){ curV[part] = m.score; cur[sub] = curV; store.saveMarks(m.class, m.roll, cur, ex); if(ex === activeExamId()) touchedActive = true; }
+        } else if(!(m.subject in cur)){ cur[m.subject] = m.score; store.saveMarks(m.class, m.roll, cur, ex); if(ex === activeExamId()) touchedActive = true; } // legacy theory
       }
-      renderMarks();
+      if(touchedActive) renderMarks();
     }
     if(data.books){
       const known = new Set([...BOOKS.map(b=>b.file), ...IMPORTED.map(b=>b.fileName)]);
@@ -1032,6 +1223,8 @@ function mergeCloud(data){
 }
 window.addEventListener('coach:cloud-pull', e=>{ if(e.detail) mergeCloud(e.detail); });
 // First pull shortly after start (if configured + online)
+try{ migrateLegacyMarks(); }catch{}
+renderExamSelect();
 setTimeout(async ()=>{
   try{
     if(window.SB && SB.configured && navigator.onLine){
