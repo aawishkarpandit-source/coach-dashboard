@@ -20,6 +20,8 @@
     try {
       const lite = Object.assign({}, full);
       delete lite.blob;
+      delete lite.html; // slide HTML travels by postMessage only (too big to store)
+      delete lite.slides;
       if (typeof lite.url !== 'string' || lite.url.length >= 200000) delete lite.url;
       localStorage.setItem('coach-stage-msg', JSON.stringify(lite));
     } catch {}
@@ -99,6 +101,13 @@
       mode = 'content';
       this.open();
       rawSend({ type: 'embed', url: url || '', title: title || '', className: this.currentClass() });
+    },
+    // Offline PPTX slide (serialized HTML from CoachPptx). Same window as all media.
+    showDeckHtml(d) {
+      mode = 'content';
+      this.open();
+      rawSend({ type: 'deck', html: d.html || '', w: d.w || 1280, h: d.h || 720,
+        idx: d.idx || 0, count: d.count || 0, title: d.title || '', className: this.currentClass() });
     },
     clear() { this.welcome(); },
     close() { try { win && win.close(); } catch {} win = null; mode = 'idle'; }

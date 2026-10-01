@@ -119,3 +119,8 @@ dialog menu{display:flex;justify-content:flex-end;gap:8px;padding:0}
 .local-item{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--border);border-radius:10px;padding:6px 10px;font-size:13px}
 .local-item span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .local-item button{border:1px solid var(--border);background:#fff;border-radius:8px;padding:4px 10px;cursor:pointer}
+/* Offline PPTX slides (teacher preview + filmstrip) */
+.pptx-box{width:100%;background:#fff;border-radius:10px;overflow:hidden}
+.pptx-box > *{margin:0 auto}
+.slide-num{min-width:52px;text-align:center}
+.btn.active{border-color:var(--accent);background:var(--accent-soft)}

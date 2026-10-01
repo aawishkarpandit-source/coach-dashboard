@@ -544,45 +544,69 @@ $('#presentFiles').addEventListener('change', async e=>{
   const ppt = files.filter(f=>kindOf(f.name)==='ppt');
   const rest = files.filter(f=>kindOf(f.name)!=='ppt');
   if(rest.length){
+    closePptxDeck();
     slides = rest.map(f=>({ name:f.name, url:URL.createObjectURL(f), blob:f, kind:kindOf(f.name) }));
     renderSlides(); showSlide(0);
     for(const f of rest){ await saveLocalMedia(f); }
     renderLocalPres();
   }
-  // PowerPoint files convert to slide images (installed app + PowerPoint present).
-  for(const f of ppt){ await importPptx(f); }
+  // PowerPoint files render fully offline in the browser (no PowerPoint needed).
+  for(const f of ppt){
+    if(/\.pptx$/i.test(f.name)) await openPptxFile(f, f.name);
+    else toast('Please Save As .pptx first (PowerPoint or free LibreOffice), then choose the .pptx — old .ppt cannot render.');
+  }
 });
 function kindOf(n){ n=n.toLowerCase(); if(/\.(pptx?|odp)$/.test(n))return'ppt'; if(/\.(png|jpe?g|gif|webp|bmp|svg)$/.test(n))return'img'; if(/\.(mp4|webm|mov|mkv)$/.test(n))return'video'; if(/\.pdf$/.test(n))return'pdf'; return'other'; }
 // Absolute disk path -> file:// URL for <img>/<iframe> in Electron windows.
-// Absolute disk path -> file:// URL for <img>/<iframe> in Electron windows.
 function toFileUrl(p){ const s = String(p).replace(/\\/g, '/'); return (s.charAt(0) === '/' ? 'file://' : 'file:///') + encodeURI(s); }
-/* PowerPoint import: installed app + local PowerPoint => PNG slides that
-   present exactly like images (synced, offline, saved locally as a deck). */
-async function importPptx(file){
-  if(!window.electron || !window.electron.pptxExport){
-    toast('PPTX preview needs the installed app on a PC with PowerPoint. Tip: export to PDF from PowerPoint — PDFs present fully.');
-    return;
-  }
-  toast('Converting ' + file.name + ' to slides…');
-  let r;
-  try{ r = await window.electron.pptxExport(file.name, await file.arrayBuffer()); }
-  catch{ r = { ok:false, error:'convert failed' }; }
-  if(!r || !r.ok){
-    if(r && r.error === 'nopowerpoint') toast('PowerPoint not found on this PC — export the file to PDF instead (fully supported).');
-    else toast('Could not convert: ' + ((r && r.error) || 'unknown error'));
-    return;
-  }
-  const imgs = r.slides.map((p,i)=>({ name:file.name.replace(/\.[^.]+$/,'')+` — slide ${i+1}`, url:toFileUrl(p), kind:'img' }));
-  slides = imgs; curSlide = 0; renderSlides(); showSlide(0);
-  try{ await idb.mediaAdd({ name:file.name.replace(/\.[^.]+$/,''), kind:'deck', dir:r.dir, slides:r.slides, date:Date.now() }); }catch{}
-  renderLocalPres();
-  toast(`Converted ✓ ${imgs.length} slides (saved on this computer)`);
+/* Offline PPTX decks: parsed + rendered in the browser (no PowerPoint needed).
+   Original file is kept in the local library; slides re-render on demand. */
+let pptxDeck = null; // {viewer, count, name}
+function closePptxDeck(){
+  try{ if(pptxDeck) window.CoachPptx && CoachPptx.close(pptxDeck); }catch{}
+  pptxDeck = null;
+  const box = document.querySelector('#pptxBox');
+  if(box) box.innerHTML = '';
+}
+async function openPptxFile(fileOrBlob, name){
+  if(!window.CoachPptx){ toast('Slide engine failed to load.'); return; }
+  closePptxDeck();
+  stopTeacherVideoSync();
+  toast('Reading ' + name + '… (first .pptx loads the offline engine once)');
+  $('#stage').innerHTML = '<div id="pptxBox" class="pptx-box"></div>';
+  try{
+    const buf = fileOrBlob instanceof Blob ? await fileOrBlob.arrayBuffer() : fileOrBlob;
+    const deck = await CoachPptx.open(buf, document.querySelector('#pptxBox'));
+    if(!deck.count) throw new Error('no slides');
+    pptxDeck = Object.assign(deck, { name });
+    slides = Array.from({ length: deck.count }, (_, i) => ({ name:`${name} — slide ${i+1}`, kind:'slide', idx:i }));
+    curSlide = 0; renderSlides(); await showSlide(0);
+    // keep the original file locally (never uploaded)
+    try{
+      const blob = fileOrBlob instanceof Blob ? fileOrBlob : new Blob([fileOrBlob], { type:'application/vnd.openxmlformats-officedocument.presentationml.presentation' });
+      const known = await idb.mediaAll();
+      if(!known.some(m=>m.kind==='pptx' && m.name===name)) await idb.mediaAdd({ name, kind:'pptx', blob, date:Date.now() });
+    }catch{}
+    renderLocalPres();
+    toast(`Opened ✓ ${deck.count} slides (offline)`);
+  }catch(err){ toast('Could not read this .pptx (' + String((err&&err.message)||err).slice(0,80) + ')'); }
+}
+async function showDeckSlide(s){
+  if(!pptxDeck){ toast('Deck closed — reopen it.'); return; }
+  try{ window.Stage && Stage.open(); }catch{}
+  try{
+    await CoachPptx.goTo(pptxDeck, s.idx);
+    const box = document.querySelector('#pptxBox');
+    const shot = await CoachPptx.slideHtml(pptxDeck, box);
+    try{ window.Stage && Stage.showDeckHtml({ html:shot.html, w:shot.w, h:shot.h, idx:s.idx, count:pptxDeck.count, title:pptxDeck.name }); }catch{}
+  }catch{ toast('Could not render this slide.'); }
 }
 /* Web embeds (Google Slides publish/embed link, etc). Needs internet. */
 $('#addLinkBtn').onclick = ()=>{
   const u = prompt('Paste presentation link (Google Slides File → Share → Publish to web, copy the link):', 'https://');
   if(!u) return;
   if(!/^https:\/\//i.test(u.trim())){ toast('Link must start with https://'); return; }
+  closePptxDeck();
   slides = [{ name:u.trim(), url:u.trim(), kind:'embed' }];
   curSlide = 0; renderSlides(); showSlide(0);
 };
@@ -600,7 +624,7 @@ async function renderLocalPres(){
   let items = [];
   try{ items = await idb.mediaAll(); }catch{}
   box.innerHTML = items.length ? items.slice().reverse().map(m=>{
-    const icon = m.kind==='deck' ? `🎞️ ${escapeHtml(m.name)} (${(m.slides||[]).length} slides)` : m.kind==='embed' ? '🔗' : '📄';
+    const icon = m.kind==='deck' ? `🎞️ ${escapeHtml(m.name)} (${(m.slides||[]).length} slides)` : m.kind==='pptx' ? '📊' : m.kind==='embed' ? '🔗' : '📄';
     const label = m.kind==='deck' ? icon : `${icon} ${escapeHtml(m.name)}`;
     return `<div class="local-item"><span>${label}</span><button data-openmedia="${m.id}">Open</button><button data-delmedia="${m.id}">✕</button></div>`;
   }).join('') : '<span class="hint">No saved presentations yet.</span>';
@@ -611,6 +635,7 @@ document.addEventListener('click', async e=>{
     let items = []; try{ items = await idb.mediaAll(); }catch{}
     const m = items.find(x=>x.id===+om.dataset.openmedia);
     if(!m) return;
+    if(m.kind === 'pptx' && m.blob){ closePptxDeck(); await openPptxFile(m.blob, m.name); return; }
     if(m.kind === 'deck'){
       // Re-converted slide images live on disk (local by design).
       const paths = (m.slides || []).filter(p=>!!p);
@@ -637,6 +662,7 @@ document.addEventListener('click', async e=>{
 function renderSlides(){
   $('#slideList').innerHTML = slides.map((s,i)=>{
     if(s.kind==='img') return `<img class="slide-thumb ${i===curSlide?'active':''}" data-i="${i}" src="${s.url}" title="${escapeHtml(s.name)}"/>`;
+    if(s.kind==='slide') return `<button class="btn ghost slide-num ${i===curSlide?'active':''}" data-i="${i}" title="${escapeHtml(s.name)}">${(s.idx||0)+1}</button>`;
     const icon = s.kind==='video' ? '🎬' : s.kind==='embed' ? '🔗' : s.kind==='ppt' ? '📊' : '📄';
     return `<button class="btn ghost" data-i="${i}">${icon} ${escapeHtml(String(s.name).slice(0,14))}</button>`;
   }).join('') || '<span class="hint">No files yet.</span>';
@@ -658,7 +684,10 @@ function showSlide(i){
   if(!slides.length) return;
   curSlide = (i+slides.length)%slides.length;
   const s = slides[curSlide];
+  // PPTX deck slides render inside the persistent viewer box — never wipe it.
+  if(s.kind === 'slide'){ renderSlides(); showDeckSlide(s); return; }
   stopTeacherVideoSync();
+  if(pptxDeck) closePptxDeck();
   $('#stage').innerHTML = stageHtml(s);
   renderSlides();
   // SAME unified 2nd-screen window as books:
@@ -718,7 +747,7 @@ $('#presenterBtn').onclick = ()=>{
     updateScreenInfo();
   }catch{ toast('Could not open 2nd screen (popup blocked?).'); }
 };
-$('#stopStageBtn').onclick = ()=>{ try{ window.Stage && Stage.welcome(); $('#stage').innerHTML = '<span class="hint">Stopped — 2nd screen shows Welcome.</span>'; }catch{} };
+$('#stopStageBtn').onclick = ()=>{ try{ closePptxDeck(); window.Stage && Stage.welcome(); $('#stage').innerHTML = '<span class="hint">Stopped — 2nd screen shows Welcome.</span>'; }catch{} };
 $('#secondScreenBtnTop').onclick = ()=>{ try{ window.Stage && Stage.welcome(); toast('2nd screen: Welcome. Open a book or slides to present.'); }catch{} };
 async function updateScreenInfo(){
   try{

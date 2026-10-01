@@ -19,6 +19,9 @@
   #content { display: none; height: 100vh; background: #000; }
   #content.show { display: block; }
   #content iframe, #content img, #content video { width: 100%; height: 100vh; border: 0; object-fit: contain; display: block; background: #000; }
+  /* Offline PPTX slide: white canvas, slide scaled to fit, centered */
+  #deckBox { width: 100%; height: 100vh; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  #deckScale { transform-origin: center center; flex: none; }
   #err { display:none; color:#fff; background:#000; height:100vh; align-items:center; justify-content:center; font-size:22px; text-align:center; padding:40px; }
 </style>
 </head>
@@ -56,6 +59,25 @@
     // data: URLs must not get a #page fragment mangled — appending is still fine
     return url + '#page=' + (page || 1);
   }
+  // Scale the fixed-size slide to fill the stage while preserving aspect ratio.
+  function fitDeck(holder, w, h) {
+    try {
+      const box = document.getElementById('deckBox');
+      const bw = box.clientWidth || window.innerWidth;
+      const bh = box.clientHeight || window.innerHeight;
+      const s = Math.min(bw / w, bh / h);
+      holder.style.width = w + 'px';
+      holder.style.height = h + 'px';
+      holder.style.transform = 'scale(' + s + ')';
+    } catch {}
+  }
+  window.addEventListener('resize', () => {
+    const holder = document.getElementById('deckScale');
+    if (holder && holder.firstElementChild) {
+      const el = holder.firstElementChild;
+      fitDeck(holder, el.offsetWidth || 1280, el.offsetHeight || 720);
+    }
+  });
   // Revoke previous object URL so long sessions don't leak memory.
   let lastObjUrl = '';
   let stageVideo = null; // the stage's player — teacher's screen is the master
@@ -123,6 +145,14 @@
       f.style.background = '#fff';
       f.onerror = () => showError('Could not load this link (needs internet).');
       content.appendChild(f);
+    } else if (msg.type === 'deck') {
+      forgetVideo();
+      if (!msg.html) return; // metadata-only fallback; full slide follows via postMessage
+      idle.style.display = 'none'; content.classList.add('show');
+      content.innerHTML = '<div id="deckBox"><div id="deckScale"></div></div>';
+      const holder = document.getElementById('deckScale');
+      holder.innerHTML = msg.html;
+      fitDeck(holder, msg.w || 1280, msg.h || 720);
     }
   }
   function syncVideo(msg) {
