@@ -564,6 +564,9 @@ let slides = [], curSlide = 0;
 $('#presentFiles').addEventListener('change', async e=>{
   const files = [...e.target.files];
   e.target.value = '';
+  // Open the stage NOW (inside the file-picker gesture) — parsing below
+  // takes seconds, after which browsers would block the popup.
+  try{ window.Stage && Stage.open(); }catch{}
   const ppt = files.filter(f=>kindOf(f.name)==='ppt');
   const rest = files.filter(f=>kindOf(f.name)!=='ppt');
   if(rest.length){
@@ -616,13 +619,15 @@ async function openPptxFile(fileOrBlob, name){
 }
 async function showDeckSlide(s){
   if(!pptxDeck){ toast('Deck closed — reopen it.'); return; }
-  try{ window.Stage && Stage.open(); }catch{}
+  let stageWin = null;
+  try{ stageWin = window.Stage && Stage.open(); }catch{}
   try{
     await CoachPptx.goTo(pptxDeck, s.idx);
     const box = document.querySelector('#pptxBox');
     const shot = await CoachPptx.slideHtml(pptxDeck, box);
     try{ window.Stage && Stage.showDeckHtml({ html:shot.html, w:shot.w, h:shot.h, idx:s.idx, count:pptxDeck.count, title:pptxDeck.name }); }catch{}
-  }catch{ toast('Could not render this slide.'); }
+    if(!stageWin && window.toast) toast('2nd screen blocked — allow popups, then press Next.');
+  }catch(err){ toast('Could not render this slide (' + String((err&&err.message)||err).slice(0,60) + ')'); }
 }
 async function saveLocalMedia(file){
   try{ await idb.mediaAdd({ name:file.name, kind:kindOf(file.name), blob:file, date:Date.now() }); }catch{}
@@ -646,6 +651,7 @@ async function renderLocalPres(){
 document.addEventListener('click', async e=>{
   const om = e.target.closest('[data-openmedia]');
   if(om){
+    try{ window.Stage && Stage.open(); }catch{} // keep the popup inside the click gesture
     let items = []; try{ items = await idb.mediaAll(); }catch{}
     const m = items.find(x=>x.id===+om.dataset.openmedia);
     if(!m) return;
