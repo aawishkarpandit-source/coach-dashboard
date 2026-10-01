@@ -127,6 +127,30 @@
     err.style.display = 'none';
     if (!msg || msg.type === 'welcome' || msg.type === 'clear') { forgetVideo(); showIdle(msg && msg.className); return; }
     if (msg.type === 'video-sync') { syncVideo(msg); return; }
+    // Self-contained content (slide HTML / marksheet rows) carries no URL —
+    // handle it before the URL guard below (which is only for file media).
+    if (msg.type === 'deck') {
+      forgetVideo();
+      if (!msg.html) return; // metadata-only fallback; full slide follows via postMessage
+      idle.style.display = 'none'; content.classList.add('show');
+      content.innerHTML = '<div id="deckBox"><div id="deckScale"></div></div>';
+      const holder = document.getElementById('deckScale');
+      holder.innerHTML = msg.html;
+      fitDeck(holder, msg.w || 1280, msg.h || 720);
+      return;
+    }
+    if (msg.type === 'marks') {
+      forgetVideo();
+      idle.style.display = 'none'; content.classList.add('show'); stageBg('#fff');
+      const rows = (msg.rows || []).map((r) =>
+        '<tr><td>' + r.roll + '</td><td>' + escapeHtmlLite(r.name) + '</td><td>' + r.total + '</td><td>' + r.pct + '</td></tr>'
+      ).join('') || '<tr><td colspan="4">No students</td></tr>';
+      content.innerHTML = '<div id="marksBox"><h2>' + escapeHtmlLite(msg.title || 'Marksheet') +
+        '</h2><p class="marks-sub">Class ' + escapeHtmlLite(msg.className || '') + '</p>' +
+        '<table><thead><tr><th>Roll</th><th>Name</th><th>Total</th><th>Percent</th></tr></thead><tbody>' +
+        rows + '</tbody></table></div>';
+      return;
+    }
     const url = fileUrl(msg);
     if (!url) return; // metadata-only fallback arrived first; real content follows via postMessage
     idle.style.display = 'none'; content.classList.add('show'); stageBg('#000');
@@ -160,24 +184,6 @@
       f.style.background = '#fff';
       f.onerror = () => showError('Could not load this link (needs internet).');
       content.appendChild(f);
-    } else if (msg.type === 'deck') {
-      forgetVideo();
-      if (!msg.html) return; // metadata-only fallback; full slide follows via postMessage
-      idle.style.display = 'none'; content.classList.add('show');
-      content.innerHTML = '<div id="deckBox"><div id="deckScale"></div></div>';
-      const holder = document.getElementById('deckScale');
-      holder.innerHTML = msg.html;
-      fitDeck(holder, msg.w || 1280, msg.h || 720);
-    } else if (msg.type === 'marks') {
-      forgetVideo();
-      idle.style.display = 'none'; content.classList.add('show'); stageBg('#fff');
-      const rows = (msg.rows || []).map((r) =>
-        '<tr><td>' + r.roll + '</td><td>' + escapeHtmlLite(r.name) + '</td><td>' + r.total + '</td><td>' + r.pct + '</td></tr>'
-      ).join('') || '<tr><td colspan="4">No students</td></tr>';
-      content.innerHTML = '<div id="marksBox"><h2>' + escapeHtmlLite(msg.title || 'Marksheet') +
-        '</h2><p class="marks-sub">Class ' + escapeHtmlLite(msg.className || '') + '</p>' +
-        '<table><thead><tr><th>Roll</th><th>Name</th><th>Total</th><th>Percent</th></tr></thead><tbody>' +
-        rows + '</tbody></table></div>';
     }
   }
   function syncVideo(msg) {
