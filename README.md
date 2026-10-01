@@ -20,7 +20,6 @@ Teacher control window + student 2nd-screen window from **one install**.
 ## 3. Cloud (Supabase) — students, marks, books on every computer
 
 Presentations are **never** uploaded — they stay on each computer by design.
-
 1. Create a free project at supabase.com → SQL Editor → run `supabase/schema.sql` (creates `students`, `marks`, `book_meta`, `books` storage bucket).
 2. Copy Project URL + `anon` public key (Project Settings → API). Either:
    - put them in `.env` (copy from `.env.example`), or
@@ -28,6 +27,16 @@ Presentations are **never** uploaded — they stay on each computer by design.
    (This copy ships pre-configured with the school project — skip this unless keys rotate.)
 3. From then on: adding a student, entering marks, or importing a book mirrors to the cloud (☁ badge: `local` → `syncing…` → `cloud ✓`). Other installed computers pull it within seconds of coming online. Deletes propagate too (student/book + their marks/files are hard-deleted everywhere, with tombstones so nothing resurrects).
 4. Imported book PDFs also upload to the `books` bucket, so other computers get them as ☁ cards — spotted books auto-download in the background and become offline 📗 entries.
+
+## 3b. Backup & restore (top-bar 💾 button)
+
+- **Export** packs students, theory/practical marks, subject full-marks, books (+PDF files), presentations (+files), and settings into one `coach-backup-<date>.json` (kept wherever you save it — USB, Drive, etc).
+- **Import** replaces this computer's data with the file, repaints every page, and pushes the restored state to the cloud. Cloud book files are not re-uploaded (already there). Badly-formed entries are skipped, never crash the restore.
+
+## 3c. Exams: theory + practical (custom full marks)
+
+- Every subject has **Theory** and **Practical** inputs with per-subject full marks (default 75 + 25). **⚙ Full marks** on the marksheet card customizes them (local to each PC).
+- Totals = Th + Pr; percent = total ÷ configured full. CSV export, 2nd-screen table, and cloud sync (`Subject::TH` / `::PR` rows) all follow. Old single-number marks count as theory; cleared cells stay cleared across syncs.
 
 ## 4. 2nd screen (projector/TV)
 

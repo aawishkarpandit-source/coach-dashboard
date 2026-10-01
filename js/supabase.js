@@ -112,13 +112,21 @@
       });
     },
     pushMarks(cls, roll, marksObj) {
+      // Theory + practical ride as two rows: "Math::TH" / "Math::PR".
+      // Plain legacy rows ("Math") are read back as theory.
       schedulePush(async () => {
         const sb = await getClient(); if (!sb) return;
         setState('syncing');
-        for (const [subject, score] of Object.entries(marksObj)) {
-          await sb.from('marks').upsert(
-            { class: cls, roll: Number(roll), subject, score: Number(score) || 0, updated_at: new Date().toISOString() },
-            { onConflict: 'class,roll,subject' });
+        const norm = (v) => (v != null && typeof v === 'object')
+          ? { th: v.th ?? '', pr: v.pr ?? '' } : { th: v ?? '', pr: '' };
+        for (const [subject, val] of Object.entries(marksObj)) {
+          const n = norm(val);
+          for (const part of ['th', 'pr']) {
+            if (n[part] === '' || n[part] == null) continue;
+            await sb.from('marks').upsert(
+              { class: cls, roll: Number(roll), subject: subject + '::' + part.toUpperCase(), score: Number(n[part]) || 0, updated_at: new Date().toISOString() },
+              { onConflict: 'class,roll,subject' });
+          }
         }
         setState('cloud');
       });

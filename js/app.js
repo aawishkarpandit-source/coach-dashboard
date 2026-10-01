@@ -39,8 +39,8 @@ $('#classSelect').addEventListener('change', e => {
 
 /* ---------- 2. Eng / Nep toggle ---------- */
 const I18N = {
-  en: {classLabel:'Class',offline:'Offline Ready',appTitle:'Classroom Dashboard',appSub:'Simple • Offline • Easy to use',students:'Students',books:'Textbooks',present:'Present',home:'Home',studentsTitle:'Students & Marksheet',studentList:'Student List',add:'Add',marksheet:'Marksheet',marksheetHint:'Select a student, enter marks, auto-saved offline.',selectStudent:'Select student',subject:'Subject',total:'Total',percent:'Percent',name:'Name',action:'Action',booksTitle:'Textbooks',govt:'Govt Books',pvt:'Private Books',booksHint:'Put PDFs in /books folder, or Import. Works offline.',importBook:'Import Book',importHint:'Choose a PDF. It is saved in the browser and, in the installed app, as a real file.',linkFolder:'Link /books folder',delete:'Delete',imported:'Imported',show2nd:'Show on 2nd screen',pdfControlHint:'You control from this screen — students see only the open page on the 2nd screen.',presentTitle:'Present',presentFiles:'Presentation / Media',presentHint:'Images, videos, PDFs & PowerPoint (.pptx) play fully offline. The stage opens by itself.',chooseFiles:'Choose files',openPresenter:'Open presenter (2nd screen)',stage:'Stage (what students see)',stageHint:'Pick a file to preview here. Presenter window mirrors this.',newPpt:'New presentation',newPptHint:'“New presentation” picks files from this computer to present.',addStudent:'Add student',cancel:'Cancel',save:'Save',close:'Close',open2nd:'2nd screen',localPres:'Saved on this computer',about:'About',terms:'Terms & Conditions',team:'Team',playCredits:'Play credits',stopCredits:'Stop',roleLead:'LEAD DESIGNER & DEVELOPER',roleTesters:'PLAY TESTERS',thanksWatching:'Thanks for teaching'},
-  ne: {classLabel:'कक्षा',offline:'अफलाइन तयार',appTitle:'कक्षाकोठा ड्यासबोर्ड',appSub:'सरल • अफलाइन • सजिलो',students:'विद्यार्थी',books:'पाठ्यपुस्तक',present:'प्रस्तुत गर्नुहोस्',home:'गृहपृष्ठ',studentsTitle:'विद्यार्थी र मार्कसिट',studentList:'विद्यार्थी सूची',add:'थप्नुहोस्',marksheet:'मार्कसिट',marksheetHint:'विद्यार्थी छान्नुहोस्, नम्बर हाल्नुहोस्, अफलाइन सेभ हुन्छ।',selectStudent:'विद्यार्थी छान्नुहोस्',subject:'विषय',total:'जम्मा',percent:'प्रतिशत',name:'नाम',action:'कार्य',booksTitle:'पाठ्यपुस्तक',govt:'सरकारी किताब',pvt:'निजी किताब',booksHint:'PDF हरू /books मा राख्नुहोस् वा Import गर्नुहोस्। अफलाइन चल्छ।',importBook:'किताब आयात',importHint:'PDF छान्नुहोस्। ब्राउजरमा र इन्स्टल गरिएको एपमा वास्तविक फाइलका रूपमा सेभ हुन्छ।',linkFolder:'Link /books फोल्डर',delete:'हटाउनुहोस्',imported:'आयातित',show2nd:'दोस्रो स्क्रिनमा देखाउनुहोस्',pdfControlHint:'तपाईं यस स्क्रिनबाट नियन्त्रण गर्नुहोस् — विद्यार्थीले दोस्रो स्क्रिनमा खुला पेज मात्र देख्छन्।',presentTitle:'प्रस्तुत',presentFiles:'प्रस्तुति / मिडिया',presentHint:'फोटो, भिडियो, PDF र PowerPoint (.pptx) अफलाइन चल्छ। स्टेज आफैं खुल्छ।',chooseFiles:'फाइल छान्नुहोस्',openPresenter:'प्रस्तोता खोल्नुहोस् (दोस्रो स्क्रिन)',stage:'स्टेज (विद्यार्थीले देख्ने)',stageHint:'यहाँ हेर्न फाइल छान्नुहोस्। प्रस्तोता विन्डोमा उही देखिन्छ।',newPpt:'नयाँ प्रस्तुति',newPptHint:'"नयाँ प्रस्तुति" ले यस कम्प्युटरबाट फाइल छानेर प्रस्तुत गर्छ।',addStudent:'विद्यार्थी थप्नुहोस्',cancel:'रद्द',save:'सेभ',close:'बन्द',open2nd:'दोस्रो स्क्रिन',localPres:'यस कम्प्युटरमा सेभ',about:'बारेमा',terms:'नियम तथा सर्तहरू',team:'टिम',playCredits:'क्रेडिट चलाउनुहोस्',stopCredits:'रोक्नुहोस्',roleLead:'प्रमुख डिजाइनर तथा विकासकर्ता',roleTesters:'प्ले टेस्टरहरू',thanksWatching:'पढाउनुभएकोमा धन्यवाद'}
+  en: {classLabel:'Class',offline:'Offline Ready',appTitle:'Classroom Dashboard',appSub:'Simple • Offline • Easy to use',students:'Students',books:'Textbooks',present:'Present',home:'Home',studentsTitle:'Students & Marksheet',studentList:'Student List',add:'Add',marksheet:'Marksheet',marksheetHint:'Select a student, enter marks, auto-saved offline.',selectStudent:'Select student',subject:'Subject',total:'Total',percent:'Percent',name:'Name',action:'Action',booksTitle:'Textbooks',govt:'Govt Books',pvt:'Private Books',booksHint:'Put PDFs in /books folder, or Import. Works offline.',importBook:'Import Book',importHint:'Choose a PDF. It is saved in the browser and, in the installed app, as a real file.',linkFolder:'Link /books folder',delete:'Delete',imported:'Imported',show2nd:'Show on 2nd screen',pdfControlHint:'You control from this screen — students see only the open page on the 2nd screen.',presentTitle:'Present',presentFiles:'Presentation / Media',presentHint:'Images, videos, PDFs & PowerPoint (.pptx) play fully offline. The stage opens by itself.',chooseFiles:'Choose files',openPresenter:'Open presenter (2nd screen)',stage:'Stage (what students see)',stageHint:'Pick a file to preview here. Presenter window mirrors this.',newPpt:'New presentation',newPptHint:'“New presentation” picks files from this computer to present.',addStudent:'Add student',cancel:'Cancel',save:'Save',close:'Close',open2nd:'2nd screen',localPres:'Saved on this computer',about:'About',terms:'Terms & Conditions',team:'Team',playCredits:'Play credits',stopCredits:'Stop',roleLead:'LEAD DESIGNER & DEVELOPER',roleTesters:'PLAY TESTERS',thanksWatching:'Thanks for teaching',backup:'Backup',restore:'Restore',backupHint:'One file holds everything: students, theory/practical marks, books, presentations, settings.',exportBk:'Export',importBk:'Import',fullMarks:'Full marks',fullMarksHint:'Set full marks per subject. Totals and percent follow automatically.',theory:'Theory',practical:'Practical'},
+  ne: {classLabel:'कक्षा',offline:'अफलाइन तयार',appTitle:'कक्षाकोठा ड्यासबोर्ड',appSub:'सरल • अफलाइन • सजिलो',students:'विद्यार्थी',books:'पाठ्यपुस्तक',present:'प्रस्तुत गर्नुहोस्',home:'गृहपृष्ठ',studentsTitle:'विद्यार्थी र मार्कसिट',studentList:'विद्यार्थी सूची',add:'थप्नुहोस्',marksheet:'मार्कसिट',marksheetHint:'विद्यार्थी छान्नुहोस्, नम्बर हाल्नुहोस्, अफलाइन सेभ हुन्छ।',selectStudent:'विद्यार्थी छान्नुहोस्',subject:'विषय',total:'जम्मा',percent:'प्रतिशत',name:'नाम',action:'कार्य',booksTitle:'पाठ्यपुस्तक',govt:'सरकारी किताब',pvt:'निजी किताब',booksHint:'PDF हरू /books मा राख्नुहोस् वा Import गर्नुहोस्। अफलाइन चल्छ।',importBook:'किताब आयात',importHint:'PDF छान्नुहोस्। ब्राउजरमा र इन्स्टल गरिएको एपमा वास्तविक फाइलका रूपमा सेभ हुन्छ।',linkFolder:'Link /books फोल्डर',delete:'हटाउनुहोस्',imported:'आयातित',show2nd:'दोस्रो स्क्रिनमा देखाउनुहोस्',pdfControlHint:'तपाईं यस स्क्रिनबाट नियन्त्रण गर्नुहोस् — विद्यार्थीले दोस्रो स्क्रिनमा खुला पेज मात्र देख्छन्।',presentTitle:'प्रस्तुत',presentFiles:'प्रस्तुति / मिडिया',presentHint:'फोटो, भिडियो, PDF र PowerPoint (.pptx) अफलाइन चल्छ। स्टेज आफैं खुल्छ।',chooseFiles:'फाइल छान्नुहोस्',openPresenter:'प्रस्तोता खोल्नुहोस् (दोस्रो स्क्रिन)',stage:'स्टेज (विद्यार्थीले देख्ने)',stageHint:'यहाँ हेर्न फाइल छान्नुहोस्। प्रस्तोता विन्डोमा उही देखिन्छ।',newPpt:'नयाँ प्रस्तुति',newPptHint:'"नयाँ प्रस्तुति" ले यस कम्प्युटरबाट फाइल छानेर प्रस्तुत गर्छ।',addStudent:'विद्यार्थी थप्नुहोस्',cancel:'रद्द',save:'सेभ',close:'बन्द',open2nd:'दोस्रो स्क्रिन',localPres:'यस कम्प्युटरमा सेभ',about:'बारेमा',terms:'नियम तथा सर्तहरू',team:'टिम',playCredits:'क्रेडिट चलाउनुहोस्',stopCredits:'रोक्नुहोस्',roleLead:'प्रमुख डिजाइनर तथा विकासकर्ता',roleTesters:'प्ले टेस्टरहरू',thanksWatching:'पढाउनुभएकोमा धन्यवाद',backup:'ब्याकअप',restore:'रिस्टोर',backupHint:'एउटै फाइलमा सबै: विद्यार्थी, थ्योरी/प्राक्टिकल नम्बर, किताब, प्रस्तुति, सेटिङ।',exportBk:'एक्सपोर्ट',importBk:'इम्पोर्ट',fullMarks:'पूर्णाङ्क',fullMarksHint:'प्रत्येक विषयको पूर्णाङ्क तोक्नुहोस्। जम्मा र प्रतिशत आफैं मिल्छ।',theory:'थ्योरी',practical:'प्राक्टिकल'}
 };
 let LANG = localStorage.getItem('coach-lang') || 'en';
 function applyLang() {
@@ -82,6 +82,27 @@ const DEFAULT_STUDENTS = [
   {roll:1,name:'Sneha Thapa',cls:'10A'},
 ];
 const SUBJECTS = ['Math','Science','English','Nepali','Social']; // EDIT subjects here
+const SUBJ_KEY = 'coach-subjects';
+// Full marks per subject: {Sub:{th,pr}}. Customizable via ⚙ Full marks. Default 75+25.
+function getSubjConfig(){
+  try{
+    const c = JSON.parse(localStorage.getItem(SUBJ_KEY) || 'null');
+    if(c && typeof c === 'object') return c;
+  }catch{}
+  const d = {};
+  SUBJECTS.forEach(s=>{ d[s] = { th:75, pr:25 }; });
+  return d;
+}
+function saveSubjConfig(c){ localStorage.setItem(SUBJ_KEY, JSON.stringify(c)); }
+function subjFull(sub){ const c = getSubjConfig()[sub] || { th:75, pr:25 }; return { th:+c.th||0, pr:+c.pr||0 }; }
+function subjFullTotal(){ return SUBJECTS.reduce((a,s)=>a+subjFull(s).th+subjFull(s).pr, 0); }
+// One subject's marks, any stored shape -> {th, pr} (legacy plain numbers count as theory).
+function normSubj(v){
+  if(v == null) return { th:null, pr:null };
+  if(typeof v === 'number' || typeof v === 'string') return { th:(v === '' ? null : v), pr:null };
+  return { th:(v.th === undefined ? null : v.th), pr:(v.pr === undefined ? null : v.pr) };
+}
+function subjTotal(v){ const n = normSubj(v); return (+n.th || 0) + (+n.pr || 0); }
 const store = {
   get students(){ try{return JSON.parse(localStorage.getItem('coach-students')) ?? DEFAULT_STUDENTS;}catch{return DEFAULT_STUDENTS;} },
   set students(v){ localStorage.setItem('coach-students', JSON.stringify(v)); },
@@ -104,21 +125,37 @@ function renderStudents(){
 function renderMarks(){
   const cls = curClass(), roll = $('#markStudent').value;
   const saved = store.marks(cls, roll);
-  $('#marksTable tbody').innerHTML = SUBJECTS.map(sub=>
-    `<tr><td>${sub}</td><td><input type="number" min="0" max="100" data-sub="${sub}" value="${saved[sub] ?? ''}" /></td></tr>`).join('');
+  $('#marksTable tbody').innerHTML = SUBJECTS.map(sub=>{
+    const fm = subjFull(sub), v = normSubj(saved[sub]);
+    const tot = (+v.th || 0) + (+v.pr || 0);
+    return `<tr><td>${sub}<br/><small class="hint">/${fm.th}+${fm.pr}</small></td>` +
+      `<td><input type="number" min="0" max="${fm.th}" data-sub="${sub}" data-part="th" value="${v.th ?? ''}" /></td>` +
+      `<td><input type="number" min="0" max="${fm.pr}" data-sub="${sub}" data-part="pr" value="${v.pr ?? ''}" /></td>` +
+      `<td data-rowtotal="${sub}">${tot}</td></tr>`;
+  }).join('');
   calcTotal();
 }
 function calcTotal(){
-  const vals = $$('#marksTable input').map(i=>+i.value||0);
-  const total = vals.reduce((a,b)=>a+b,0);
-  $('#marksTotal').textContent = total;
-  $('#marksPct').textContent = Math.round(total/(SUBJECTS.length||1)) + '%';
+  const full = subjFullTotal() || 1;
+  let total = 0;
+  $$('#marksTable input').forEach(i=>{ total += +i.value || 0; });
+  $('#marksTotal').textContent = total + ' / ' + full;
+  $('#marksPct').textContent = Math.round(total / full * 100) + '%';
 }
 document.addEventListener('input', e=>{
   if(e.target.matches('#marksTable input')){
-    const obj = Object.fromEntries($$('#marksTable input').map(i=>[i.dataset.sub,i.value]));
+    const obj = {};
+    $$('#marksTable input').forEach(i=>{
+      obj[i.dataset.sub] = obj[i.dataset.sub] || {};
+      // null = teacher cleared it (stays cleared); undefined = never set (cloud may fill)
+      obj[i.dataset.sub][i.dataset.part] = (i.value === '' ? null : i.value);
+    });
     store.saveMarks(curClass(), $('#markStudent').value, obj);
     calcTotal();
+    // live row total
+    const sub = e.target.dataset.sub;
+    const cell = document.querySelector(`[data-rowtotal="${sub}"]`);
+    if(cell) cell.textContent = subjTotal(obj[sub]);
     try{ window.SB && SB.pushMarks(curClass(), $('#markStudent').value, obj); }catch{}
     maybeRefreshMarksStage();
   }
@@ -191,10 +228,11 @@ document.addEventListener('click', e=>{
 /* Marksheet on the 2nd screen: white results table, re-pushed live while shown. */
 function marksSnapshot(){
   const cls = curClass();
+  const full = subjFullTotal() || 1;
   const rows = store.students.filter(s=>s.cls===cls).sort((a,b)=>a.roll-b.roll).map(s=>{
     const m = store.marks(cls, s.roll);
-    const tot = SUBJECTS.reduce((a,x)=>a+((+m[x])||0),0);
-    return { roll:s.roll, name:s.name, total:tot, pct:Math.round(tot/(SUBJECTS.length||1))+'%' };
+    const tot = SUBJECTS.reduce((a,x)=>a+subjTotal(m[x]),0);
+    return { roll:s.roll, name:s.name, total:tot, pct:Math.round(tot/full*100)+'%' };
   });
   return { title:(LANG==='ne' ? 'मार्कसिट' : 'Marksheet'), rows };
 }
@@ -223,16 +261,45 @@ $('#saveStudent').onclick = ()=>{
 };
 $('#exportCsvBtn').onclick = ()=>{
   const cls = curClass();
-  let csv = 'Roll,Name,'+SUBJECTS.join(',')+',Total\n';
+  const full = subjFullTotal();
+  let csv = 'Roll,Name,' + SUBJECTS.flatMap(s=>[`${s} Th (/${subjFull(s).th})`,`${s} Pr (/${subjFull(s).pr})`,`${s} Total`]).join(',') + `,Grand Total (/${full}),Percent\n`;
   store.students.filter(s=>s.cls===cls).forEach(s=>{
     const m = store.marks(cls,s.roll);
-    const row = SUBJECTS.map(x=>m[x]??'');
-    const tot = row.reduce((a,b)=>a+(+b||0),0);
-    csv += `${s.roll},"${s.name}",${row.join(',')},${tot}\n`;
+    const cells = [];
+    let grand = 0;
+    SUBJECTS.forEach(x=>{
+      const v = normSubj(m[x]);
+      const th = +v.th || 0, pr = +v.pr || 0;
+      grand += th + pr;
+      cells.push(v.th ?? '', v.pr ?? '', th + pr);
+    });
+    csv += `${s.roll},"${s.name}",${cells.join(',')},${grand},${Math.round(grand/(full||1)*100)}%\n`;
   });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
   a.download = `marksheet-${cls}.csv`; a.click();
+};
+/* ⚙ Full marks dialog */
+$('#fullMarksBtn').onclick = ()=>{
+  const cfg = getSubjConfig();
+  $('#fullMarksRows').innerHTML = SUBJECTS.map(s=>{
+    const f = subjFull(s);
+    return `<label style="display:flex;gap:8px;align-items:center;margin:8px 0">${s}` +
+      `<span style="flex:1"></span>Th <input data-fm="${s}" data-part="th" type="number" min="0" max="1000" value="${f.th}" style="width:80px" />` +
+      `Pr <input data-fm="${s}" data-part="pr" type="number" min="0" max="1000" value="${f.pr}" style="width:80px" /></label>`;
+  }).join('') || '<p class="hint">No subjects.</p>';
+  $('#fullMarksDialog').showModal();
+};
+$('#saveFullMarks').onclick = ()=>{
+  const cfg = getSubjConfig();
+  $$('#fullMarksRows input').forEach(i=>{
+    cfg[i.dataset.fm] = cfg[i.dataset.fm] || { th:75, pr:25 };
+    cfg[i.dataset.fm][i.dataset.part] = Math.max(0, +i.value || 0);
+  });
+  saveSubjConfig(cfg);
+  renderMarks();
+  maybeRefreshMarksStage();
+  toast('Full marks saved ✓');
 };
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 
@@ -656,6 +723,12 @@ document.addEventListener('click', async e=>{
     const m = items.find(x=>x.id===+om.dataset.openmedia);
     if(!m) return;
     if(m.kind === 'pptx' && m.blob){ closePptxDeck(); await openPptxFile(m.blob, m.name); return; }
+    if(m.kind === 'embed' && m.url){
+      closePptxDeck();
+      slides = [{ name:m.name, url:m.url, kind:'embed' }];
+      curSlide = 0; renderSlides(); showSlide(0);
+      return;
+    }
     if(m.kind === 'deck'){
       // Re-converted slide images live on disk (local by design).
       const paths = (m.slides || []).filter(p=>!!p);
@@ -809,6 +882,7 @@ if(_syncBtn) _syncBtn.onclick = ()=>{
   updateSyncStatusLine();
   dlg.showModal();
 };
+/* ---------- Backup & restore: everything in one JSON file ---------- */
 function updateSyncStatusLine(){
   const el = $('#syncStatus'); if(!el) return;
   const on = window.SB && SB.configured;
@@ -826,6 +900,102 @@ $('#syncSave').onclick = async (e)=>{
   }catch{ toast('Connect failed — check URL/key + internet'); e.preventDefault(); }
 };
 $('#syncForget').onclick = ()=>{ try{ window.SB && SB.forget(); }catch{} updateSyncStatusLine(); };
+
+/* ---------- Backup & restore: everything in one JSON file ---------- */
+function blobToDataUrl(blob){
+  return new Promise((res, rej)=>{ const r = new FileReader(); r.onload = ()=>res(r.result); r.onerror = rej; r.readAsDataURL(blob); });
+}
+async function dataUrlToBlob(d){
+  if(typeof d !== 'string' || !d.startsWith('data:')) return null;
+  try{ return await (await fetch(d)).blob(); }catch{ return null; }
+}
+async function idbClear(storeName){
+  const db = await idb.open();
+  return new Promise((res, rej)=>{
+    if(!db.objectStoreNames.contains(storeName)) return res();
+    const tx = db.transaction(storeName, 'readwrite');
+    const st = tx.objectStore(storeName);
+    const q = st.openCursor();
+    q.onsuccess = e=>{ const c = e.target.result; if(c){ st.delete(c.primaryKey); c.continue(); } };
+    tx.oncomplete = res; tx.onerror = ()=>rej(tx.error);
+  });
+}
+const BACKUP_LS_PREFIXES = ['coach-students', 'marks-', 'coach-subjects', 'coach-ppts', 'coach-class', 'coach-lang', 'coach-supabase', 'coach-deleted-students', 'coach-deleted-books'];
+$('#backupBtn').onclick = ()=>{
+  $('#backupStatus').textContent = '—';
+  $('#backupDialog').showModal();
+};
+$('#exportBkBtn').onclick = async (e)=>{
+  e.preventDefault();
+  toast('Packing backup…');
+  try{
+    const ls = {};
+    for(let i = 0; i < localStorage.length; i++){
+      const k = localStorage.key(i);
+      if(BACKUP_LS_PREFIXES.some(p=>k === p || k.startsWith(p))) ls[k] = localStorage.getItem(k);
+    }
+    const books = await idb.all();
+    for(const b of books){ if(b.blob instanceof Blob) b.blob = await blobToDataUrl(b.blob); }
+    let media = [];
+    try{
+      media = await idb.mediaAll();
+      for(const m of media){ if(m.blob instanceof Blob) m.blob = await blobToDataUrl(m.blob); }
+    }catch{}
+    const payload = { app:'coach-dashboard', version:1, date:new Date().toISOString(), ls, books, media };
+    const text = JSON.stringify(payload);
+    const stamp = new Date().toISOString().slice(0, 16).replace(/[-:T]/g, '');
+    downloadBlob(new Blob([text], { type:'application/json' }), `coach-backup-${stamp}.json`);
+    const mb = (text.length / 1048576).toFixed(1);
+    $('#backupStatus').textContent = `Exported ✓ (${mb} MB, ${books.length} books, ${media.length} presentations)`;
+    // reload live objects (we replaced blobs with dataURLs above)
+    IMPORTED = await idb.all();
+    importUrls.clear();
+    IMPORTED.forEach(b=>{ if(b.blob) importUrls.set(b.id, URL.createObjectURL(b.blob)); });
+    renderBooks();
+  }catch(err){ $('#backupStatus').textContent = 'Export failed: ' + String((err && err.message) || err).slice(0, 100); }
+};
+$('#backupFile').addEventListener('change', async e=>{
+  const f = e.target.files[0];
+  e.target.value = '';
+  if(!f) return;
+  $('#backupStatus').textContent = 'Restoring…';
+  try{
+    const payload = JSON.parse(await f.text());
+    if(!payload || payload.app !== 'coach-dashboard') throw new Error('not a Coach backup file');
+    for(const [k, v] of Object.entries(payload.ls || {})) localStorage.setItem(k, v);
+    await idbClear('books');
+    let skippedBooks = 0;
+    for(const b of payload.books || []){
+      if(!b.fileName){ skippedBooks++; continue; }
+      const blob = await dataUrlToBlob(b.blob);
+      if(!blob){ skippedBooks++; continue; }
+      await idb.add({ title:b.title || b.fileName, titleNe:b.titleNe || '', class:b.class || 'all', type:b.type || 'govt', fileName:b.fileName, blob, date:b.date || Date.now(), savedToBooks:!!b.savedToBooks, diskPath:b.diskPath || '', fromCloud:!!b.fromCloud });
+    }
+    await idbClear('media');
+    for(const m of payload.media || []){
+      if(!m.name) continue;
+      const blob = await dataUrlToBlob(m.blob);
+      await idb.mediaAdd({ name:m.name, kind:m.kind || 'other', blob:blob || m.blob || null, dir:m.dir || '', slides:m.slides || [], date:m.date || Date.now() });
+    }
+    // reload + repaint everything
+    IMPORTED = await idb.all();
+    importUrls.clear();
+    IMPORTED.forEach(b=>{ if(b.blob instanceof Blob) importUrls.set(b.id, URL.createObjectURL(b.blob)); });
+    applyLang();
+    try{ $('#studentsClassChip').textContent = curClass(); }catch{}
+    renderStudents(); renderBooks(); renderLocalPres(); renderMarks();
+    // push the restored state to the cloud so other PCs catch up
+    try{
+      if(window.SB && SB.configured){
+        SB.pushStudents(store.students);
+        for(const s of store.students) SB.pushMarks(s.cls, s.roll, store.marks(s.cls, s.roll));
+        for(const b of IMPORTED) SB.pushBookMeta({ title:b.title, titleNe:b.titleNe, class:b.class, type:b.type, fileName:b.fileName });
+      }
+    }catch{}
+    $('#backupStatus').textContent = `Restored ✓ (${(payload.books || []).length} books, ${(payload.media || []).length} presentations)`;
+    toast('Backup restored ✓');
+  }catch(err){ $('#backupStatus').textContent = 'Restore failed: ' + String((err && err.message) || err).slice(0, 120); }
+});
 // Cloud → local merge (local-first: only fills in what this computer lacks)
 function mergeCloud(data){
   try{
@@ -840,7 +1010,14 @@ function mergeCloud(data){
     if(data.marks && data.marks.length){
       for(const m of data.marks){
         const cur = store.marks(m.class, m.roll);
-        if(!(m.subject in cur)){ cur[m.subject] = m.score; store.saveMarks(m.class, m.roll, cur); }
+        const suf = /^(.+)::(TH|PR)$/.exec(m.subject || '');
+        if(suf){
+          const sub = suf[1], part = suf[2].toLowerCase();
+          const curV = (cur[sub] != null && typeof cur[sub] === 'object') ? { ...cur[sub] }
+            : (cur[sub] === undefined ? {} : { th:cur[sub] });
+          // fill only parts never set here; null = teacher cleared it on purpose
+          if(curV[part] === undefined){ curV[part] = m.score; cur[sub] = curV; store.saveMarks(m.class, m.roll, cur); }
+        } else if(!(m.subject in cur)){ cur[m.subject] = m.score; store.saveMarks(m.class, m.roll, cur); } // legacy theory
       }
       renderMarks();
     }

@@ -32,6 +32,7 @@
   <div class="topbar-right">
     <span id="clock"></span>
     <span id="syncBadge" class="badge" data-sync="local" title="Cloud sync status">● <span>☁ local</span></span>
+    <button id="backupBtn" class="pill-btn" title="Backup / restore everything">💾 <span data-i18n="backup">Backup</span></button>
     <button id="langToggle" class="pill-btn" title="Switch English / नेपाली">EN | NE</button>
     <button id="secondScreenBtnTop" class="pill-btn" title="Open second-screen window">🖥️ 2nd Screen</button>
   </div>
@@ -244,10 +245,13 @@
     <div class="card">
       <h3 data-i18n="marksheet">Marksheet</h3>
       <p class="hint" data-i18n="marksheetHint">Select a student, enter marks, auto-saved offline.</p>
-      <label data-i18n="selectStudent">Select student</label>
-      <select id="markStudent"></select>
+      <div class="toolbar">
+        <label style="flex:1;min-width:160px"><span data-i18n="selectStudent">Select student</span>
+        <select id="markStudent" style="width:100%"></select></label>
+        <button id="fullMarksBtn" class="btn ghost" title="Set theory/practical full marks per subject">⚙ <span data-i18n="fullMarks">Full marks</span></button>
+      </div>
       <table class="table" id="marksTable">
-        <thead><tr><th data-i18n="subject">Subject</th><th>Marks (/100)</th></tr></thead>
+        <thead><tr><th data-i18n="subject">Subject</th><th><span data-i18n="theory">Theory</span></th><th><span data-i18n="practical">Practical</span></th><th data-i18n="total">Total</th></tr></thead>
         <tbody></tbody>
       </table>
       <div class="total-row"><span data-i18n="total">Total</span>: <b id="marksTotal">0</b> • <span data-i18n="percent">Percent</span>: <b id="marksPct">0%</b></div>
@@ -393,6 +397,35 @@
       <button value="cancel" class="btn ghost">Close</button>
       <button id="syncForget" value="forget" class="btn ghost" title="Remove cloud config from this computer">Forget</button>
       <button id="syncSave" value="default" class="btn primary">Connect &amp; Sync</button>
+    </menu>
+  </form>
+</dialog>
+
+<!-- Backup / restore dialog -->
+<dialog id="backupDialog">
+  <form method="dialog" id="backupForm">
+    <h3>💾 <span data-i18n="backup">Backup</span> / <span data-i18n="restore">Restore</span></h3>
+    <p class="hint" data-i18n="backupHint">One file holds everything: students, theory/practical marks, books, presentations, settings.</p>
+    <p class="hint small" id="backupStatus">—</p>
+    <menu>
+      <button value="cancel" class="btn ghost" data-i18n="close">Close</button>
+      <label class="btn">⬆ <span data-i18n="importBk">Import</span>
+        <input id="backupFile" type="file" accept=".json,application/json" hidden />
+      </label>
+      <button id="exportBkBtn" value="default" class="btn primary">⬇ <span data-i18n="exportBk">Export</span></button>
+    </menu>
+  </form>
+</dialog>
+
+<!-- Full marks dialog (theory / practical per subject) -->
+<dialog id="fullMarksDialog">
+  <form method="dialog" id="fullMarksForm">
+    <h3>⚙ <span data-i18n="fullMarks">Full marks</span> (<span data-i18n="theory">Theory</span> + <span data-i18n="practical">Practical</span>)</h3>
+    <p class="hint" data-i18n="fullMarksHint">Set full marks per subject. Totals and percent follow automatically.</p>
+    <div id="fullMarksRows"></div>
+    <menu>
+      <button value="cancel" class="btn ghost" data-i18n="cancel">Cancel</button>
+      <button id="saveFullMarks" value="default" class="btn primary" data-i18n="save">Save</button>
     </menu>
   </form>
 </dialog>
