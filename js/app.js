@@ -118,12 +118,33 @@ document.addEventListener('input', e=>{
   if(e.target.id==='studentSearch') renderStudents();
   if(e.target.id==='bookSearch') renderBooks();
 });
+/* Delete tombstones: "cls|roll" that must never be resurrected by cloud pulls
+   (e.g. if another PC re-pushes a row we deleted while offline). */
+const TOMB_KEY = 'coach-deleted-students';
+function getTombs(){ try{ return JSON.parse(localStorage.getItem(TOMB_KEY)||'[]'); }catch{ return []; } }
+function addTomb(cls, roll){
+  const k = cls+'|'+roll;
+  const t = getTombs().filter(x=>x!==k); t.push(k);
+  try{ localStorage.setItem(TOMB_KEY, JSON.stringify(t.slice(-500))); }catch{}
+}
+function removeTomb(cls, roll){
+  const k = cls+'|'+roll;
+  try{ localStorage.setItem(TOMB_KEY, JSON.stringify(getTombs().filter(x=>x!==k))); }catch{}
+}
+function isTombed(cls, roll){ return getTombs().includes(cls+'|'+roll); }
+
 document.addEventListener('click', e=>{
   const del = e.target.closest('[data-del]');
   if(del){
-    store.students = store.students.filter(s=>!(s.cls===curClass()&&s.roll==del.dataset.del));
+    const cls = curClass(), roll = del.dataset.del;
+    if(!confirm(`Remove roll ${roll} from ${cls}?`)) return;
+    store.students = store.students.filter(s=>!(s.cls===cls&&s.roll==roll));
+    addTomb(cls, roll);
+    try{ localStorage.removeItem(`marks-${cls}-${roll}`); }catch{} // local marks cleanup
+    try{ window.SB && SB.deleteStudent(cls, roll); }catch{}        // cloud hard-delete
     try{ window.SB && SB.pushStudents(store.students); }catch{}
     renderStudents();
+    toast('Student removed ✓');
   }
 });
 $('#markStudent')?.addEventListener('change', renderMarks);
@@ -133,6 +154,7 @@ $('#saveStudent').onclick = ()=>{
   if(!roll||!name) return;
   const all = store.students.filter(s=>!(s.cls===curClass()&&s.roll===roll));
   all.push({roll,name,cls:curClass()}); store.students = all;
+  removeTomb(curClass(), roll); // re-adding a roll revives it
   try{ window.SB && SB.pushStudents(all); }catch{}
   $('#fRoll').value='';$('#fName').value='';renderStudents();
 };
@@ -275,8 +297,26 @@ function downloadBlob(blob, fileName){
   setTimeout(()=>URL.revokeObjectURL(a.href), 5000);
 }
 
+/* Built-in catalogue mirror of data/books.json.
+   fetch() is blocked on file:// (double-click) in most browsers, so without
+   this fallback the shelf would be empty. Keep in sync when editing books.json. */
+const BUILTIN_BOOKS = [
+  { "title": "Mathematics Grade 9", "titleNe": "गणित कक्षा ९", "class": "9", "type": "govt", "file": "math-9.pdf" },
+  { "title": "Science Grade 9", "titleNe": "विज्ञान कक्षा ९", "class": "9", "type": "govt", "file": "science-9.pdf" },
+  { "title": "English Grade 9", "titleNe": "अंग्रेजी कक्षा ९", "class": "9", "type": "govt", "file": "english-9.pdf" },
+  { "title": "Nepali Grade 9", "titleNe": "नेपाली कक्षा ९", "class": "9", "type": "govt", "file": "nepali-9.pdf" },
+  { "title": "Mathematics Grade 10", "titleNe": "गणित कक्षा १०", "class": "10", "type": "govt", "file": "math-10.pdf" },
+  { "title": "Science Grade 10", "titleNe": "विज्ञान कक्षा १०", "class": "10", "type": "govt", "file": "science-10.pdf" },
+  { "title": "Private Practice Book", "titleNe": "निजी अभ्यास पुस्तक", "class": "all", "type": "pvt", "file": "private-practice.pdf" }
+];
+
 async function loadBooks(){
-  try{ BOOKS = await (await fetch('data/books.json')).json(); }catch{ BOOKS = []; }
+  BOOKS = [];
+  try{
+    const r = await fetch('data/books.json');
+    if(r.ok){ const j = await r.json(); if(Array.isArray(j) && j.length) BOOKS = j; }
+  }catch{}
+  if(!BOOKS.length) BOOKS = BUILTIN_BOOKS.slice(); // file:// or missing json
   try{
     IMPORTED = await idb.all();
     IMPORTED.forEach(b=>{ if(b.blob) importUrls.set(b.id, URL.createObjectURL(b.blob)); });
@@ -383,6 +423,9 @@ document.addEventListener('click', async e=>{
     const b = CLOUD_BOOKS[+key.slice(6)];
     if(!b) return;
     title = LANG==='ne'&&b.titleNe?b.titleNe:b.title;
+    // Open the stage NOW (inside the click gesture) so no popup blocker
+    // kills it while the download below awaits.
+    try{ window.Stage && Stage.open(); }catch{}
     // Cloud books download on first sight, so they work offline afterwards.
     toast('Downloading book…');
     const cached = await cacheCloudBook({ title:b.title, titleNe:b.titleNe, class:b.class, type:b.type, file_path:b.file_path||b.fileName });
@@ -497,14 +540,52 @@ let slides = [], curSlide = 0;
 
 $('#presentFiles').addEventListener('change', async e=>{
   const files = [...e.target.files];
-  slides = files.map(f=>({ name:f.name, url:URL.createObjectURL(f), blob:f, kind:kindOf(f.name) }));
-  renderSlides(); showSlide(0);
-  // persist locally
-  for(const f of files){ await saveLocalMedia(f); }
-  renderLocalPres();
   e.target.value = '';
+  const ppt = files.filter(f=>kindOf(f.name)==='ppt');
+  const rest = files.filter(f=>kindOf(f.name)!=='ppt');
+  if(rest.length){
+    slides = rest.map(f=>({ name:f.name, url:URL.createObjectURL(f), blob:f, kind:kindOf(f.name) }));
+    renderSlides(); showSlide(0);
+    for(const f of rest){ await saveLocalMedia(f); }
+    renderLocalPres();
+  }
+  // PowerPoint files convert to slide images (installed app + PowerPoint present).
+  for(const f of ppt){ await importPptx(f); }
 });
-function kindOf(n){ n=n.toLowerCase(); if(/\.(png|jpe?g|gif|webp|bmp|svg)$/.test(n))return'img'; if(/\.(mp4|webm|mov|mkv)$/.test(n))return'video'; if(/\.pdf$/.test(n))return'pdf'; return'other'; }
+function kindOf(n){ n=n.toLowerCase(); if(/\.(pptx?|odp)$/.test(n))return'ppt'; if(/\.(png|jpe?g|gif|webp|bmp|svg)$/.test(n))return'img'; if(/\.(mp4|webm|mov|mkv)$/.test(n))return'video'; if(/\.pdf$/.test(n))return'pdf'; return'other'; }
+// Absolute disk path -> file:// URL for <img>/<iframe> in Electron windows.
+// Absolute disk path -> file:// URL for <img>/<iframe> in Electron windows.
+function toFileUrl(p){ const s = String(p).replace(/\\/g, '/'); return (s.charAt(0) === '/' ? 'file://' : 'file:///') + encodeURI(s); }
+/* PowerPoint import: installed app + local PowerPoint => PNG slides that
+   present exactly like images (synced, offline, saved locally as a deck). */
+async function importPptx(file){
+  if(!window.electron || !window.electron.pptxExport){
+    toast('PPTX preview needs the installed app on a PC with PowerPoint. Tip: export to PDF from PowerPoint — PDFs present fully.');
+    return;
+  }
+  toast('Converting ' + file.name + ' to slides…');
+  let r;
+  try{ r = await window.electron.pptxExport(file.name, await file.arrayBuffer()); }
+  catch{ r = { ok:false, error:'convert failed' }; }
+  if(!r || !r.ok){
+    if(r && r.error === 'nopowerpoint') toast('PowerPoint not found on this PC — export the file to PDF instead (fully supported).');
+    else toast('Could not convert: ' + ((r && r.error) || 'unknown error'));
+    return;
+  }
+  const imgs = r.slides.map((p,i)=>({ name:file.name.replace(/\.[^.]+$/,'')+` — slide ${i+1}`, url:toFileUrl(p), kind:'img' }));
+  slides = imgs; curSlide = 0; renderSlides(); showSlide(0);
+  try{ await idb.mediaAdd({ name:file.name.replace(/\.[^.]+$/,''), kind:'deck', dir:r.dir, slides:r.slides, date:Date.now() }); }catch{}
+  renderLocalPres();
+  toast(`Converted ✓ ${imgs.length} slides (saved on this computer)`);
+}
+/* Web embeds (Google Slides publish/embed link, etc). Needs internet. */
+$('#addLinkBtn').onclick = ()=>{
+  const u = prompt('Paste presentation link (Google Slides File → Share → Publish to web, copy the link):', 'https://');
+  if(!u) return;
+  if(!/^https:\/\//i.test(u.trim())){ toast('Link must start with https://'); return; }
+  slides = [{ name:u.trim(), url:u.trim(), kind:'embed' }];
+  curSlide = 0; renderSlides(); showSlide(0);
+};
 async function saveLocalMedia(file){
   try{ await idb.mediaAdd({ name:file.name, kind:kindOf(file.name), blob:file, date:Date.now() }); }catch{}
   try{
@@ -518,27 +599,46 @@ async function renderLocalPres(){
   const box = $('#localPresList'); if(!box) return;
   let items = [];
   try{ items = await idb.mediaAll(); }catch{}
-  box.innerHTML = items.length ? items.slice().reverse().map(m=>
-    `<div class="local-item"><span>📄 ${escapeHtml(m.name)}</span><button data-openmedia="${m.id}">Open</button><button data-delmedia="${m.id}">✕</button></div>`
-  ).join('') : '<span class="hint">No saved presentations yet.</span>';
+  box.innerHTML = items.length ? items.slice().reverse().map(m=>{
+    const icon = m.kind==='deck' ? `🎞️ ${escapeHtml(m.name)} (${(m.slides||[]).length} slides)` : m.kind==='embed' ? '🔗' : '📄';
+    const label = m.kind==='deck' ? icon : `${icon} ${escapeHtml(m.name)}`;
+    return `<div class="local-item"><span>${label}</span><button data-openmedia="${m.id}">Open</button><button data-delmedia="${m.id}">✕</button></div>`;
+  }).join('') : '<span class="hint">No saved presentations yet.</span>';
 }
 document.addEventListener('click', async e=>{
   const om = e.target.closest('[data-openmedia]');
   if(om){
     let items = []; try{ items = await idb.mediaAll(); }catch{}
     const m = items.find(x=>x.id===+om.dataset.openmedia);
-    if(!m || !m.blob) return;
+    if(!m) return;
+    if(m.kind === 'deck'){
+      // Re-converted slide images live on disk (local by design).
+      const paths = (m.slides || []).filter(p=>!!p);
+      if(!paths.length){ toast('Deck files missing.'); return; }
+      slides = paths.map((p,i)=>({ name:`${m.name} — slide ${i+1}`, url:toFileUrl(p), kind:'img' }));
+      curSlide = 0; renderSlides(); showSlide(0);
+      toast(`Opened ${m.name} (${paths.length} slides)`);
+      return;
+    }
+    if(!m.blob) return;
     slides = [{ name:m.name, url:URL.createObjectURL(m.blob), blob:m.blob, kind:m.kind || kindOf(m.name) }];
     curSlide = 0; renderSlides(); showSlide(0);
     return;
   }
   const dm = e.target.closest('[data-delmedia]');
-  if(dm){ try{ await idb.mediaDel(+dm.dataset.delmedia); }catch{} renderLocalPres(); return; }
+  if(dm){
+    let items = []; try{ items = await idb.mediaAll(); }catch{}
+    const m = items.find(x=>x.id===+dm.dataset.delmedia);
+    try{ await idb.mediaDel(+dm.dataset.delmedia); }catch{}
+    try{ if(m && m.kind==='deck' && m.dir && window.electron) await window.electron.removeDir(m.dir); }catch{}
+    renderLocalPres(); return;
+  }
 });
 function renderSlides(){
   $('#slideList').innerHTML = slides.map((s,i)=>{
-    const thumb = s.kind==='img'?`<img class="slide-thumb ${i===curSlide?'active':''}" data-i="${i}" src="${s.url}" title="${escapeHtml(s.name)}"/>`:`<button class="btn ghost" data-i="${i}">${s.kind==='video'?'🎬':'📄'} ${escapeHtml(s.name.slice(0,14))}</button>`;
-    return thumb;
+    if(s.kind==='img') return `<img class="slide-thumb ${i===curSlide?'active':''}" data-i="${i}" src="${s.url}" title="${escapeHtml(s.name)}"/>`;
+    const icon = s.kind==='video' ? '🎬' : s.kind==='embed' ? '🔗' : s.kind==='ppt' ? '📊' : '📄';
+    return `<button class="btn ghost" data-i="${i}">${icon} ${escapeHtml(String(s.name).slice(0,14))}</button>`;
   }).join('') || '<span class="hint">No files yet.</span>';
 }
 document.addEventListener('click', e=>{
@@ -550,23 +650,55 @@ function stageHtml(s){
   if(s.kind==='img') return `<img src="${s.url}" alt="slide"/>`;
   if(s.kind==='video') return `<video src="${s.url}" controls autoplay></video>`;
   if(s.kind==='pdf') return `<iframe src="${s.url}"></iframe>`;
+  if(s.kind==='embed') return `<iframe src="${escapeHtml(s.url)}" allowfullscreen style="background:#fff"></iframe>`;
+  if(s.kind==='ppt') return `<p class="hint">Converting ${escapeHtml(s.name)}…</p>`;
   return `<p class="hint">Preview not available offline for ${escapeHtml(s.name)}. Open in PowerPoint.</p>`;
 }
 function showSlide(i){
   if(!slides.length) return;
   curSlide = (i+slides.length)%slides.length;
   const s = slides[curSlide];
+  stopTeacherVideoSync();
   $('#stage').innerHTML = stageHtml(s);
   renderSlides();
   // SAME unified 2nd-screen window as books:
   try{
     if(!window.Stage) return;
     if(s.kind==='img') Stage.showImage(s.blob || s.url);
-    else if(s.kind==='video') Stage.showVideo(s.blob || s.url);
+    else if(s.kind==='video'){ Stage.showVideo(s.blob || s.url); wireTeacherVideo(); }
     else if(s.kind==='pdf') Stage.showPdf(s.blob || s.url, 1, s.name);
+    else if(s.kind==='embed') Stage.showUrl(s.url, s.name);
     else toast('This file type opens in PowerPoint, not on the stage.');
   }catch{}
 }
+/* Teacher's preview player is the master — every control mirrors to the stage. */
+let teacherVideoEl = null;
+function stopTeacherVideoSync(){
+  try{ if(teacherVideoEl && teacherVideoEl._syncH) clearInterval(teacherVideoEl._syncH); }catch{}
+  teacherVideoEl = null;
+}
+function wireTeacherVideo(){
+  const tv = document.querySelector('#stage video');
+  if(!tv || !window.Stage) return;
+  teacherVideoEl = tv;
+  const send = () => {
+    try{ Stage.videoState({ time: tv.currentTime || 0, paused: tv.paused,
+      rate: tv.playbackRate || 1, volume: tv.volume, muted: tv.muted }); }catch{}
+  };
+  tv.addEventListener('loadedmetadata', send);
+  tv.addEventListener('play', send);
+  tv.addEventListener('pause', send);
+  tv.addEventListener('seeked', send);
+  tv.addEventListener('ratechange', send);
+  tv.addEventListener('volumechange', send);
+  clearInterval(tv._syncH);
+  tv._syncH = setInterval(()=>{ if(!tv.paused && !tv.ended) send(); }, 4000); // drift correction
+}
+// Stage → teacher notices (e.g. 2nd screen muted itself to allow autoplay).
+window.addEventListener('message', e=>{
+  if(e.data && e.data.__coachStageBack === 'muted')
+    toast('2nd screen muted by browser — click the stage video once for sound.');
+});
 $('#prevSlide').onclick = ()=>showSlide(curSlide-1);
 $('#nextSlide').onclick = ()=>showSlide(curSlide+1);
 document.addEventListener('keydown', e=>{
@@ -646,7 +778,9 @@ function mergeCloud(data){
     if(data.students && data.students.length){
       const local = store.students;
       const have = new Set(local.map(s=>s.cls+'|'+s.roll));
-      const add = data.students.filter(s=>!have.has(s.class+'|'+s.roll)).map(s=>({roll:s.roll,name:s.name,cls:s.class}));
+      const add = data.students
+        .filter(s=>!have.has(s.class+'|'+s.roll) && !isTombed(s.class, s.roll))
+        .map(s=>({roll:s.roll,name:s.name,cls:s.class}));
       if(add.length){ store.students = [...local, ...add]; renderStudents(); }
     }
     if(data.marks && data.marks.length){

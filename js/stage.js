@@ -1,9 +1,9 @@
 /* Coach Dashboard — unified 2nd-screen stage bus.
    ONE window ('coach-stage' → presenter.html) shows BOTH books and
    presentations. Idle = white "Welcome" + green "Class X" pill.
-   Teacher window drives it via postMessage (+ localStorage fallback).
-   Blob/dataURL aware: pass {url} OR {blob}; blobs become dataURLs so the
-   stage works even across file:// windows where blob: URLs don't transfer.
+   Teacher window drives it via postMessage (+ localStorage fallback for metadata).
+   Files go across as Blob objects (structured clone) — the stage creates its
+   own object URL. No giant dataURL strings, no size limits.
 */
 'use strict';
 (function () {
@@ -12,26 +12,18 @@
   let mode = 'idle'; // idle | content
   let lastMsg = null;
 
-  function blobToDataUrl(blob) {
-    return new Promise((res, rej) => {
-      const r = new FileReader();
-      r.onload = () => res(r.result);
-      r.onerror = rej;
-      r.readAsDataURL(blob);
-    });
-  }
-  async function resolveUrl(src) {
-    if (!src) return '';
-    if (typeof src === 'string') return src;
-    if (src instanceof Blob) return blobToDataUrl(src); // cross-window safe
-    return '';
-  }
   function rawSend(msg) {
     lastMsg = msg;
     const full = Object.assign({ __coachStage: true, _t: Date.now() }, msg);
     try { localStorage.setItem('coach-class', msg.className || localStorage.getItem('coach-class') || '9A'); } catch {}
-    try { localStorage.setItem('coach-stage-msg', JSON.stringify(typeof full.url === 'string' && full.url.length < 200000 ? full : Object.assign({}, full, { url: full.url }))); } catch {}
-    try { win && !win.closed && win.postMessage(full, '*'); } catch {}
+    // localStorage fallback: metadata ONLY (no blobs, no huge urls — they can't be stored)
+    try {
+      const lite = Object.assign({}, full);
+      delete lite.blob;
+      if (typeof lite.url !== 'string' || lite.url.length >= 200000) delete lite.url;
+      localStorage.setItem('coach-stage-msg', JSON.stringify(lite));
+    } catch {}
+    try { if (win && !win.closed) win.postMessage(full, '*'); } catch {}
   }
 
   const Stage = {
@@ -39,6 +31,7 @@
     open() {
       if (!win || win.closed) {
         win = window.open('presenter.html', WIN_NAME, 'width=1280,height=800');
+        if (!win && window.toast) window.toast('Popup blocked — allow popups for the 2nd screen.');
         // re-send last content (or welcome) once it loads
         setTimeout(() => rawSend(lastMsg || { type: 'welcome', className: Stage.currentClass() }), 600);
         Stage.moveToSecond();
@@ -65,24 +58,47 @@
       rawSend({ type: 'welcome', className: this.currentClass() });
     },
     refreshWelcome() { if (mode === 'idle') rawSend({ type: 'welcome', className: this.currentClass() }); },
-    async showPdf(src, page, title) {
+    // src may be a URL string OR a Blob/File — Blobs travel via postMessage natively.
+    showPdf(src, page, title) {
       mode = 'content';
       this.open();
-      rawSend({ type: 'pdf', url: await resolveUrl(src), page: page || 1, title: title || '', className: this.currentClass() });
+      const m = { type: 'pdf', page: page || 1, title: title || '', className: this.currentClass() };
+      if (src instanceof Blob) m.blob = src; else m.url = src || '';
+      rawSend(m);
     },
-    async updatePdfPage(src, page) {
+    updatePdfPage(src, page) {
       if (mode !== 'content') return;
-      rawSend({ type: 'pdf', url: await resolveUrl(src), page: page || 1, className: this.currentClass() });
+      const m = { type: 'pdf', page: page || 1, className: this.currentClass() };
+      if (src instanceof Blob) m.blob = src; else m.url = src || '';
+      rawSend(m);
     },
-    async showImage(src) {
+    showImage(src) {
       mode = 'content';
       this.open();
-      rawSend({ type: 'image', url: await resolveUrl(src), className: this.currentClass() });
+      const m = { type: 'image', className: this.currentClass() };
+      if (src instanceof Blob) m.blob = src; else m.url = src || '';
+      rawSend(m);
     },
-    async showVideo(src) {
+    showVideo(src) {
       mode = 'content';
       this.open();
-      rawSend({ type: 'video', url: await resolveUrl(src), className: this.currentClass() });
+      const m = { type: 'video', className: this.currentClass() };
+      if (src instanceof Blob) m.blob = src; else m.url = src || '';
+      rawSend(m);
+    },
+    // Teacher's player is the master: every play/pause/seek/volume/rate
+    // change (plus a drift-correction tick) forwards here.
+    videoState(s) {
+      if (mode !== 'content') return;
+      rawSend({ type: 'video-sync', time: s.time || 0, paused: !!s.paused,
+        rate: s.rate || 1, volume: (s.volume == null ? 1 : s.volume),
+        muted: !!s.muted, className: this.currentClass() });
+    },
+    // Web embeds (Google Slides publish/embed links, etc). Needs internet.
+    showUrl(url, title) {
+      mode = 'content';
+      this.open();
+      rawSend({ type: 'embed', url: url || '', title: title || '', className: this.currentClass() });
     },
     clear() { this.welcome(); },
     close() { try { win && win.close(); } catch {} win = null; mode = 'idle'; }

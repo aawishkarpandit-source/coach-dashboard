@@ -38,9 +38,11 @@ Presentations are **never** uploaded — they stay on each computer by design.
 - **Books and presentations share the SAME stage window** — opening either replaces what's shown; **■ Welcome** (or closing the reader) returns to idle.
 - Teacher changes pages/slides on the main screen; students see only the open page — no controls.
 
-## 5. Local files
+## 5. Local files & presentations
 
-- **Presentations:** chosen files + PowerPoint records save on the computer (browser IndexedDB; installed app also copies real files to its data folder → “Saved on this computer” list to reopen/delete). Re-installs on the same machine keep them.
+- **PowerPoint (.ppt/.pptx):** in the installed app on a PC with PowerPoint, choosing the file auto-converts each slide to images (fully offline, via `electron/pptx-export.ps1`) — they present, page-turn and sync exactly like images, and are kept under “Saved on this computer” as a 🎞️ deck (delete removes the files too). Without PowerPoint (or in a plain browser): export to PDF from PowerPoint — PDFs present fully.
+- **Google Slides / web links:** 🔗 Link button pastes a publish/embed `https://` link; shows on teacher preview + stage (needs internet).
+- **Other presentations:** chosen files + PowerPoint records save on the computer (browser IndexedDB; installed app also copies real files to its data folder → “Saved on this computer” list to reopen/delete). Re-installs on the same machine keep them.
 - **Books:** `/books/*.pdf` + `data/books.json` ship with the app; **Import Book** writes a real file into `/books` when the folder is linked (Chrome/Edge) and always keeps a browser copy + cloud copy.
 
 ## 6. How to edit

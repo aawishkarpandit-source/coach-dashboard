@@ -47,6 +47,7 @@
     idle.style.display = 'flex'; content.classList.remove('show'); content.innerHTML = ''; err.style.display = 'none';
   }
   function showError(msg) {
+    forgetVideo();
     idle.style.display = 'none'; content.classList.remove('show');
     err.style.display = 'flex'; err.textContent = msg;
   }
@@ -55,28 +56,93 @@
     // data: URLs must not get a #page fragment mangled — appending is still fine
     return url + '#page=' + (page || 1);
   }
+  // Revoke previous object URL so long sessions don't leak memory.
+  let lastObjUrl = '';
+  let stageVideo = null; // the stage's player — teacher's screen is the master
+  function fileUrl(msg) {
+    if (msg.blob instanceof Blob) {
+      if (lastObjUrl) { try { URL.revokeObjectURL(lastObjUrl); } catch {} }
+      lastObjUrl = URL.createObjectURL(msg.blob);
+      return lastObjUrl;
+    }
+    return msg.url || '';
+  }
+  function forgetVideo() { stageVideo = null; }
+  function notifyTeacher(kind) {
+    try { if (window.opener && !window.opener.closed) window.opener.postMessage({ __coachStageBack: kind }, '*'); } catch {}
+  }
+  // Browsers block autoplay WITH sound in a script-opened window.
+  // Try with sound; fall back to muted motion + controls and tell the teacher.
+  function tryPlay(v) {
+    v.muted = false;
+    let p = null;
+    try { p = v.play(); } catch {}
+    if (p && p.catch) p.catch(() => {
+      try {
+        v.muted = true; v.controls = true;
+        const q = v.play(); if (q && q.catch) q.catch(() => {});
+      } catch {}
+      notifyTeacher('muted');
+    });
+  }
   function show(msg) {
+    if (msg && msg.className) pill.textContent = 'Class ' + msg.className;
     err.style.display = 'none';
-    if (!msg || msg.type === 'welcome' || msg.type === 'clear') { showIdle(msg && msg.className); return; }
+    if (!msg || msg.type === 'welcome' || msg.type === 'clear') { forgetVideo(); showIdle(msg && msg.className); return; }
+    if (msg.type === 'video-sync') { syncVideo(msg); return; }
+    const url = fileUrl(msg);
+    if (!url) return; // metadata-only fallback arrived first; real content follows via postMessage
     idle.style.display = 'none'; content.classList.add('show');
     if (msg.type === 'pdf') {
+      forgetVideo();
       content.innerHTML = '';
       const f = document.createElement('iframe');
-      f.src = pdfSrc(msg.url, msg.page);
+      f.src = pdfSrc(url, msg.page);
       f.onerror = () => showError('Could not display this PDF on the 2nd screen.');
       content.appendChild(f);
     } else if (msg.type === 'image') {
+      forgetVideo();
       content.innerHTML = '';
       const img = document.createElement('img');
-      img.src = msg.url; img.onerror = () => showError('Could not display this image.');
+      img.src = url; img.onerror = () => showError('Could not display this image.');
       content.appendChild(img);
     } else if (msg.type === 'video') {
       content.innerHTML = '';
       const v = document.createElement('video');
-      v.src = msg.url; v.controls = true; v.autoplay = true;
+      v.src = url; v.playsInline = true; v.controls = false;
       v.onerror = () => showError('Could not play this video.');
       content.appendChild(v);
+      stageVideo = v;
+      tryPlay(v);
+    } else if (msg.type === 'embed') {
+      forgetVideo();
+      content.innerHTML = '';
+      const f = document.createElement('iframe');
+      f.src = url; f.allowFullscreen = true;
+      f.setAttribute('allow', 'fullscreen; autoplay');
+      f.style.background = '#fff';
+      f.onerror = () => showError('Could not load this link (needs internet).');
+      content.appendChild(f);
     }
+  }
+  function syncVideo(msg) {
+    const v = stageVideo;
+    if (!v) return;
+    try {
+      if (typeof msg.volume === 'number' && isFinite(msg.volume)) v.volume = Math.min(1, Math.max(0, msg.volume));
+      if (typeof msg.rate === 'number' && isFinite(msg.rate) && msg.rate > 0) v.playbackRate = msg.rate;
+      const wantMuted = !!msg.muted;
+      if (v.muted !== wantMuted) v.muted = wantMuted;
+      if (typeof msg.time === 'number' && isFinite(msg.time)) {
+        const diff = Math.abs((v.currentTime || 0) - msg.time);
+        if (diff > 0.8 && !v.seeking) { try { v.currentTime = msg.time; } catch {} }
+      }
+      if (msg.paused === false) {
+        if (v.paused) { v.controls = false; tryPlay(v); }
+      } else if (msg.paused === true) {
+        if (!v.paused) { try { v.pause(); } catch {} }
+      }
+    } catch {}
   }
   window.addEventListener('message', (e) => { if (e.data && e.data.__coachStage) show(e.data); });
   window.addEventListener('storage', (e) => {

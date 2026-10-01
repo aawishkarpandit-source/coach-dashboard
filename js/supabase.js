@@ -78,6 +78,17 @@
       await SB.pullAll();
     },
     forget() { localStorage.removeItem(LS_KEY); client = null; setState('local'); },
+    async deleteStudent(cls, roll) {
+      // Hard-delete (student + marks) so a deleted student never resurrects on next pull.
+      const sb = await getClient(); if (!sb) return false;
+      try {
+        setState('syncing');
+        await sb.from('marks').delete().match({ class: cls, roll: Number(roll) });
+        await sb.from('students').delete().match({ class: cls, roll: Number(roll) });
+        setState('cloud');
+        return true;
+      } catch { setState('error'); return false; }
+    },
 
     // ---- writes (called by app.js store; debounced, fire-and-forget) ----
     pushStudents(allStudents) {
