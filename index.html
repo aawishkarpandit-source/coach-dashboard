@@ -95,7 +95,123 @@
     </div>
   </div>
 
-  <div class="credit">Created with ❤️ by Awishkar and Team</div>
+  <div class="credit"><button class="linklike" data-goto="about">Created with ❤️ by Awishkar and Team</button></div>
+</section>
+
+<!-- ============================================================
+     ABOUT (home-style hub: Terms + Team)
+============================================================ -->
+<section id="page-about" class="page">
+  <div class="home-center">
+    <h1 class="app-title" data-i18n="about">About</h1>
+    <p class="app-sub">Coach Dashboard • v1.0.2</p>
+
+    <div class="squircle-row">
+      <!-- Terms and Conditions -->
+      <button class="squircle" data-goto="terms">
+        <span class="squircle-icon">
+          <svg viewBox="0 0 64 64" width="56" height="56" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 6 h22 l10 10 v42 H14 z"/>
+            <path d="M36 6 v10 h10"/>
+            <line x1="22" y1="28" x2="42" y2="28"/>
+            <line x1="22" y1="35" x2="42" y2="35"/>
+            <line x1="22" y1="42" x2="38" y2="42"/>
+          </svg>
+        </span>
+        <span class="squircle-label" data-i18n="terms">Terms &amp; Conditions</span>
+      </button>
+
+      <!-- Team -->
+      <button class="squircle" data-goto="team">
+        <span class="squircle-icon">
+          <svg viewBox="0 0 64 64" width="56" height="56" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="6" y="18" width="52" height="34" rx="4"/>
+            <path d="M6 18 l4-8 8 3 4-8 8 3 4-8 8 3 4-8 8 3 4-2 v12 z"/>
+            <line x1="14" y1="18" x2="10" y2="26"/>
+            <line x1="26" y1="18" x2="22" y2="26"/>
+            <line x1="38" y1="18" x2="34" y2="26"/>
+            <line x1="50" y1="18" x2="46" y2="26"/>
+            <polygon points="27,30 27,44 39,37" fill="currentColor" stroke="none"/>
+          </svg>
+        </span>
+        <span class="squircle-label" data-i18n="team">Team</span>
+      </button>
+    </div>
+
+    <button class="back-btn" data-goto="home" style="margin-top:26px">← <span data-i18n="home">Home</span></button>
+  </div>
+
+  <div class="credit"><button class="linklike" data-goto="about">Created with ❤️ by Awishkar and Team</button></div>
+</section>
+
+<!-- ============================================================
+     TERMS AND CONDITIONS
+============================================================ -->
+<section id="page-terms" class="page">
+  <div class="page-head">
+    <button class="back-btn" data-goto="about">← <span data-i18n="about">About</span></button>
+    <h2 data-i18n="terms">Terms &amp; Conditions</h2>
+  </div>
+
+  <div class="card terms-card">
+    <p class="hint">Last updated: 2026 • Coach Dashboard — classroom teaching software</p>
+    <div data-lang-block="en">
+      <h3>1. What this app is for</h3>
+      <p>Coach Dashboard is made for classroom teaching: managing students and marks, reading textbooks, and presenting lessons on a second screen. Please use it for lawful educational purposes only.</p>
+      <h3>2. Your data</h3>
+      <p>Student names, marks, imported books, and presentations are stored on your own computer first, and mirrored to the school's private cloud (Supabase) for sync between computers. Presentations are never uploaded — they stay on each computer. The team cannot see or sell your data; keep your cloud keys private.</p>
+      <h3>3. Your responsibility</h3>
+      <p>You are responsible for the accuracy of marks and student records, for having the right to use any books or media you import, and for keeping the installed computers secure (lock screens, careful with the Sync keys).</p>
+      <h3>4. No warranty</h3>
+      <p>The app is provided as-is for schools, free of charge. We work hard to keep it reliable (offline-first, auto-saved), but we cannot guarantee it will be error-free — please keep your own backups of important records (CSV export is built in).</p>
+      <h3>5. Updates</h3>
+      <p>When online, the app may download updates from the project's GitHub releases. By updating you accept the newest version of these terms.</p>
+      <h3>6. Contact</h3>
+      <p>Questions or problems? Reach the developer through your school coordinator.</p>
+    </div>
+    <div data-lang-block="ne">
+      <h3>१. यो एप के का लागि हो</h3>
+      <p>कोच ड्यासबोर्ड कक्षा शिक्षणका लागि बनेको हो: विद्यार्थी र नम्बर व्यवस्थापन, पाठ्यपुस्तक पढ्ने, र दोस्रो स्क्रिनमा पाठ प्रस्तुत गर्ने। कृपया यसलाई कानुनी शैक्षिक उद्देश्यका लागि मात्र प्रयोग गर्नुहोस्।</p>
+      <h3>२. तपाईंको डाटा</h3>
+      <p>विद्यार्थीको नाम, नम्बर, आयातित किताब र प्रस्तुतिहरू पहिले तपाईंको आफ्नै कम्प्युटरमा भण्डारण हुन्छन्, र कम्प्युटरहरूबीच सिङ्कका लागि विद्यालयको निजी क्लाउड (Supabase) मा प्रतिलिपि हुन्छ। प्रस्तुतिहरू कहिल्यै अपलोड हुँदैनन् — ती प्रत्येक कम्प्युटरमै रहन्छ। टिमले तपाईंको डाटा हेर्न वा बेच्न सक्दैन; आफ्नो क्लाउड 키हरू गोप्य राख्नुहोस्।</p>
+      <h3>३. तपाईंको जिम्मेवारी</h3>
+      <p>नम्बर र विद्यार्थी रेकर्डको शुद्धता, आयात गर्ने किताब/मिडिया प्रयोग गर्ने अधिकार, र कम्प्युटरहरूको सुरक्षा (स्क्रिन लक, सिङ्क 키हरूको हेरचाह) तपाईंको जिम्मेवारी हो।</p>
+      <h3>४. ग्यारेन्टी छैन</h3>
+      <p>यो एप विद्यालयहरूका लागि निःशुल्क, जस्तो छ त्यस्तै प्रदान गरिएको हो। यसलाई भरपर्दो राख्न हामी मेहनत गर्छौं (अफलाइन, स्वतः-सेभ), तर त्रुटिरहित हुने ग्यारेन्टी दिन सक्दैनौं — महत्त्वपूर्ण रेकर्डको आफ्नै ब्याकअप राख्नुहोस् (CSV एक्सपोर्ट सुविधा छ)।</p>
+      <h3>५. अपडेटहरू</h3>
+      <p>इन्टरनेट हुँदा एपले GitHub रिलिजबाट अपडेट डाउनलोड गर्न सक्छ। अपडेट गरेपछि यी सर्तहरूको नवीनतम संस्करण स्वीकार गरेको मानिनेछ।</p>
+      <h3>६. सम्पर्क</h3>
+      <p>प्रश्न वा समस्या? विद्यालय संयोजकमार्फत विकासकर्तालाई सम्पर्क गर्नुहोस्।</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     TEAM — movie credits style 🎬
+============================================================ -->
+<section id="page-team" class="page">
+  <div class="page-head">
+    <button class="back-btn" data-goto="about">← <span data-i18n="about">About</span></button>
+    <h2 data-i18n="team">Team</h2>
+    <button id="creditsPlay" class="btn">▶ <span data-i18n="playCredits">Play credits</span></button>
+  </div>
+
+  <div class="movie" id="movieBox">
+    <div class="movie-inner" id="movieInner">
+      <div class="movie-studio">AWISHKAR &amp; TEAM</div>
+      <div class="movie-title">COACH<br/>DASHBOARD</div>
+      <div class="movie-tag">a classroom story • in every school</div>
+      <div class="movie-cast">
+        <div class="credit-role" data-i18n="roleLead">LEAD DESIGNER &amp; DEVELOPER</div>
+        <div class="credit-name star">Awishkar Pandit</div>
+        <div class="credit-role" data-i18n="roleTesters">PLAY TESTERS</div>
+        <div class="credit-name">Prabesh Timilsina</div>
+        <div class="credit-name">Abhinav Basnet</div>
+        <div class="credit-name">Sakshyam Basnet</div>
+      </div>
+      <div class="movie-end">❤️<br/><span data-i18n="thanksWatching">Thanks for teaching</span></div>
+    </div>
+  </div>
 </section>
 
 <!-- ============================================================

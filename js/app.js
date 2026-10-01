@@ -14,6 +14,7 @@ function goto(page) {
   const el = $('#page-' + page);
   if (el) el.classList.add('active');
   location.hash = page === 'home' ? '' : page;
+  if (page !== 'team' && typeof resetCredits === 'function') resetCredits();
   if (page === 'students') renderStudents();
   if (page === 'books') renderBooks();
   if (page === 'present'){ try{ renderLocalPres(); }catch{} }
@@ -24,7 +25,7 @@ document.addEventListener('click', e => {
 });
 window.addEventListener('load', () => {
   const h = location.hash.replace('#', '');
-  if (['students','books','present'].includes(h)) goto(h);
+  if (['students','books','present','about','terms','team'].includes(h)) goto(h);
 });
 $('#classSelect').addEventListener('change', e => {
   $('#studentsClassChip').textContent = e.target.value;
@@ -37,8 +38,8 @@ $('#classSelect').addEventListener('change', e => {
 
 /* ---------- 2. Eng / Nep toggle ---------- */
 const I18N = {
-  en: {classLabel:'Class',offline:'Offline Ready',appTitle:'Classroom Dashboard',appSub:'Simple • Offline • Easy to use',students:'Students',books:'Textbooks',present:'Present',home:'Home',studentsTitle:'Students & Marksheet',studentList:'Student List',add:'Add',marksheet:'Marksheet',marksheetHint:'Select a student, enter marks, auto-saved offline.',selectStudent:'Select student',subject:'Subject',total:'Total',percent:'Percent',name:'Name',action:'Action',booksTitle:'Textbooks',govt:'Govt Books',pvt:'Private Books',booksHint:'Put PDFs in /books folder, or Import. Works offline.',importBook:'Import Book',importHint:'Choose a PDF. If the /books folder is linked, it is saved there as a real file.',linkFolder:'Link /books folder',delete:'Delete',imported:'Imported',show2nd:'Show on 2nd screen',pdfControlHint:'You control from this screen — students see only the open page on the 2nd screen.',presentTitle:'Present',presentFiles:'Presentation / Media',presentHint:'Images, videos & PDFs play fully offline. PPT / Google Slides need PowerPoint or internet.',chooseFiles:'Choose files',openPresenter:'Open presenter (2nd screen)',stage:'Stage (what students see)',stageHint:'Pick a file to preview here. Presenter window mirrors this.',newPpt:'New presentation',newPptHint:'“New presentation” opens MS PowerPoint and saves starter file in /presentations.',addStudent:'Add student',cancel:'Cancel',save:'Save',close:'Close',open2nd:'2nd screen',localPres:'Saved on this computer'},
-  ne: {classLabel:'कक्षा',offline:'अफलाइन तयार',appTitle:'कक्षाकोठा ड्यासबोर्ड',appSub:'सरल • अफलाइन • सजिलो',students:'विद्यार्थी',books:'पाठ्यपुस्तक',present:'प्रस्तुत गर्नुहोस्',home:'गृहपृष्ठ',studentsTitle:'विद्यार्थी र मार्कसिट',studentList:'विद्यार्थी सूची',add:'थप्नुहोस्',marksheet:'मार्कसिट',marksheetHint:'विद्यार्थी छान्नुहोस्, नम्बर हाल्नुहोस्, अफलाइन सेभ हुन्छ।',selectStudent:'विद्यार्थी छान्नुहोस्',subject:'विषय',total:'जम्मा',percent:'प्रतिशत',name:'नाम',action:'कार्य',booksTitle:'पाठ्यपुस्तक',govt:'सरकारी किताब',pvt:'निजी किताब',booksHint:'PDF हरू /books मा राख्नुहोस् वा Import गर्नुहोस्। अफलाइन चल्छ।',importBook:'किताब आयात',importHint:'PDF छान्नुहोस्। /books फोल्डर लिंक छ भने वास्तविक फाइल त्यतै सेभ हुन्छ।',linkFolder:'Link /books फोल्डर',delete:'हटाउनुहोस्',imported:'आयातित',show2nd:'दोस्रो स्क्रिनमा देखाउनुहोस्',pdfControlHint:'तपाईं यस स्क्रिनबाट नियन्त्रण गर्नुहोस् — विद्यार्थीले दोस्रो स्क्रिनमा खुला पेज मात्र देख्छन्।',presentTitle:'प्रस्तुत',presentFiles:'प्रस्तुति / मिडिया',presentHint:'फोटो, भिडियो र PDF अफलाइन चल्छ। PPT / Google Slides लाई PowerPoint वा इन्टरनेट चाहिन्छ।',chooseFiles:'फाइल छान्नुहोस्',openPresenter:'प्रस्तोता खोल्नुहोस् (दोस्रो स्क्रिन)',stage:'स्टेज (विद्यार्थीले देख्ने)',stageHint:'यहाँ हेर्न फाइल छान्नुहोस्। प्रस्तोता विन्डोमा उही देखिन्छ।',newPpt:'नयाँ प्रस्तुति',newPptHint:'"नयाँ प्रस्तुति" ले MS PowerPoint खोल्छ र /presentations मा फाइल सेभ गर्छ।',addStudent:'विद्यार्थी थप्नुहोस्',cancel:'रद्द',save:'सेभ',close:'बन्द',open2nd:'दोस्रो स्क्रिन',localPres:'यस कम्प्युटरमा सेभ'}
+  en: {classLabel:'Class',offline:'Offline Ready',appTitle:'Classroom Dashboard',appSub:'Simple • Offline • Easy to use',students:'Students',books:'Textbooks',present:'Present',home:'Home',studentsTitle:'Students & Marksheet',studentList:'Student List',add:'Add',marksheet:'Marksheet',marksheetHint:'Select a student, enter marks, auto-saved offline.',selectStudent:'Select student',subject:'Subject',total:'Total',percent:'Percent',name:'Name',action:'Action',booksTitle:'Textbooks',govt:'Govt Books',pvt:'Private Books',booksHint:'Put PDFs in /books folder, or Import. Works offline.',importBook:'Import Book',importHint:'Choose a PDF. If the /books folder is linked, it is saved there as a real file.',linkFolder:'Link /books folder',delete:'Delete',imported:'Imported',show2nd:'Show on 2nd screen',pdfControlHint:'You control from this screen — students see only the open page on the 2nd screen.',presentTitle:'Present',presentFiles:'Presentation / Media',presentHint:'Images, videos & PDFs play fully offline. PPT / Google Slides need PowerPoint or internet.',chooseFiles:'Choose files',openPresenter:'Open presenter (2nd screen)',stage:'Stage (what students see)',stageHint:'Pick a file to preview here. Presenter window mirrors this.',newPpt:'New presentation',newPptHint:'“New presentation” opens MS PowerPoint and saves starter file in /presentations.',addStudent:'Add student',cancel:'Cancel',save:'Save',close:'Close',open2nd:'2nd screen',localPres:'Saved on this computer',about:'About',terms:'Terms & Conditions',team:'Team',playCredits:'Play credits',stopCredits:'Stop',roleLead:'LEAD DESIGNER & DEVELOPER',roleTesters:'PLAY TESTERS',thanksWatching:'Thanks for teaching'},
+  ne: {classLabel:'कक्षा',offline:'अफलाइन तयार',appTitle:'कक्षाकोठा ड्यासबोर्ड',appSub:'सरल • अफलाइन • सजिलो',students:'विद्यार्थी',books:'पाठ्यपुस्तक',present:'प्रस्तुत गर्नुहोस्',home:'गृहपृष्ठ',studentsTitle:'विद्यार्थी र मार्कसिट',studentList:'विद्यार्थी सूची',add:'थप्नुहोस्',marksheet:'मार्कसिट',marksheetHint:'विद्यार्थी छान्नुहोस्, नम्बर हाल्नुहोस्, अफलाइन सेभ हुन्छ।',selectStudent:'विद्यार्थी छान्नुहोस्',subject:'विषय',total:'जम्मा',percent:'प्रतिशत',name:'नाम',action:'कार्य',booksTitle:'पाठ्यपुस्तक',govt:'सरकारी किताब',pvt:'निजी किताब',booksHint:'PDF हरू /books मा राख्नुहोस् वा Import गर्नुहोस्। अफलाइन चल्छ।',importBook:'किताब आयात',importHint:'PDF छान्नुहोस्। /books फोल्डर लिंक छ भने वास्तविक फाइल त्यतै सेभ हुन्छ।',linkFolder:'Link /books फोल्डर',delete:'हटाउनुहोस्',imported:'आयातित',show2nd:'दोस्रो स्क्रिनमा देखाउनुहोस्',pdfControlHint:'तपाईं यस स्क्रिनबाट नियन्त्रण गर्नुहोस् — विद्यार्थीले दोस्रो स्क्रिनमा खुला पेज मात्र देख्छन्।',presentTitle:'प्रस्तुत',presentFiles:'प्रस्तुति / मिडिया',presentHint:'फोटो, भिडियो र PDF अफलाइन चल्छ। PPT / Google Slides लाई PowerPoint वा इन्टरनेट चाहिन्छ।',chooseFiles:'फाइल छान्नुहोस्',openPresenter:'प्रस्तोता खोल्नुहोस् (दोस्रो स्क्रिन)',stage:'स्टेज (विद्यार्थीले देख्ने)',stageHint:'यहाँ हेर्न फाइल छान्नुहोस्। प्रस्तोता विन्डोमा उही देखिन्छ।',newPpt:'नयाँ प्रस्तुति',newPptHint:'"नयाँ प्रस्तुति" ले MS PowerPoint खोल्छ र /presentations मा फाइल सेभ गर्छ।',addStudent:'विद्यार्थी थप्नुहोस्',cancel:'रद्द',save:'सेभ',close:'बन्द',open2nd:'दोस्रो स्क्रिन',localPres:'यस कम्प्युटरमा सेभ',about:'बारेमा',terms:'नियम तथा सर्तहरू',team:'टिम',playCredits:'क्रेडिट चलाउनुहोस्',stopCredits:'रोक्नुहोस्',roleLead:'प्रमुख डिजाइनर तथा विकासकर्ता',roleTesters:'प्ले टेस्टरहरू',thanksWatching:'पढाउनुभएकोमा धन्यवाद'}
 };
 let LANG = localStorage.getItem('coach-lang') || 'en';
 function applyLang() {
@@ -46,6 +47,10 @@ function applyLang() {
   $$('[data-i18n]').forEach(el => {
     const k = el.dataset.i18n;
     if (d[k]) el.textContent = d[k];
+  });
+  // Terms page: show only the matching language block
+  $$('[data-lang-block]').forEach(el => {
+    el.style.display = el.dataset.langBlock === LANG ? '' : 'none';
   });
   document.documentElement.lang = LANG === 'ne' ? 'ne' : 'en';
   $('#langToggle').textContent = LANG === 'ne' ? 'NE | EN' : 'EN | NE';
@@ -774,7 +779,32 @@ $('#newPptBtn').onclick = async ()=>{
   setTimeout(()=>toast('Save the .pptx into the Presentations folder so it stays on this computer.'), 2500);
 };
 
-/* ---------- 7. Cloud sync UI + merge + auto-update ---------- */
+/* Team page — movie credits roll 🎬 */
+function resetCredits(){
+  const inner = $('#movieInner');
+  if(!inner) return;
+  inner.classList.remove('rolling');
+  inner.style.paddingTop = '';
+  inner.style.animationDuration = '';
+  inner.style.transform = '';
+  const btn = $('#creditsPlay span');
+  if(btn) btn.textContent = (I18N[LANG] && I18N[LANG].playCredits) || 'Play credits';
+}
+$('#creditsPlay').onclick = ()=>{
+  const box = $('#movieBox'), inner = $('#movieInner');
+  if(!box || !inner) return;
+  if(inner.classList.contains('rolling')){ resetCredits(); return; } // Stop
+  // Start below the frame, then roll up like end credits
+  inner.style.paddingTop = box.clientHeight + 'px';
+  inner.style.transform = '';
+  void inner.offsetWidth; // restart animation
+  const total = inner.scrollHeight;
+  inner.style.animationDuration = Math.max(12, Math.round(total / 45)) + 's';
+  inner.classList.add('rolling');
+  const btn = $('#creditsPlay span');
+  if(btn) btn.textContent = (I18N[LANG] && I18N[LANG].stopCredits) || 'Stop';
+  inner.onanimationend = resetCredits;
+};
 $('#syncBtn').onclick = ()=>{
   const dlg = $('#syncDialog');
   try{

@@ -49,6 +49,30 @@ main{flex:1;position:relative}
 .squircle-icon{display:block}
 .squircle-label{color:var(--ink)}
 .credit{padding:14px 18px;color:var(--muted);font-size:13px;text-align:left}
+.linklike{background:none;border:none;color:inherit;font:inherit;cursor:pointer;padding:0;text-align:left}
+.linklike:hover{color:var(--accent);text-decoration:underline}
+
+/* Terms page */
+.terms-card{max-width:760px;margin:0 auto}
+.terms-card h3{margin:18px 0 6px}
+.terms-card p{line-height:1.55;color:#374151}
+
+/* Team page — movie credits 🎬 */
+.movie{background:#0b0b10;color:#f5f1e6;border-radius:var(--radius);max-width:640px;margin:0 auto;height:480px;overflow:hidden;position:relative;border:1px solid #26262e}
+.movie::before,.movie::after{content:"";position:absolute;left:0;right:0;height:70px;z-index:2;pointer-events:none}
+.movie::before{top:0;background:linear-gradient(#0b0b10,transparent)}
+.movie::after{bottom:0;background:linear-gradient(transparent,#0b0b10)}
+.movie-inner{text-align:center;padding:40px 24px 60px;font-family:Georgia,"Times New Roman",serif}
+.movie-inner.rolling{animation:roll linear forwards}
+@keyframes roll{from{transform:translateY(0)}to{transform:translateY(-105%)}}
+.movie-studio{letter-spacing:8px;font-size:13px;color:#c9a227;margin-bottom:26px}
+.movie-title{font-size:52px;font-weight:800;letter-spacing:6px;line-height:1.15;color:#fff}
+.movie-tag{font-style:italic;color:#9a958a;margin:16px 0 60px}
+.movie-cast{margin:20px 0}
+.credit-role{letter-spacing:5px;font-size:13px;color:#c9a227;margin:38px 0 10px}
+.credit-name{font-size:30px;color:#fff;margin:6px 0}
+.credit-name.star{font-size:38px;color:#ffe9a8}
+.movie-end{margin-top:70px;font-size:26px;color:#ffe9a8;line-height:1.8}
 
 /* Cards / generic template */
 .card-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
