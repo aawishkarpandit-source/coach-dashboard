@@ -102,7 +102,7 @@
 <section id="page-about" class="page">
   <div class="home-center">
     <h1 class="app-title" data-i18n="about">About</h1>
-    <p class="app-sub">Coach Dashboard • v1.0.2</p>
+    <p class="app-sub">Coach Dashboard • <span id="appVersion">…</span> <button id="updateCheckBtn" class="pill-btn hidden" title="Check for updates now">⟳ Check updates</button></p>
 
     <div class="squircle-row">
       <!-- Terms and Conditions -->
@@ -432,7 +432,13 @@
 </dialog>
 
 <div id="toast" class="toast hidden"></div>
-<div id="updateBar" class="update-bar hidden">Update downloaded. <button id="updateNow" class="btn primary">Restart to update</button></div>
+<div id="updateBar" class="update-bar hidden">
+  <span id="updateText">Checking for updates…</span>
+  <span id="updateProgWrap" class="prog hidden"><span id="updateProg"></span></span>
+  <span id="updatePct" class="hidden"></span>
+  <button id="updateAction" class="btn primary hidden">Update</button>
+  <button id="updateDismiss" class="btn ghost" title="Dismiss">✕</button>
+</div>
 
 <script>
 /* Built-in cloud config — every install syncs out of the box.

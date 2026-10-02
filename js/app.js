@@ -1398,10 +1398,66 @@ setTimeout(async ()=>{
   }catch{}
   renderLocalPres();
 }, 2500);
-// In-app update notice (installed app only)
-try{
-  if(window.electron && window.electron.onUpdateDownloaded){
-    window.electron.onUpdateDownloaded(()=>{ $('#updateBar').classList.remove('hidden'); });
-    $('#updateNow').onclick = ()=> window.electron.quitAndInstall();
+// Updates with visible progress (installed app only).
+// States: checking → available [Download] → downloading (live %) → downloaded [Restart].
+(function(){
+  const E = (window.electron && window.electron.onUpdateStatus) ? window.electron : null;
+  const bar = $('#updateBar');
+  if(!E || !bar) return;
+  const text = $('#updateText'), wrap = $('#updateProgWrap'), fill = $('#updateProg'),
+    pct = $('#updatePct'), action = $('#updateAction'), dismiss = $('#updateDismiss');
+  let mode = 'idle', dlVersion = '';
+  const mb = (n) => (n / 1048576).toFixed(n >= 104857600 ? 0 : 1) + ' MB';
+  function show(){ bar.classList.remove('hidden'); }
+  function setAction(label, fn){
+    if(!label){ action.classList.add('hidden'); action.onclick = null; return; }
+    action.classList.remove('hidden');
+    action.textContent = label;
+    action.onclick = fn;
   }
-}catch{}
+  function setProg(p, total, done){
+    if(p == null){ wrap.classList.add('hidden'); pct.classList.add('hidden'); return; }
+    wrap.classList.remove('hidden'); pct.classList.remove('hidden');
+    fill.style.width = Math.min(100, Math.max(0, p)) + '%';
+    pct.textContent = Math.round(p) + '% • ' + mb(done) + ' / ' + mb(total);
+  }
+  E.onUpdateStatus((info) => {
+    const ev = info && info.event, d = (info && info.data) || {};
+    if(ev === 'checking'){ mode = 'checking'; text.textContent = 'Checking for updates…'; setAction(null); setProg(null); show(); }
+    else if(ev === 'available'){
+      mode = 'available'; dlVersion = d.version || '';
+      text.textContent = 'Update available' + (dlVersion ? ' (v' + dlVersion + ')' : '') + ' — press Download.';
+      setAction('⬇ Download', () => { try{ E.startDownload(); }catch{} });
+      setProg(null); show();
+    }
+    else if(ev === 'none'){ if(mode === 'checking'){ text.textContent = 'You have the latest version ✓'; setAction(null); setProg(null); setTimeout(()=>bar.classList.add('hidden'), 4000); } mode = 'idle'; }
+    else if(ev === 'progress'){
+      mode = 'downloading';
+      text.textContent = 'Downloading update' + (dlVersion ? ' v' + dlVersion : '') + '…';
+      setAction(null); setProg(d.percent || 0, d.total || 0, d.transferred || 0); show();
+      if(d.bytesPerSecond) text.textContent += ' (' + mb(d.bytesPerSecond) + '/s)';
+    }
+    else if(ev === 'downloaded'){
+      mode = 'downloaded'; dlVersion = d.version || dlVersion;
+      text.textContent = 'Update' + (dlVersion ? ' v' + dlVersion : '') + ' downloaded ✓';
+      setAction('↻ Restart to update', () => { try{ E.quitAndInstall(); }catch{} });
+      setProg(100, 1, 1); pct.textContent = 'ready'; show();
+    }
+    else if(ev === 'error'){
+      mode = 'idle';
+      text.textContent = 'Update check failed: ' + (d.message || 'no internet?');
+      setAction('↻ Retry', () => { try{ E.checkUpdates(); }catch{} });
+      setProg(null); show();
+    }
+  });
+  dismiss.onclick = () => bar.classList.add('hidden');
+  // About page: show installed version + manual check button
+  try{
+    E.appVersion().then((v)=>{ const s = $('#appVersion'); if(s && v) s.textContent = 'v' + v; }).catch(()=>{});
+  }catch{}
+  const chk = $('#updateCheckBtn');
+  if(chk){
+    chk.classList.remove('hidden');
+    chk.onclick = () => { bar.classList.remove('hidden'); text.textContent = 'Checking for updates…'; try{ E.checkUpdates(); }catch{} };
+  }
+})();

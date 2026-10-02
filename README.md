@@ -15,7 +15,7 @@ Teacher control window + student 2nd-screen window from **one install**.
 1. Create a GitHub repo, push this folder, and set the repo in `package.json` → `build.publish` (`owner` + `repo`).
 2. Bump `"version"` in `package.json` (e.g. `1.0.0` → `1.0.1`).
 3. Tag & push: `git tag v1.0.1 && git push origin v1.0.1` — the workflow in `.github/workflows/release.yml` builds the `.exe` and attaches it to the GitHub Release.
-4. School computers with internet pick it up automatically (green “Restart to update” bar).
+4. School computers with internet pick it up automatically: the app detects the new release, shows an **Update** button, downloads with a live progress bar, then offers **Restart to update** (About page also shows the installed version + a manual check button).
 
 ## 3. Cloud (Supabase) — students, marks, books on every computer
 

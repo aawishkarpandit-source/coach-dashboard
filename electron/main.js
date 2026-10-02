@@ -153,19 +153,41 @@ ipcMain.handle('coach:delete-file', async (_evt, fullPath) => {
   } catch { return false; }
 });
 
-// ---- auto-update from GitHub Releases (only when installed, not in dev) ----
+// ---- updates from GitHub Releases (only when installed, not in dev) ----
+// Flow the teacher sees: auto-detect → "Update vX" button → click to download
+// with live progress → "Restart to update" installs it. Nothing is silent.
 function setupAutoUpdate() {
   if (!app.isPackaged) return; // skip in `npm start`
   try {
     const { autoUpdater } = require('electron-updater');
-    autoUpdater.autoDownload = true;
-    autoUpdater.on('update-downloaded', () => {
-      if (mainWin) mainWin.webContents.send('coach:update-downloaded');
+    autoUpdater.autoDownload = false; // user presses Download so progress is visible
+    autoUpdater.allowPrerelease = false;
+    const send = (event, data) => {
+      try { if (mainWin && !mainWin.isDestroyed()) mainWin.webContents.send('coach:update-status', { event, data: data || {} }); } catch {}
+    };
+    autoUpdater.on('checking-for-update', () => send('checking'));
+    autoUpdater.on('update-available', (info) => send('available', { version: info && info.version }));
+    autoUpdater.on('update-not-available', (info) => send('none', { version: info && info.version }));
+    autoUpdater.on('download-progress', (p) => send('progress', {
+      percent: Math.round(p.percent || 0),
+      transferred: p.transferred || 0, total: p.total || 0,
+      bytesPerSecond: Math.round(p.bytesPerSecond || 0)
+    }));
+    autoUpdater.on('update-downloaded', (info) => send('downloaded', { version: info && info.version }));
+    autoUpdater.on('error', (err) => send('error', { message: String((err && err.message) || err).slice(0, 220) }));
+    ipcMain.handle('coach:check-updates', async () => {
+      try { await autoUpdater.checkForUpdates(); return true; }
+      catch (e) { send('error', { message: String((e && e.message) || e).slice(0, 220) }); return false; }
     });
-    autoUpdater.on('error', () => { /* stay silent offline */ });
-    autoUpdater.checkForUpdatesAndNotify().catch(() => {});
-    setInterval(() => { autoUpdater.checkForUpdatesAndNotify().catch(() => {}); }, 6 * 60 * 60 * 1000);
-    ipcMain.handle('coach:quit-and-install', () => autoUpdater.quitAndInstall());
+    ipcMain.handle('coach:start-download', async () => {
+      try { await autoUpdater.downloadUpdate(); return true; }
+      catch (e) { send('error', { message: String((e && e.message) || e).slice(0, 220) }); return false; }
+    });
+    ipcMain.handle('coach:quit-and-install', () => { try { autoUpdater.quitAndInstall(false, true); } catch {} });
+    ipcMain.handle('coach:app-version', () => app.getVersion());
+    // detect on launch (delayed so the window is up) + every 6 hours
+    setTimeout(() => { autoUpdater.checkForUpdates().catch(() => {}); }, 12000);
+    setInterval(() => { autoUpdater.checkForUpdates().catch(() => {}); }, 6 * 60 * 60 * 1000);
   } catch { /* electron-updater not available */ }
 }
 

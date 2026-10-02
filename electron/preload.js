@@ -13,6 +13,11 @@ contextBridge.exposeInMainWorld('electron', {
   openPath: (fullPath) => ipcRenderer.invoke('coach:open-path', fullPath),
   quitAndInstall: () => ipcRenderer.invoke('coach:quit-and-install'),
   onUpdateDownloaded: (cb) => ipcRenderer.on('coach:update-downloaded', cb),
+  // Updates with visible progress (installed app)
+  checkUpdates: () => ipcRenderer.invoke('coach:check-updates'),
+  startDownload: () => ipcRenderer.invoke('coach:start-download'),
+  appVersion: () => ipcRenderer.invoke('coach:app-version'),
+  onUpdateStatus: (cb) => ipcRenderer.on('coach:update-status', (_e, info) => { try { cb(info); } catch {} }),
   // 2nd-screen stage transport (installed app: true auto-fullscreen, no popups)
   stageOpen: () => ipcRenderer.invoke('coach:stage-open'),
   stageShow: (msg) => ipcRenderer.invoke('coach:stage-show', msg),
