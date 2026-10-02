@@ -35,8 +35,8 @@ Presentations are **never** uploaded — they stay on each computer by design.
 
 ## 3c. Exams: theory + practical (custom full marks)
 
-- Every subject has **Theory** and **Practical** inputs with per-subject full marks (default 75 + 25). **⚙ Full marks** on the marksheet card customizes them (local to each PC).
-- Totals = Th + Pr; percent = total ÷ configured full. CSV export, 2nd-screen table, and cloud sync (`Subject::TH` / `::PR` rows) all follow. Old single-number marks count as theory; cleared cells stay cleared across syncs.
+- Every subject has **Theory** and **Practical** inputs with per-subject full marks (default 75 + 25, stored per PC).
+- Totals = Th + Pr; percent = total ÷ configured full. Cloud sync (`Subject::TH` / `::PR` rows, per exam) follows. Old single-number marks count as theory; cleared cells stay cleared across syncs.
 
 ## 4. 2nd screen (projector/TV)
 
@@ -44,7 +44,7 @@ Presentations are **never** uploaded — they stay on each computer by design.
   - **Installed app:** a real stage window opens **automatically fullscreen on the 2nd display** (no clicks, no F11). Plug/unplug the projector any time — it re-seats itself.
   - **Plain browser:** best-effort window — drag it to the projector and press F11.
 - **Idle:** white background, **Welcome** centered, green rectangle below with white text **Class 9A** (follows the class dropdown).
-- **Books, presentations AND the marksheet share the SAME stage window** — opening any of them replaces what's shown; closing the reader returns to idle. The Students page has its own “Show on 2nd screen” button (white results table, updates live as you type marks).
+- **Books, presentations AND the marksheet share the SAME stage window** — opening any of them replaces what's shown; closing the reader returns to idle.
 - Teacher changes pages/slides on the main screen; students see only the open content — no controls.
 
 ## 5. Local files & presentations
@@ -60,5 +60,5 @@ Presentations are **never** uploaded — they stay on each computer by design.
 1. **Classes** – `<select id="classSelect">` in `index.html`.
 2. **New page** – copy a `<section id="page-xxx" class="page">` block, link with `<button data-goto="xxx">`.
 3. **Books** – drop PDFs in `/books/`, add rows in `data/books.json` (`class`: `9`/`10`/`9A`/`all`, `type`: `govt`/`pvt`).
-4. **Subjects & full marks** – in-app via ⚙ Full marks (rename, Th/Pr full marks, delete, add). **Exams** – Exam 1, Exam 2… each with its own marksheet (⚙ Exams; cloud needs `supabase/migrate-exams.sql` run once — old rows become Exam 1). **Language** – `I18N` in `js/app.js` + `data-i18n`.
+4. **Subjects & exams** – defaults live in `js/app.js` (`DEFAULT_SUBJECTS`, default Exam 1); per-PC overrides persist in localStorage. **Language** – `I18N` in `js/app.js` + `data-i18n`.
 5. **Stage idle screen** – `presenter.html`. **Stage logic** – `js/stage.js`. **Cloud** – `js/supabase.js`.

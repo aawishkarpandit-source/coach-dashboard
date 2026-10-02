@@ -7,6 +7,8 @@
 'use strict';
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
+// Safe binding: the Students screen was removed, so its controls may not exist.
+function onBtn(id, fn){ const el = document.getElementById(id); if(el) el.onclick = fn; }
 
 /* ---------- 1. Simple routing (hash + buttons) ---------- */
 function goto(page) {
@@ -25,10 +27,11 @@ document.addEventListener('click', e => {
 });
 window.addEventListener('load', () => {
   const h = location.hash.replace('#', '');
-  if (['students','books','present','about','terms','team'].includes(h)) goto(h);
+  if (['books','present','about','terms','team'].includes(h)) goto(h);
 });
 $('#classSelect').addEventListener('change', e => {
-  $('#studentsClassChip').textContent = e.target.value;
+  const chip = $('#studentsClassChip');
+  if(chip) chip.textContent = e.target.value;
   try{ localStorage.setItem('coach-class', e.target.value); }catch{}
   renderStudents();
   renderBooks();
@@ -75,7 +78,7 @@ function toast(msg){
   clearTimeout(t._h); t._h = setTimeout(()=>t.classList.add('hidden'), 2200);
 }
 
-/* ---------- 4. Students + Marksheet (offline localStorage) ---------- */
+/* ---------- 4. Students data engine (screen removed; storage/sync intact) ---------- */
 // EDIT defaults here:
 const DEFAULT_STUDENTS = [
   {roll:1,name:'Aarav Sharma',cls:'9A'},{roll:2,name:'Diya KC',cls:'9A'},
@@ -160,6 +163,7 @@ function migrateLegacyMarks(){
 const curClass = () => $('#classSelect').value;
 
 function renderStudents(){
+  if(!document.querySelector('#studentTable')) return; // Students screen removed
   const cls = curClass();
   const prevRoll = $('#markStudent') ? String($('#markStudent').value || '') : '';
   const q = ($('#studentSearch').value||'').toLowerCase();
@@ -177,6 +181,7 @@ function renderStudents(){
   renderMarks();
 }
 function renderMarks(){
+  if(!document.querySelector('#marksTable')) return; // Students screen removed
   const cls = curClass(), roll = $('#markStudent').value;
   const saved = store.marks(cls, roll);
   $('#marksTable tbody').innerHTML = getSubjects().map(sub=>{
@@ -301,10 +306,10 @@ function pushMarksToStage(){
 function maybeRefreshMarksStage(){
   try{ if(window.Stage && Stage.lastType==='marks') Stage.showMarks(marksSnapshot()); }catch{}
 }
-$('#studentsStageBtn').onclick = pushMarksToStage;
+onBtn('studentsStageBtn', pushMarksToStage);
 $('#markStudent')?.addEventListener('change', renderMarks);
-$('#addStudentBtn').onclick = ()=> $('#studentDialog').showModal();
-$('#saveStudent').onclick = ()=>{
+onBtn('addStudentBtn', ()=>{ const d = $('#studentDialog'); if(d) d.showModal(); });
+onBtn('saveStudent', ()=>{
   const roll = +$('#fRoll').value, name = $('#fName').value.trim();
   if(!roll||!name) return;
   const all = store.students.filter(s=>!(s.cls===curClass()&&s.roll===roll));
@@ -313,8 +318,8 @@ $('#saveStudent').onclick = ()=>{
   try{ window.SB && SB.pushStudents(all); }catch{}
   $('#fRoll').value='';$('#fName').value='';renderStudents();
   maybeRefreshMarksStage();
-};
-$('#exportCsvBtn').onclick = ()=>{
+});
+onBtn('exportCsvBtn', ()=>{
   const cls = curClass();
   const full = subjFullTotal();
   const subs = getSubjects();
@@ -335,7 +340,7 @@ $('#exportCsvBtn').onclick = ()=>{
   a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
   const safeExam = activeExam().name.replace(/[^\w\-]+/g, '-').slice(0, 30) || 'exam';
   a.download = `marksheet-${cls}-${safeExam}.csv`; a.click();
-};
+});
 /* ---------- Exams: Exam 1, Exam 2… — each with its own marksheet ----------
    (Subjects manager with rename/full-marks/delete/add follows right below.) */
 function renderExamSelect(){
@@ -351,16 +356,17 @@ $('#examSelect')?.addEventListener('change', e=>{
   maybeRefreshMarksStage();
 });
 function renderExamRows(){
+  if(!document.querySelector('#examRows')) return;
   $('#examRows').innerHTML = getExams().map(e=>
     `<div style="display:flex;gap:6px;align-items:center;margin:8px 0">` +
     `<input data-examold="${e.id}" data-examname type="text" value="${escapeHtml(e.name)}" style="flex:1" />` +
     `<button type="button" class="btn ghost" data-delexam="${e.id}" title="Delete exam + its marks">✕</button></div>`
   ).join('');
 }
-$('#examsBtn').onclick = ()=>{
+onBtn('examsBtn', ()=>{
   renderExamRows();
   $('#examsDialog').showModal();
-};
+});
 document.addEventListener('click', e=>{
   if(e.target.closest('#addExamBtn')){
     const inp = $('#newExamName');
@@ -396,7 +402,7 @@ document.addEventListener('click', e=>{
     toast(`"${target.name}" deleted ✓`);
   }
 });
-$('#saveExams').onclick = (e)=>{
+onBtn('saveExams', (e)=>{
   // renames only (add/delete apply immediately above)
   const rows = [...document.querySelectorAll('#examRows [data-examname]')].map(inp=>({
     id: inp.dataset.examold, name: inp.value.trim()
@@ -406,10 +412,12 @@ $('#saveExams').onclick = (e)=>{
   renderExamSelect(); renderMarks();
   maybeRefreshMarksStage();
   toast('Exams saved ✓');
-};
+});
 function renderFullMarksRows(){
+  const box = document.querySelector('#fullMarksRows');
+  if(!box) return;
   const cfg = getSubjConfig();
-  $('#fullMarksRows').innerHTML = getSubjects().map(s=>{
+  box.innerHTML = getSubjects().map(s=>{
     const f = subjFull(s);
     return `<div style="display:flex;gap:6px;align-items:center;margin:8px 0">` +
       `<input data-subold="${escapeHtml(s)}" data-subname type="text" value="${escapeHtml(s)}" style="flex:1;min-width:90px" />` +
@@ -419,10 +427,10 @@ function renderFullMarksRows(){
   }).join('') +
   `<div style="display:flex;gap:6px;margin-top:10px"><input id="newSubName" type="text" placeholder="New subject…" style="flex:1" /><button type="button" class="btn" id="addSubBtn">+ <span>Add</span></button></div>`;
 }
-$('#fullMarksBtn').onclick = ()=>{
+onBtn('fullMarksBtn', ()=>{
   renderFullMarksRows();
   $('#fullMarksDialog').showModal();
-};
+});
 document.addEventListener('click', e=>{
   if(e.target.closest('#addSubBtn')){
     const inp = $('#newSubName');
@@ -467,7 +475,7 @@ async function deleteSubjectEverywhere(old){
   maybeRefreshMarksStage();
   toast(`Subject "${old}" deleted ✓`);
 }
-$('#saveFullMarks').onclick = async (e)=>{
+onBtn('saveFullMarks', async (e)=>{
   const rows = [...document.querySelectorAll('#fullMarksRows [data-subname]')].map(inp=>({
     old: inp.dataset.subold, name: inp.value.trim(),
     th: Math.max(0, +document.querySelector(`#fullMarksRows [data-fm="${CSS.escape(inp.dataset.subold)}"][data-part="th"]`).value || 0),
@@ -499,7 +507,7 @@ $('#saveFullMarks').onclick = async (e)=>{
   renderMarks();
   maybeRefreshMarksStage();
   toast('Subjects saved ✓');
-};
+});
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 
 /* ---------- 5. Textbooks + offline PDF reader + IMPORT + CLOUD ---------- */

@@ -48,23 +48,7 @@
     <h1 class="app-title" data-i18n="appTitle">Classroom Dashboard</h1>
 
     <div class="squircle-row">
-      <!-- a. Students -->
-      <button class="squircle" data-goto="students">
-        <span class="squircle-icon">
-          <!-- stickman figure -->
-          <svg viewBox="0 0 64 64" width="56" height="56" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round">
-            <circle cx="32" cy="12" r="7" fill="currentColor" stroke="none"/>
-            <line x1="32" y1="21" x2="32" y2="38"/>
-            <line x1="32" y1="26" x2="18" y2="32"/>
-            <line x1="32" y1="26" x2="46" y2="32"/>
-            <line x1="32" y1="38" x2="22" y2="54"/>
-            <line x1="32" y1="38" x2="42" y2="54"/>
-          </svg>
-        </span>
-        <span class="squircle-label" data-i18n="students">Students</span>
-      </button>
-
-      <!-- b. Textbooks -->
+      <!-- a. Textbooks -->
       <button class="squircle" data-goto="books">
         <span class="squircle-icon">
           <svg viewBox="0 0 64 64" width="56" height="56" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
@@ -217,58 +201,7 @@
 </section>
 
 <!-- ============================================================
-     PAGE 2 : STUDENTS + MARKSHEET  (GENERIC TEMPLATE)
-     HOW TO EDIT: copy this <section> block to make a new page.
-============================================================ -->
-<section id="page-students" class="page">
-  <div class="page-head">
-    <button class="back-btn" data-goto="home">← <span data-i18n="home">Home</span></button>
-    <h2 data-i18n="studentsTitle">Students & Marksheet</h2>
-    <span class="class-chip" id="studentsClassChip">9A</span>
-  </div>
-
-  <div class="card-row">
-    <div class="card">
-      <h3 data-i18n="studentList">Student List</h3>
-      <!-- EDIT: students are stored in browser (offline). Add defaults in js/app.js -> DEFAULT_STUDENTS -->
-      <div class="toolbar">
-        <input id="studentSearch" type="search" placeholder="Search name / roll…" />
-        <button id="addStudentBtn" class="btn">+ <span data-i18n="add">Add</span></button>
-        <button id="exportCsvBtn" class="btn ghost">⬇ CSV</button>
-        <button id="studentsStageBtn" class="btn">🖥️ <span data-i18n="show2nd">Show on 2nd screen</span></button>
-      </div>
-      <table class="table" id="studentTable">
-        <thead><tr>
-          <th>Roll</th><th data-i18n="name">Name</th><th data-i18n="action">Action</th>
-        </tr></thead>
-        <tbody></tbody>
-      </table>
-    </div>
-
-    <div class="card">
-      <h3 data-i18n="marksheet">Marksheet</h3>
-      <p class="hint" data-i18n="marksheetHint">Select a student, enter marks, auto-saved offline.</p>
-      <div class="toolbar">
-        <label style="flex:1;min-width:140px"><span data-i18n="exams">Exams</span>
-        <select id="examSelect" style="width:100%"></select></label>
-        <button id="examsBtn" class="btn ghost">⚙ <span data-i18n="exams">Exams</span></button>
-      </div>
-      <div class="toolbar">
-        <label style="flex:1;min-width:160px"><span data-i18n="selectStudent">Select student</span>
-        <select id="markStudent" style="width:100%"></select></label>
-        <button id="fullMarksBtn" class="btn ghost" title="Subjects: rename, full marks, delete, add">⚙ <span data-i18n="fullMarks">Full marks</span></button>
-      </div>
-      <table class="table" id="marksTable">
-        <thead><tr><th data-i18n="subject">Subject</th><th><span data-i18n="theory">Theory</span></th><th><span data-i18n="practical">Practical</span></th><th data-i18n="total">Total</th></tr></thead>
-        <tbody></tbody>
-      </table>
-      <div class="total-row"><span data-i18n="total">Total</span>: <b id="marksTotal">0</b> • <span data-i18n="percent">Percent</span>: <b id="marksPct">0%</b></div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================
-     PAGE 3 : TEXTBOOKS + PDF READER
+     PAGE 2 : TEXTBOOKS + PDF READER
 ============================================================ -->
 <section id="page-books" class="page">
   <div class="page-head">
@@ -351,19 +284,6 @@
 </section>
 </main>
 
-<!-- Add-student dialog -->
-<dialog id="studentDialog">
-  <form method="dialog">
-    <h3 data-i18n="addStudent">Add student</h3>
-    <label>Roll <input id="fRoll" type="number" min="1" required /></label>
-    <label><span data-i18n="name">Name</span> <input id="fName" type="text" required /></label>
-    <menu>
-      <button value="cancel" class="btn ghost" data-i18n="cancel">Cancel</button>
-      <button id="saveStudent" value="default" class="btn primary" data-i18n="save">Save</button>
-    </menu>
-  </form>
-</dialog>
-
 <!-- Import-book dialog -->
 <dialog id="bookDialog">
   <form method="dialog" id="bookForm">
@@ -421,33 +341,6 @@
         <input id="backupFile" type="file" accept=".json,application/json" hidden />
       </label>
       <button id="exportBkBtn" value="default" class="btn primary">⬇ <span data-i18n="exportBk">Export</span></button>
-    </menu>
-  </form>
-</dialog>
-
-<!-- Exams dialog (Exam 1, Exam 2… — rename / delete / add) -->
-<dialog id="examsDialog">
-  <form method="dialog" id="examsForm">
-    <h3>⚙ <span data-i18n="exams">Exams</span></h3>
-    <p class="hint" data-i18n="examsHint">Each exam keeps its own marksheet. Rename freely; deleting an exam erases its marks everywhere.</p>
-    <div id="examRows"></div>
-    <div style="display:flex;gap:6px;margin-top:10px"><input id="newExamName" type="text" placeholder="Exam 3…" style="flex:1" /><button type="button" class="btn" id="addExamBtn">+ <span data-i18n="add">Add</span></button></div>
-    <menu>
-      <button value="cancel" class="btn ghost" data-i18n="cancel">Cancel</button>
-      <button id="saveExams" value="default" class="btn primary" data-i18n="save">Save</button>
-    </menu>
-  </form>
-</dialog>
-
-<!-- Full marks dialog (subjects: rename / theory+pratical / delete / add) -->
-<dialog id="fullMarksDialog">
-  <form method="dialog" id="fullMarksForm">
-    <h3>⚙ <span data-i18n="fullMarks">Full marks</span> (<span data-i18n="theory">Theory</span> + <span data-i18n="practical">Practical</span>)</h3>
-    <p class="hint" data-i18n="fullMarksHint">Set full marks per subject. Totals and percent follow automatically.</p>
-    <div id="fullMarksRows"></div>
-    <menu>
-      <button value="cancel" class="btn ghost" data-i18n="cancel">Cancel</button>
-      <button id="saveFullMarks" value="default" class="btn primary" data-i18n="save">Save</button>
     </menu>
   </form>
 </dialog>
