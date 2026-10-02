@@ -161,13 +161,19 @@ const curClass = () => $('#classSelect').value;
 
 function renderStudents(){
   const cls = curClass();
+  const prevRoll = $('#markStudent') ? String($('#markStudent').value || '') : '';
   const q = ($('#studentSearch').value||'').toLowerCase();
-  const list = store.students.filter(s=>s.cls===cls && (s.name.toLowerCase().includes(q)||String(s.roll).includes(q))).sort((a,b)=>a.roll-b.roll);
+  const inClass = store.students.filter(s=>s.cls===cls);
+  const list = inClass.filter(s=>(s.name.toLowerCase().includes(q)||String(s.roll).includes(q))).sort((a,b)=>a.roll-b.roll);
   $('#studentTable tbody').innerHTML = list.map(s=>
     `<tr><td>${s.roll}</td><td>${escapeHtml(s.name)}</td><td><button class="btn ghost" data-del="${s.roll}">✕</button></td></tr>`).join('')
-    || `<tr><td colspan="3" class="hint">No students in ${cls} yet. Click + Add.</td></tr>`;
+    || (inClass.length
+      ? `<tr><td colspan="3" class="hint">No matches. Clear the search to see all ${inClass.length} students.</td></tr>`
+      : `<tr><td colspan="3" class="hint">No students in ${cls} yet. Click + Add.</td></tr>`);
   const sel = $('#markStudent');
   sel.innerHTML = list.map(s=>`<option value="${s.roll}">${s.roll} – ${escapeHtml(s.name)}</option>`).join('') || '<option value="">—</option>';
+  // keep the teacher's selected student while searching
+  if(prevRoll && [...sel.options].some(o=>o.value === prevRoll)) sel.value = prevRoll;
   renderMarks();
 }
 function renderMarks(){
