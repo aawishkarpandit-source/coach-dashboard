@@ -1,7 +1,7 @@
 {
   "name": "coach-dashboard",
   "productName": "Coach Dashboard",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Offline classroom teaching dashboard — students, textbooks, presenter with 2nd-screen support",
   "main": "electron/main.js",
   "scripts": {
