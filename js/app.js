@@ -344,12 +344,15 @@ $('#examSelect')?.addEventListener('change', e=>{
   renderMarks();
   maybeRefreshMarksStage();
 });
-$('#examsBtn').onclick = ()=>{
+function renderExamRows(){
   $('#examRows').innerHTML = getExams().map(e=>
     `<div style="display:flex;gap:6px;align-items:center;margin:8px 0">` +
     `<input data-examold="${e.id}" data-examname type="text" value="${escapeHtml(e.name)}" style="flex:1" />` +
     `<button type="button" class="btn ghost" data-delexam="${e.id}" title="Delete exam + its marks">✕</button></div>`
   ).join('');
+}
+$('#examsBtn').onclick = ()=>{
+  renderExamRows();
   $('#examsDialog').showModal();
 };
 document.addEventListener('click', e=>{
@@ -359,7 +362,7 @@ document.addEventListener('click', e=>{
     const id = 'e' + Date.now().toString(36);
     setExams([...getExams(), { id, name }]);
     setActiveExam(id);
-    $('#examsBtn').onclick();
+    renderExamRows();
     renderExamSelect(); renderMarks();
     toast(`"${name}" added ✓`);
   }
@@ -381,7 +384,7 @@ document.addEventListener('click', e=>{
     const rest = ex.filter(x=>x.id !== target.id);
     setExams(rest);
     if(activeExamId() === target.id) setActiveExam(rest[0].id);
-    $('#examsBtn').onclick();
+    renderExamRows();
     renderExamSelect(); renderMarks();
     maybeRefreshMarksStage();
     toast(`"${target.name}" deleted ✓`);
@@ -398,7 +401,7 @@ $('#saveExams').onclick = (e)=>{
   maybeRefreshMarksStage();
   toast('Exams saved ✓');
 };
-$('#fullMarksBtn').onclick = ()=>{
+function renderFullMarksRows(){
   const cfg = getSubjConfig();
   $('#fullMarksRows').innerHTML = getSubjects().map(s=>{
     const f = subjFull(s);
@@ -409,6 +412,9 @@ $('#fullMarksBtn').onclick = ()=>{
       `<button type="button" class="btn ghost" data-delsub="${escapeHtml(s)}" title="Delete subject">✕</button></div>`;
   }).join('') +
   `<div style="display:flex;gap:6px;margin-top:10px"><input id="newSubName" type="text" placeholder="New subject…" style="flex:1" /><button type="button" class="btn" id="addSubBtn">+ <span>Add</span></button></div>`;
+}
+$('#fullMarksBtn').onclick = ()=>{
+  renderFullMarksRows();
   $('#fullMarksDialog').showModal();
 };
 document.addEventListener('click', e=>{
@@ -420,8 +426,9 @@ document.addEventListener('click', e=>{
     if(subs.includes(name)){ toast('Subject already exists'); return; }
     setSubjects([...subs, name]);
     const cfg = getSubjConfig(); cfg[name] = { th:75, pr:25 }; saveSubjConfig(cfg);
-    $('#fullMarksBtn').onclick();
+    renderFullMarksRows();
     renderMarks();
+    toast(`"${name}" added ✓ — press Save to confirm`);
   }
   const delSub = e.target.closest('[data-delsub]');
   if(delSub){
@@ -449,7 +456,7 @@ async function deleteSubjectEverywhere(old){
   const cfg = getSubjConfig(); delete cfg[old]; saveSubjConfig(cfg);
   eachMarksRecord((k, o)=>{ if(old in o){ delete o[old]; return true; } return false; });
   try{ if(window.SB && SB.configured) await SB.deleteSubjectRows(old); }catch{}
-  $('#fullMarksBtn').onclick(); // refresh dialog rows
+  renderFullMarksRows();
   renderMarks();
   maybeRefreshMarksStage();
   toast(`Subject "${old}" deleted ✓`);
