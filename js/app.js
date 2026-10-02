@@ -20,6 +20,7 @@ function goto(page) {
   if (page === 'students') renderStudents();
   if (page === 'books') renderBooks();
   if (page === 'present'){ try{ renderLocalPres(); updateScreenInfo(); }catch{} }
+  if (page === 'notes'){ try{ renderNotesList(); openNote(activeNoteId(), true); }catch{} }
 }
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-goto]');
@@ -27,7 +28,7 @@ document.addEventListener('click', e => {
 });
 window.addEventListener('load', () => {
   const h = location.hash.replace('#', '');
-  if (['books','present','about','terms','team'].includes(h)) goto(h);
+  if (['books','present','about','terms','team','notes'].includes(h)) goto(h);
 });
 $('#classSelect').addEventListener('change', e => {
   const chip = $('#studentsClassChip');
@@ -42,8 +43,8 @@ $('#classSelect').addEventListener('change', e => {
 
 /* ---------- 2. Eng / Nep toggle ---------- */
 const I18N = {
-  en: {classLabel:'Class',offline:'Offline Ready',appTitle:'Classroom Dashboard',appSub:'Simple • Offline • Easy to use',students:'Students',books:'Textbooks',present:'Present',home:'Home',studentsTitle:'Students & Marksheet',studentList:'Student List',add:'Add',marksheet:'Marksheet',marksheetHint:'Select a student, enter marks, auto-saved offline.',selectStudent:'Select student',subject:'Subject',total:'Total',percent:'Percent',name:'Name',action:'Action',booksTitle:'Textbooks',govt:'Govt Books',pvt:'Private Books',booksHint:'Put PDFs in /books folder, or Import. Works offline.',importBook:'Import Book',importHint:'Choose a PDF. It is saved in the browser and, in the installed app, as a real file.',linkFolder:'Link /books folder',delete:'Delete',imported:'Imported',show2nd:'Show on 2nd screen',pdfControlHint:'You control from this screen — students see only the open page on the 2nd screen.',presentTitle:'Present',presentFiles:'Presentation / Media',presentHint:'Images, videos, PDFs & PowerPoint (.pptx) play fully offline. The stage opens by itself.',chooseFiles:'Choose files',openPresenter:'Open presenter (2nd screen)',stage:'Stage (what students see)',stageHint:'Pick a file to preview here. Presenter window mirrors this.',newPpt:'New presentation',newPptHint:'“New presentation” picks files from this computer to present.',addStudent:'Add student',cancel:'Cancel',save:'Save',close:'Close',open2nd:'2nd screen',localPres:'Saved on this computer',about:'About',terms:'Terms & Conditions',team:'Team',playCredits:'Play credits',stopCredits:'Stop',roleLead:'LEAD DESIGNER & DEVELOPER',roleTesters:'PLAY TESTERS',thanksWatching:'Thanks for teaching',backup:'Backup',restore:'Restore',backupHint:'One file holds everything: students, theory/practical marks, books, presentations, settings.',exportBk:'Export',importBk:'Import',fullMarks:'Full marks',fullMarksHint:'Rename subjects, set full marks, delete, or add new ones. Totals follow automatically.',theory:'Theory',practical:'Practical',exams:'Exams',examsHint:'Each exam keeps its own marksheet. Rename freely; deleting an exam erases its marks everywhere.'},
-  ne: {classLabel:'कक्षा',offline:'अफलाइन तयार',appTitle:'कक्षाकोठा ड्यासबोर्ड',appSub:'सरल • अफलाइन • सजिलो',students:'विद्यार्थी',books:'पाठ्यपुस्तक',present:'प्रस्तुत गर्नुहोस्',home:'गृहपृष्ठ',studentsTitle:'विद्यार्थी र मार्कसिट',studentList:'विद्यार्थी सूची',add:'थप्नुहोस्',marksheet:'मार्कसिट',marksheetHint:'विद्यार्थी छान्नुहोस्, नम्बर हाल्नुहोस्, अफलाइन सेभ हुन्छ।',selectStudent:'विद्यार्थी छान्नुहोस्',subject:'विषय',total:'जम्मा',percent:'प्रतिशत',name:'नाम',action:'कार्य',booksTitle:'पाठ्यपुस्तक',govt:'सरकारी किताब',pvt:'निजी किताब',booksHint:'PDF हरू /books मा राख्नुहोस् वा Import गर्नुहोस्। अफलाइन चल्छ।',importBook:'किताब आयात',importHint:'PDF छान्नुहोस्। ब्राउजरमा र इन्स्टल गरिएको एपमा वास्तविक फाइलका रूपमा सेभ हुन्छ।',linkFolder:'Link /books फोल्डर',delete:'हटाउनुहोस्',imported:'आयातित',show2nd:'दोस्रो स्क्रिनमा देखाउनुहोस्',pdfControlHint:'तपाईं यस स्क्रिनबाट नियन्त्रण गर्नुहोस् — विद्यार्थीले दोस्रो स्क्रिनमा खुला पेज मात्र देख्छन्।',presentTitle:'प्रस्तुत',presentFiles:'प्रस्तुति / मिडिया',presentHint:'फोटो, भिडियो, PDF र PowerPoint (.pptx) अफलाइन चल्छ। स्टेज आफैं खुल्छ।',chooseFiles:'फाइल छान्नुहोस्',openPresenter:'प्रस्तोता खोल्नुहोस् (दोस्रो स्क्रिन)',stage:'स्टेज (विद्यार्थीले देख्ने)',stageHint:'यहाँ हेर्न फाइल छान्नुहोस्। प्रस्तोता विन्डोमा उही देखिन्छ।',newPpt:'नयाँ प्रस्तुति',newPptHint:'"नयाँ प्रस्तुति" ले यस कम्प्युटरबाट फाइल छानेर प्रस्तुत गर्छ।',addStudent:'विद्यार्थी थप्नुहोस्',cancel:'रद्द',save:'सेभ',close:'बन्द',open2nd:'दोस्रो स्क्रिन',localPres:'यस कम्प्युटरमा सेभ',about:'बारेमा',terms:'नियम तथा सर्तहरू',team:'टिम',playCredits:'क्रेडिट चलाउनुहोस्',stopCredits:'रोक्नुहोस्',roleLead:'प्रमुख डिजाइनर तथा विकासकर्ता',roleTesters:'प्ले टेस्टरहरू',thanksWatching:'पढाउनुभएकोमा धन्यवाद',backup:'ब्याकअप',restore:'रिस्टोर',backupHint:'एउटै फाइलमा सबै: विद्यार्थी, थ्योरी/प्राक्टिकल नम्बर, किताब, प्रस्तुति, सेटिङ।',exportBk:'एक्सपोर्ट',importBk:'इम्पोर्ट',fullMarks:'पूर्णाङ्क',fullMarksHint:'विषयको नाम बदल्नुहोस्, पूर्णाङ्क तोक्नुहोस्, हटाउनुहोस् वा नयाँ थप्नुहोस्।',theory:'थ्योरी',practical:'प्राक्टिकल',exams:'परीक्षाहरू',examsHint:'प्रत्येक परीक्षाको छुट्टै मार्कसिट हुन्छ। नाम स्वतन्त्र रूपमा बदल्नुहोस्; परीक्षा हटाउँदा त्यसका सबै नम्बर मेटिन्छ।'}
+  en: {classLabel:'Class',offline:'Offline Ready',appTitle:'Classroom Dashboard',appSub:'Simple • Offline • Easy to use',students:'Students',books:'Textbooks',present:'Present',home:'Home',studentsTitle:'Students & Marksheet',studentList:'Student List',add:'Add',marksheet:'Marksheet',marksheetHint:'Select a student, enter marks, auto-saved offline.',selectStudent:'Select student',subject:'Subject',total:'Total',percent:'Percent',name:'Name',action:'Action',booksTitle:'Textbooks',govt:'Govt Books',pvt:'Private Books',booksHint:'Put PDFs in /books folder, or Import. Works offline.',importBook:'Import Book',importHint:'Choose a PDF. It is saved in the browser and, in the installed app, as a real file.',linkFolder:'Link /books folder',delete:'Delete',imported:'Imported',show2nd:'Show on 2nd screen',pdfControlHint:'You control from this screen — students see only the open page on the 2nd screen.',presentTitle:'Present',presentFiles:'Presentation / Media',presentHint:'Images, videos, PDFs & PowerPoint (.pptx) play fully offline. The stage opens by itself.',chooseFiles:'Choose files',openPresenter:'Open presenter (2nd screen)',stage:'Stage (what students see)',stageHint:'Pick a file to preview here. Presenter window mirrors this.',newPpt:'New presentation',newPptHint:'“New presentation” picks files from this computer to present.',addStudent:'Add student',cancel:'Cancel',save:'Save',close:'Close',open2nd:'2nd screen',localPres:'Saved on this computer',about:'About',terms:'Terms & Conditions',team:'Team',playCredits:'Play credits',stopCredits:'Stop',roleLead:'LEAD DESIGNER & DEVELOPER',roleTesters:'PLAY TESTERS',thanksWatching:'Thanks for teaching',backup:'Backup',restore:'Restore',backupHint:'One file holds everything: students, theory/practical marks, books, presentations, settings.',exportBk:'Export',importBk:'Import',fullMarks:'Full marks',fullMarksHint:'Rename subjects, set full marks, delete, or add new ones. Totals follow automatically.',theory:'Theory',practical:'Practical',exams:'Exams',examsHint:'Each exam keeps its own marksheet. Rename freely; deleting an exam erases its marks everywhere.',notes:'Notes',newNote:'New note'},
+  ne: {classLabel:'कक्षा',offline:'अफलाइन तयार',appTitle:'कक्षाकोठा ड्यासबोर्ड',appSub:'सरल • अफलाइन • सजिलो',students:'विद्यार्थी',books:'पाठ्यपुस्तक',present:'प्रस्तुत गर्नुहोस्',home:'गृहपृष्ठ',studentsTitle:'विद्यार्थी र मार्कसिट',studentList:'विद्यार्थी सूची',add:'थप्नुहोस्',marksheet:'मार्कसिट',marksheetHint:'विद्यार्थी छान्नुहोस्, नम्बर हाल्नुहोस्, अफलाइन सेभ हुन्छ।',selectStudent:'विद्यार्थी छान्नुहोस्',subject:'विषय',total:'जम्मा',percent:'प्रतिशत',name:'नाम',action:'कार्य',booksTitle:'पाठ्यपुस्तक',govt:'सरकारी किताब',pvt:'निजी किताब',booksHint:'PDF हरू /books मा राख्नुहोस् वा Import गर्नुहोस्। अफलाइन चल्छ।',importBook:'किताब आयात',importHint:'PDF छान्नुहोस्। ब्राउजरमा र इन्स्टल गरिएको एपमा वास्तविक फाइलका रूपमा सेभ हुन्छ।',linkFolder:'Link /books फोल्डर',delete:'हटाउनुहोस्',imported:'आयातित',show2nd:'दोस्रो स्क्रिनमा देखाउनुहोस्',pdfControlHint:'तपाईं यस स्क्रिनबाट नियन्त्रण गर्नुहोस् — विद्यार्थीले दोस्रो स्क्रिनमा खुला पेज मात्र देख्छन्।',presentTitle:'प्रस्तुत',presentFiles:'प्रस्तुति / मिडिया',presentHint:'फोटो, भिडियो, PDF र PowerPoint (.pptx) अफलाइन चल्छ। स्टेज आफैं खुल्छ।',chooseFiles:'फाइल छान्नुहोस्',openPresenter:'प्रस्तोता खोल्नुहोस् (दोस्रो स्क्रिन)',stage:'स्टेज (विद्यार्थीले देख्ने)',stageHint:'यहाँ हेर्न फाइल छान्नुहोस्। प्रस्तोता विन्डोमा उही देखिन्छ।',newPpt:'नयाँ प्रस्तुति',newPptHint:'"नयाँ प्रस्तुति" ले यस कम्प्युटरबाट फाइल छानेर प्रस्तुत गर्छ।',addStudent:'विद्यार्थी थप्नुहोस्',cancel:'रद्द',save:'सेभ',close:'बन्द',open2nd:'दोस्रो स्क्रिन',localPres:'यस कम्प्युटरमा सेभ',about:'बारेमा',terms:'नियम तथा सर्तहरू',team:'टिम',playCredits:'क्रेडिट चलाउनुहोस्',stopCredits:'रोक्नुहोस्',roleLead:'प्रमुख डिजाइनर तथा विकासकर्ता',roleTesters:'प्ले टेस्टरहरू',thanksWatching:'पढाउनुभएकोमा धन्यवाद',backup:'ब्याकअप',restore:'रिस्टोर',backupHint:'एउटै फाइलमा सबै: विद्यार्थी, थ्योरी/प्राक्टिकल नम्बर, किताब, प्रस्तुति, सेटिङ।',exportBk:'एक्सपोर्ट',importBk:'इम्पोर्ट',fullMarks:'पूर्णाङ्क',fullMarksHint:'विषयको नाम बदल्नुहोस्, पूर्णाङ्क तोक्नुहोस्, हटाउनुहोस् वा नयाँ थप्नुहोस्।',theory:'थ्योरी',practical:'प्राक्टिकल',exams:'परीक्षाहरू',examsHint:'प्रत्येक परीक्षाको छुट्टै मार्कसिट हुन्छ। नाम स्वतन्त्र रूपमा बदल्नुहोस्; परीक्षा हटाउँदा त्यसका सबै नम्बर मेटिन्छ।',notes:'नोटहरू',newNote:'नयाँ नोट'}
 };
 let LANG = localStorage.getItem('coach-lang') || 'en';
 function applyLang() {
@@ -1129,7 +1130,147 @@ async function idbClear(storeName){
     tx.oncomplete = res; tx.onerror = ()=>rej(tx.error);
   });
 }
-const BACKUP_LS_PREFIXES = ['coach-students', 'marks-', 'coach-subjects', 'coach-subject-list', 'coach-exams', 'coach-exam', 'coach-ppts', 'coach-class', 'coach-lang', 'coach-supabase', 'coach-deleted-students', 'coach-deleted-books'];
+/* ---------- 9. Notes: full blank pages, local forever, stage-ready ---------- */
+const NOTES_KEY = 'coach-notes';
+const ACTIVE_NOTE_KEY = 'coach-note-active';
+function getNotes(){
+  try{
+    const l = JSON.parse(localStorage.getItem(NOTES_KEY) || 'null');
+    if(Array.isArray(l)) return l.filter(n=>n && n.id);
+  }catch{}
+  return [];
+}
+function saveNotes(l){ try{ localStorage.setItem(NOTES_KEY, JSON.stringify(l)); }catch{ toast('Storage full — delete an old note'); } }
+function activeNoteId(){
+  const id = localStorage.getItem(ACTIVE_NOTE_KEY);
+  const notes = getNotes();
+  if(notes.some(n=>n.id === id)) return id;
+  return notes.length ? notes[0].id : '';
+}
+function setActiveNoteId(id){ try{ localStorage.setItem(ACTIVE_NOTE_KEY, id); }catch{} }
+function fmtTime(t){ try{ return new Date(t).toLocaleString([], { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }); }catch{ return ''; } }
+function renderNotesList(){
+  const box = $('#notesList');
+  if(!box) return;
+  const notes = getNotes();
+  const active = activeNoteId();
+  box.innerHTML = notes.map(n=>
+    `<button class="note-item ${n.id===active?'active':''}" data-opennote="${n.id}">` +
+    `<b>${escapeHtml(n.title || 'Untitled note')}</b><small>${fmtTime(n.updated)}</small></button>`
+  ).join('') || '<p class="hint">No notes yet — start a new one.</p>';
+}
+function currentNote(){
+  const notes = getNotes();
+  return notes.find(n=>n.id === activeNoteId()) || null;
+}
+function openNote(id, keepStage){
+  const notes = getNotes();
+  const n = notes.find(x=>x.id === id) || notes[0] || null;
+  if(!n){ $('#noteEditor').innerHTML = '<p><br/></p>'; $('#noteTitle').value = ''; $('#noteMeta').textContent = ''; renderNotesList(); return; }
+  setActiveNoteId(n.id);
+  $('#noteTitle').value = n.title || '';
+  $('#noteEditor').innerHTML = n.html || '<p><br/></p>';
+  $('#noteMeta').textContent = n.updated ? ('Saved ✓ ' + fmtTime(n.updated)) : '';
+  $('#noteSaved').textContent = '✓';
+  renderNotesList();
+  if(!keepStage) maybeRefreshNotesStage();
+}
+let noteSaveTimer = null;
+function saveCurrentNote(silent){
+  const n = currentNote();
+  if(!n) return;
+  n.title = ($('#noteTitle').value || '').trim() || 'Untitled note';
+  n.html = $('#noteEditor').innerHTML;
+  n.updated = Date.now();
+  const notes = getNotes().map(x=>x.id === n.id ? n : x);
+  saveNotes(notes);
+  $('#noteSaved').textContent = '✓';
+  $('#noteMeta').textContent = 'Saved ✓ ' + fmtTime(n.updated);
+  renderNotesList();
+  if(!silent) maybeRefreshNotesStage();
+}
+function queueNoteSave(){
+  $('#noteSaved').textContent = '…';
+  clearTimeout(noteSaveTimer);
+  noteSaveTimer = setTimeout(()=>saveCurrentNote(), 800);
+}
+onBtn('newNoteBtn', ()=>{
+  saveCurrentNote(true);
+  const n = { id:'n' + Date.now().toString(36), title:'Untitled note', html:'<p><br/></p>', updated:Date.now() };
+  const notes = getNotes(); notes.unshift(n); saveNotes(notes);
+  openNote(n.id, true);
+  $('#noteTitle').focus(); $('#noteTitle').select();
+});
+onBtn('noteDeleteBtn', ()=>{
+  const n = currentNote();
+  if(!n) return;
+  if(!confirm(`Delete note "${n.title}"?`)) return;
+  saveNotes(getNotes().filter(x=>x.id !== n.id));
+  const rest = getNotes();
+  openNote(rest.length ? rest[0].id : '', true);
+  toast('Note deleted ✓');
+});
+document.addEventListener('click', e=>{
+  const op = e.target.closest('[data-opennote]');
+  if(op){ saveCurrentNote(true); openNote(op.dataset.opennote); }
+});
+// Strip anything executable before a note goes anywhere near the stage.
+function cleanNoteHtml(html){
+  try{
+    const t = document.createElement('div');
+    t.innerHTML = String(html || '');
+    t.querySelectorAll('script, iframe, object, embed, form').forEach(el=>el.remove());
+    t.querySelectorAll('*').forEach(el=>{
+      [...el.attributes].forEach(a=>{
+        if(/^on/i.test(a.name) || (a.name === 'href' && /^\s*javascript:/i.test(a.value))) el.removeAttribute(a.name);
+      });
+    });
+    return t.innerHTML;
+  }catch{ return ''; }
+};
+function pushNoteToStage(){
+  try{
+    saveCurrentNote(true);
+    const n = currentNote();
+    if(!n){ toast('Write something first'); return; }
+    if(window.Stage) Stage.showNotes({ title:n.title, html:cleanNoteHtml(n.html) });
+    toast('Note on 2nd screen ✓');
+  }catch{ toast('Could not open 2nd screen (popup blocked?).'); }
+}
+function maybeRefreshNotesStage(){
+  try{ if(window.Stage && Stage.lastType==='notes'){ const n = currentNote(); if(n) Stage.showNotes({ title:n.title, html:cleanNoteHtml(n.html) }); } }catch{}
+}
+onBtn('noteStageBtn', pushNoteToStage);
+/* Rich-text toolbar (built-in execCommand — offline, zero downloads) */
+document.addEventListener('mousedown', e=>{
+  if(e.target.closest && e.target.closest('#noteToolbar')) e.preventDefault(); // keep editor selection
+});
+document.addEventListener('click', e=>{
+  const b = e.target.closest && e.target.closest('#noteToolbar [data-cmd]');
+  if(!b) return;
+  const ed = $('#noteEditor');
+  if(!ed) return;
+  ed.focus();
+  const cmd = b.dataset.cmd;
+  if(cmd === 'createLink'){
+    const sel = document.getSelection ? String(document.getSelection()) : '';
+    const u = prompt('Link URL (https://…):', 'https://');
+    if(!u) return;
+    if(!sel){ toast('Select some text first'); return; }
+    document.execCommand('createLink', false, u.trim());
+  } else {
+    document.execCommand(cmd, false, null);
+  }
+  queueNoteSave();
+});
+document.addEventListener('input', e=>{
+  if(e.target && e.target.id === 'noteEditor'){ queueNoteSave(); return; }
+  if(e.target && e.target.id === 'noteTitle'){ queueNoteSave(); }
+});
+$('#noteBlock')?.addEventListener('change', e=>{ $('#noteEditor').focus(); document.execCommand('formatBlock', false, e.target.value); queueNoteSave(); });
+$('#noteSize')?.addEventListener('change', e=>{ $('#noteEditor').focus(); document.execCommand('fontSize', false, e.target.value); queueNoteSave(); });
+$('#noteFore')?.addEventListener('input', e=>{ $('#noteEditor').focus(); document.execCommand('foreColor', false, e.target.value); queueNoteSave(); });
+$('#noteHilite')?.addEventListener('input', e=>{ $('#noteEditor').focus(); document.execCommand('hiliteColor', false, e.target.value); queueNoteSave(); });
 $('#backupBtn').onclick = ()=>{
   $('#backupStatus').textContent = '—';
   $('#backupDialog').showModal();

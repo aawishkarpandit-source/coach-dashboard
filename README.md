@@ -54,6 +54,7 @@ Presentations are **never** uploaded — they stay on each computer by design.
 - **Google Slides / web links:** supported in the engine if you re-add a link button; stock build is offline-first.
 - **Other presentations:** chosen files + PowerPoint records save on the computer (browser IndexedDB; installed app also copies real files to its data folder → “Saved on this computer” list to reopen/delete). Re-installs on the same machine keep them.
 - **Books:** **Import Book** saves the PDF in the browser + (installed app) as a real file in the app's books folder — same pattern as presentations. Cloud copy included. Delete removes all of them.
+- **Notes:** full blank pages with rich text (bold/italic/headings/lists/colors/links). Saved in the browser forever, renameable files, included in Backup. **Show on 2nd screen** displays text-only (no editing controls there); keeps following while shown.
 
 ## 6. How to edit
 

@@ -61,6 +61,21 @@
         <span class="squircle-label" data-i18n="books">Textbooks</span>
       </button>
 
+      <!-- b. Notes -->
+      <button class="squircle" data-goto="notes">
+        <span class="squircle-icon">
+          <svg viewBox="0 0 64 64" width="56" height="56" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 8 h28 l8 8 v40 H14 z"/>
+            <path d="M42 8 v8 h8"/>
+            <line x1="22" y1="28" x2="46" y2="28"/>
+            <line x1="22" y1="36" x2="46" y2="36"/>
+            <line x1="22" y1="44" x2="38" y2="44"/>
+            <path d="M44 46 l8 8 M52 46 l-8 8"/>
+          </svg>
+        </span>
+        <span class="squircle-label" data-i18n="notes">Notes</span>
+      </button>
+
       <!-- c. Present -->
       <button class="squircle" data-goto="present">
         <span class="squircle-icon">
@@ -279,6 +294,77 @@
     <div class="card dark">
       <h3 data-i18n="stage">Stage (what students see)</h3>
       <div id="stage" class="stage"><span class="hint" data-i18n="stageHint">Pick a file to preview here. Presenter window mirrors this.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     NOTES — teacher writes anything; saved locally; sent to stage
+============================================================ -->
+<section id="page-notes" class="page">
+  <div class="page-head">
+    <button class="back-btn" data-goto="home">← <span data-i18n="home">Home</span></button>
+    <h2 data-i18n="notes">Notes</h2>
+    <span id="noteSaved" class="badge">✓</span>
+    <button id="noteStageBtn" class="btn primary">🖥️ <span data-i18n="show2nd">Show on 2nd screen</span></button>
+  </div>
+
+  <div class="notes-layout">
+    <div class="card notes-list-card">
+      <button id="newNoteBtn" class="btn primary" style="width:100%">+ <span data-i18n="newNote">New note</span></button>
+      <div id="notesList" class="notes-list"></div>
+    </div>
+
+    <div class="card notes-editor-card">
+      <input id="noteTitle" class="note-title" maxlength="80" placeholder="Untitled note" />
+      <div class="note-toolbar" id="noteToolbar">
+        <button type="button" data-cmd="bold" title="Bold"><b>B</b></button>
+        <button type="button" data-cmd="italic" title="Italic"><i>I</i></button>
+        <button type="button" data-cmd="underline" title="Underline"><u>U</u></button>
+        <button type="button" data-cmd="strikeThrough" title="Strikethrough"><s>S</s></button>
+        <span class="tb-sep"></span>
+        <select id="noteBlock" title="Style">
+          <option value="p">¶ Text</option>
+          <option value="h1">H1</option>
+          <option value="h2">H2</option>
+          <option value="h3">H3</option>
+          <option value="blockquote">❝ Quote</option>
+          <option value="pre">Code</option>
+        </select>
+        <select id="noteSize" title="Size">
+          <option value="3">Normal</option>
+          <option value="1">Tiny</option>
+          <option value="2">Small</option>
+          <option value="4">Large</option>
+          <option value="5">Huge</option>
+          <option value="6">Giant</option>
+        </select>
+        <span class="tb-sep"></span>
+        <label title="Text color">A<input type="color" id="noteFore" value="#111111" /></label>
+        <label title="Highlight"><span style="background:#ffeb3b;padding:0 4px">A</span><input type="color" id="noteHilite" value="#ffeb3b" /></label>
+        <span class="tb-sep"></span>
+        <button type="button" data-cmd="justifyLeft" title="Align left">☰</button>
+        <button type="button" data-cmd="justifyCenter" title="Center">☰•</button>
+        <button type="button" data-cmd="justifyRight" title="Align right">•☰</button>
+        <button type="button" data-cmd="justifyFull" title="Justify">☰☰</button>
+        <span class="tb-sep"></span>
+        <button type="button" data-cmd="insertUnorderedList" title="Bullets">•≡</button>
+        <button type="button" data-cmd="insertOrderedList" title="Numbers">1≡</button>
+        <button type="button" data-cmd="outdent" title="Outdent">⇤</button>
+        <button type="button" data-cmd="indent" title="Indent">⇥</button>
+        <span class="tb-sep"></span>
+        <button type="button" data-cmd="createLink" title="Link">🔗</button>
+        <button type="button" data-cmd="unlink" title="Unlink">🚫</button>
+        <button type="button" data-cmd="removeFormat" title="Clear formatting">🧹</button>
+        <span class="tb-sep"></span>
+        <button type="button" data-cmd="undo" title="Undo">↩</button>
+        <button type="button" data-cmd="redo" title="Redo">↪</button>
+      </div>
+      <div id="noteEditor" class="note-editor" contenteditable="true"><p><br/></p></div>
+      <div class="btn-row">
+        <button id="noteDeleteBtn" class="btn ghost">✕ <span data-i18n="delete">Delete</span></button>
+        <span class="hint small" id="noteMeta"></span>
+      </div>
     </div>
   </div>
 </section>

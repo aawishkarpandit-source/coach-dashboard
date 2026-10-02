@@ -150,3 +150,23 @@ dialog menu{display:flex;justify-content:flex-end;gap:8px;padding:0}
 .pptx-box > *{margin:0 auto}
 .slide-num{min-width:52px;text-align:center}
 .btn.active{border-color:var(--accent);background:var(--accent-soft)}
+/* Notes: file list + full-page rich editor */
+.notes-layout{display:grid;grid-template-columns:250px 1fr;gap:16px;align-items:start}
+@media(max-width:800px){.notes-layout{grid-template-columns:1fr}}
+.notes-list{display:flex;flex-direction:column;gap:6px;margin-top:10px;max-height:60vh;overflow:auto}
+.note-item{border:1px solid var(--border);background:#fff;border-radius:10px;padding:8px 10px;cursor:pointer;text-align:left;width:100%}
+.note-item b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px}
+.note-item small{color:var(--muted);font-size:11px}
+.note-item.active{border-color:var(--accent);background:var(--accent-soft)}
+.note-title{width:100%;font-size:20px;font-weight:700;border:none;border-bottom:2px solid var(--border);padding:8px 4px;margin-bottom:10px;background:transparent}
+.note-title:focus{outline:none;border-bottom-color:var(--accent)}
+.note-toolbar{display:flex;gap:4px;flex-wrap:wrap;align-items:center;background:#fff;border:1px solid var(--border);border-radius:10px;padding:6px;margin-bottom:10px;position:sticky;top:57px;z-index:5}
+.note-toolbar button{border:1px solid var(--border);background:#fff;border-radius:8px;min-width:32px;padding:5px 7px;cursor:pointer;font-size:14px}
+.note-toolbar button:hover{background:var(--accent-soft)}
+.note-toolbar select{border:1px solid var(--border);border-radius:8px;padding:5px;font-size:13px;background:#fff}
+.note-toolbar label{display:flex;align-items:center;gap:2px;border:1px solid var(--border);border-radius:8px;padding:3px 6px;cursor:pointer;font-size:14px;background:#fff}
+.note-toolbar input[type=color]{border:none;background:none;width:26px;height:22px;padding:0;cursor:pointer}
+.tb-sep{width:1px;height:22px;background:var(--border);margin:0 2px}
+.note-editor{background:#fff;border:1px solid var(--border);border-radius:12px;min-height:50vh;padding:18px 22px;font-size:16px;line-height:1.65}
+.note-editor:focus{outline:2px solid var(--accent-soft)}
+.note-editor img{max-width:100%}

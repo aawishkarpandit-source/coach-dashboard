@@ -32,6 +32,11 @@
   #marksBox thead th { background: #16a34a; color: #fff; }
   #marksBox thead th:first-child { border-radius: 10px 0 0 0; }
   #marksBox thead th:last-child { border-radius: 0 10px 0 0; }
+  /* Teacher notes: clean read-only document, no editing controls */
+  #notesBox { width: 100%; min-height: 100vh; background: #fff; color: #111; padding: 48px 56px; }
+  #notesBox h2 { margin: 0 0 16px; font-size: clamp(28px, 4.5vw, 52px); border-bottom: 3px solid #16a34a; padding-bottom: 10px; }
+  #notesBox .notes-body { font-size: clamp(17px, 2.4vw, 26px); line-height: 1.7; }
+  #notesBox .notes-body img { max-width: 100%; }
 </style>
 </head>
 <body>
@@ -71,6 +76,20 @@
   function escapeHtmlLite(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => (
       { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+  // Second scrub on the stage itself: text only, never executable.
+  function scrubHtml(html) {
+    try {
+      const t = document.createElement('div');
+      t.innerHTML = String(html || '');
+      t.querySelectorAll('script, iframe, object, embed, form').forEach((el) => el.remove());
+      t.querySelectorAll('*').forEach((el) => {
+        [...el.attributes].forEach((a) => {
+          if (/^on/i.test(a.name) || (a.name === 'href' && /^\s*javascript:/i.test(a.value))) el.removeAttribute(a.name);
+        });
+      });
+      return t.innerHTML;
+    } catch { return ''; }
   }
   // Non-marks content always plays on the black stage; marks use a white page.
   function stageBg(color) { content.style.background = color; }
@@ -149,6 +168,13 @@
         '</h2><p class="marks-sub">Class ' + escapeHtmlLite(msg.className || '') + '</p>' +
         '<table><thead><tr><th>Roll</th><th>Name</th><th>Total</th><th>Percent</th></tr></thead><tbody>' +
         rows + '</tbody></table></div>';
+      return;
+    }
+    if (msg.type === 'notes') {
+      forgetVideo();
+      idle.style.display = 'none'; content.classList.add('show'); stageBg('#fff');
+      content.innerHTML = '<div id="notesBox"><h2>' + escapeHtmlLite(msg.title || 'Notes') +
+        '</h2><div class="notes-body">' + scrubHtml(msg.html || '') + '</div></div>';
       return;
     }
     const url = fileUrl(msg);

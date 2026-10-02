@@ -174,6 +174,13 @@
       rawSend({ type: 'marks', title: payload.title || '', rows: payload.rows || [],
         className: this.currentClass() });
     },
+    // Teacher note: read-only text page, no editing controls on the stage.
+    showNotes(payload) {
+      mode = 'content';
+      this.open();
+      rawSend({ type: 'notes', title: payload.title || '', html: payload.html || '',
+        className: this.currentClass() });
+    },
     clear() { this.welcome(); },
     close() {
       if (ELEC) { try { ELEC.stageClose(); } catch {} mode = 'idle'; return; }
