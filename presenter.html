@@ -206,6 +206,8 @@
     } catch {}
   }
   window.addEventListener('message', (e) => { if (e.data && e.data.__coachStage) show(e.data); });
+  // Installed app: content arrives from the main process (auto-fullscreen stage).
+  window.addEventListener('coach:electron-stage', (e) => { if (e.detail && e.detail.__coachStage) show(e.detail); });
   window.addEventListener('storage', (e) => {
     if (e.key !== 'coach-stage-msg' || !e.newValue) return;
     try { const m = JSON.parse(e.newValue); if (m && m.__coachStage) show(m); } catch {}

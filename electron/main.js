@@ -28,6 +28,72 @@ function createMainWindow() {
   mainWin.on('closed', () => { mainWin = null; });
 }
 
+// ---- 2nd-screen stage: a REAL fullscreen window pinned to the 2nd display ----
+// No browser gesture limits here — the installed app fullscreenes automatically.
+let stageWin = null;
+function targetDisplay() {
+  const all = screen.getAllDisplays();
+  const primary = screen.getPrimaryDisplay();
+  return all.find((d) => d.id !== primary.id) || primary;
+}
+function ensureStage() {
+  if (stageWin && !stageWin.isDestroyed()) return stageWin;
+  const d = targetDisplay();
+  stageWin = new BrowserWindow({
+    x: d.bounds.x,
+    y: d.bounds.y,
+    width: d.bounds.width,
+    height: d.bounds.height,
+    fullscreen: true,
+    autoHideMenuBar: true,
+    backgroundColor: '#ffffff',
+    title: 'Coach Dashboard — Stage (students see this)',
+    icon: path.join(__dirname, 'icon.png'),
+    show: false,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js'),
+      contextIsolation: true,
+      nodeIntegration: false
+    }
+  });
+  stageWin.removeMenu();
+  stageWin.loadFile(path.join(__dirname, '..', 'presenter.html'));
+  stageWin.showInactive(); // show without stealing the teacher's focus
+  try { stageWin.setFullScreen(true); } catch {}
+  try { stageWin.moveTop(); } catch {}
+  stageWin.on('closed', () => { stageWin = null; });
+  return stageWin;
+}
+ipcMain.handle('coach:stage-open', () => {
+  ensureStage();
+  return { screens: screen.getAllDisplays().length, fullscreen: true };
+});
+ipcMain.handle('coach:stage-show', (_evt, msg) => {
+  const w = ensureStage();
+  try { w.webContents.send('coach:stage-msg', msg); } catch {}
+  return true;
+});
+ipcMain.handle('coach:stage-close', () => {
+  try { if (stageWin && !stageWin.isDestroyed()) stageWin.close(); } catch {}
+  stageWin = null;
+  return true;
+});
+
+// If a projector is plugged in (or unplugged) while the stage is open,
+// re-seat the stage on the current 2nd display (or back to primary).
+try {
+  const reseat = () => {
+    try {
+      if (!stageWin || stageWin.isDestroyed()) return;
+      const d = targetDisplay();
+      stageWin.setBounds({ x: d.bounds.x, y: d.bounds.y, width: d.bounds.width, height: d.bounds.height });
+      stageWin.setFullScreen(true);
+    } catch {}
+  };
+  screen.on('display-added', reseat);
+  screen.on('display-removed', reseat);
+} catch {}
+
 // ---- local presentations/books folders (presentations saved LOCALLY) ----
 function appDataDir(name) {
   const dir = path.join(app.getPath('userData'), name);

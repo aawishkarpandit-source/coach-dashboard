@@ -1,18 +1,30 @@
 /* Coach Dashboard — unified 2nd-screen stage bus.
-   ONE window ('coach-stage' → presenter.html) shows BOTH books and
-   presentations. Idle = white "Welcome" + green "Class X" pill.
-   Teacher window drives it via postMessage (+ localStorage fallback for metadata).
-   Files go across as Blob objects (structured clone) — the stage creates its
-   own object URL. No giant dataURL strings, no size limits.
+   ONE stage shows books, presentations, decks and marksheets.
+   Idle = white "Welcome" + green "Class X" pill.
+   Transport:
+   - Installed app (Electron): a REAL fullscreen window pinned to the 2nd
+     display (main process owns it — automatic fullscreen, no popups).
+     Blobs are converted to dataURLs because object URLs don't cross IPC.
+   - Plain browser: window.open + postMessage (+ localStorage metadata
+     fallback). Files go across as Blob objects (structured clone).
 */
 'use strict';
 (function () {
   const WIN_NAME = 'coach-stage';
+  const ELEC = (window.electron && window.electron.stageOpen) ? window.electron : null;
   let win = null;
   let mode = 'idle'; // idle | content
   let lastMsg = null;
   let lastType = 'welcome';
 
+  function blobToDataUrl(blob) {
+    return new Promise((res, rej) => {
+      const r = new FileReader();
+      r.onload = () => res(r.result);
+      r.onerror = rej;
+      r.readAsDataURL(blob);
+    });
+  }
   function rawSend(msg) {
     lastMsg = msg;
     lastType = (msg && msg.type) || 'welcome';
@@ -27,6 +39,18 @@
       if (typeof lite.url !== 'string' || lite.url.length >= 200000) delete lite.url;
       localStorage.setItem('coach-stage-msg', JSON.stringify(lite));
     } catch {}
+    if (ELEC) {
+      // Installed app: forward to the auto-fullscreen stage window.
+      if (full.blob instanceof Blob) {
+        blobToDataUrl(full.blob).then((du) => {
+          const copy = Object.assign({}, full, { url: du });
+          delete copy.blob;
+          try { ELEC.stageShow(copy); } catch {}
+        }).catch(() => {});
+      } else {
+        try { ELEC.stageShow(full); } catch {}
+      }
+    }
     try { if (win && !win.closed) win.postMessage(full, '*'); } catch {}
   }
 
@@ -34,6 +58,18 @@
     get mode() { return mode; },
     get lastType() { return lastType; },
     open() {
+      // Installed app: main process opens a true fullscreen window on the
+      // 2nd display automatically (also re-seats it if displays change).
+      if (ELEC) {
+        ELEC.stageOpen().then((info) => {
+          try {
+            const badge = document.querySelector('#screenInfo');
+            if (badge && info && info.screens) badge.textContent = info.screens + (info.screens > 1 ? ' screens (stage fullscreen ✓)' : ' screen');
+          } catch {}
+          if ((!info || info.screens < 2) && window.toast) window.toast('Only 1 display — connect the projector (Extend) for auto-fullscreen.');
+        }).catch(() => {});
+        return null;
+      }
       if (!win || win.closed) {
         win = window.open('presenter.html', WIN_NAME, 'width=1280,height=800');
         if (!win && window.toast) window.toast('Popup blocked — allow popups for the 2nd screen.');
@@ -139,7 +175,10 @@
         className: this.currentClass() });
     },
     clear() { this.welcome(); },
-    close() { try { win && win.close(); } catch {} win = null; mode = 'idle'; }
+    close() {
+      if (ELEC) { try { ELEC.stageClose(); } catch {} mode = 'idle'; return; }
+      try { win && win.close(); } catch {} win = null; mode = 'idle';
+    }
   };
 
   window.Stage = Stage;

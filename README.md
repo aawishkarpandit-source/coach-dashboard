@@ -40,7 +40,9 @@ Presentations are **never** uploaded — they stay on each computer by design.
 
 ## 4. 2nd screen (projector/TV)
 
-- Extend display in Windows, then press **🖥️ 2nd Screen** (top bar) — the stage auto-moves to the 2nd display, fills it, and attempts true fullscreen (falls back to a filled window if the browser refuses; press F11 on the stage then).
+- Extend display in Windows, then press **🖥️ 2nd Screen** (top bar).
+  - **Installed app:** a real stage window opens **automatically fullscreen on the 2nd display** (no clicks, no F11). Plug/unplug the projector any time — it re-seats itself.
+  - **Plain browser:** best-effort window — drag it to the projector and press F11.
 - **Idle:** white background, **Welcome** centered, green rectangle below with white text **Class 9A** (follows the class dropdown).
 - **Books, presentations AND the marksheet share the SAME stage window** — opening any of them replaces what's shown; closing the reader returns to idle. The Students page has its own “Show on 2nd screen” button (white results table, updates live as you type marks).
 - Teacher changes pages/slides on the main screen; students see only the open content — no controls.

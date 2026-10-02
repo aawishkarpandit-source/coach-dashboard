@@ -12,5 +12,16 @@ contextBridge.exposeInMainWorld('electron', {
   openExternal: (target) => ipcRenderer.invoke('coach:open-external', target),
   openPath: (fullPath) => ipcRenderer.invoke('coach:open-path', fullPath),
   quitAndInstall: () => ipcRenderer.invoke('coach:quit-and-install'),
-  onUpdateDownloaded: (cb) => ipcRenderer.on('coach:update-downloaded', cb)
+  onUpdateDownloaded: (cb) => ipcRenderer.on('coach:update-downloaded', cb),
+  // 2nd-screen stage transport (installed app: true auto-fullscreen, no popups)
+  stageOpen: () => ipcRenderer.invoke('coach:stage-open'),
+  stageShow: (msg) => ipcRenderer.invoke('coach:stage-show', msg),
+  stageClose: () => ipcRenderer.invoke('coach:stage-close')
 });
+
+// Inside the STAGE window, forward main-process content into the page.
+try {
+  ipcRenderer.on('coach:stage-msg', (_evt, msg) => {
+    window.dispatchEvent(new CustomEvent('coach:electron-stage', { detail: msg }));
+  });
+} catch {}

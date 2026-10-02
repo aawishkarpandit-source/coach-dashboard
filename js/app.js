@@ -885,6 +885,7 @@ async function openPptxFile(fileOrBlob, name){
 }
 async function showDeckSlide(s){
   if(!pptxDeck){ toast('Deck closed — reopen it.'); return; }
+  const inApp = !!(window.electron && window.electron.stageOpen);
   let stageWin = null;
   try{ stageWin = window.Stage && Stage.open(); }catch{}
   try{
@@ -892,7 +893,8 @@ async function showDeckSlide(s){
     const box = document.querySelector('#pptxBox');
     const shot = await CoachPptx.slideHtml(pptxDeck, box);
     try{ window.Stage && Stage.showDeckHtml({ html:shot.html, w:shot.w, h:shot.h, idx:s.idx, count:pptxDeck.count, title:pptxDeck.name }); }catch{}
-    if(!stageWin && window.toast) toast('2nd screen blocked — allow popups, then press Next.');
+    // Installed app opens a real fullscreen stage (open() is fire-and-forget there).
+    if(!inApp && !stageWin && window.toast) toast('2nd screen blocked — allow popups, then press Next.');
   }catch(err){ toast('Could not render this slide (' + String((err&&err.message)||err).slice(0,60) + ')'); }
 }
 async function saveLocalMedia(file){
