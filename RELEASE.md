@@ -1,6 +1,17 @@
-# 🎓 Coach Dashboard v1.1.2 — Official Release
+# 🎓 Coach Dashboard v1.2.0 — Official Release
 
 A classroom teaching app **built by a student, for classrooms**. One install gives teachers textbooks, notes, presentations, marks data and a second-screen stage for the projector — online or offline.
+
+## 📌 fixed in v1.2.0
+
+- **Duplicate mode now switches to Extend** — Windows Duplicate mode reports a single logical display, so the app thought no projector existed. It now counts **physical monitors** (WMI) and switches to Extend + opens the stage whenever a second display is wired.
+- **Picking the same class as before now flips the stage** from `LOADING....` to Welcome + Class pill (previously only a *different* pick triggered it).
+
+## 👤 new: teacher accounts
+
+- **Email + password sign-in** (school Supabase) on first open, after every update, and after Sign out — the app locks until you're in (offline computers are never locked out).
+- **Hello, {Name}** greeting above the dashboard title — Hello in black, the account's name in green, from the new `coach_users` (uuid → name) table (`supabase/migrate-auth.sql`, run once in SQL Editor).
+- **Sign out** button beside the Credits (About page + Team page) — locks the app until the next sign-in with the same or a different account.
 
 ## 🐛 fixed in v1.1.2
 
@@ -36,7 +47,7 @@ A classroom teaching app **built by a student, for classrooms**. One install giv
 
 ## 📥 New install (school computer)
 
-1. Download `Coach-Dashboard-Setup-1.1.1.exe` from GitHub Releases
+1. Download `Coach-Dashboard-Setup-1.2.0.exe` from GitHub Releases
 2. Run it → open **Coach Dashboard** → pick your class → extend display to the projector and press **🖥️ 2nd Screen**
 
 ## 🔄 Updating from an older version

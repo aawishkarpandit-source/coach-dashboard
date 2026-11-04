@@ -43,8 +43,8 @@ $('#classSelect').addEventListener('change', e => {
 
 /* ---------- 2. Eng / Nep toggle ---------- */
 const I18N = {
-  en: {classLabel:'Class',offline:'Offline Ready',appTitle:'Classroom Dashboard',appSub:'Simple • Offline • Easy to use',students:'Students',books:'Textbooks',present:'Present',home:'Home',studentsTitle:'Students & Marksheet',studentList:'Student List',add:'Add',marksheet:'Marksheet',marksheetHint:'Select a student, enter marks, auto-saved offline.',selectStudent:'Select student',subject:'Subject',total:'Total',percent:'Percent',name:'Name',action:'Action',booksTitle:'Textbooks',govt:'Govt Books',pvt:'Private Books',booksHint:'Put PDFs in /books folder, or Import. Works offline.',importBook:'Import Book',importHint:'Choose a PDF. It is saved in the browser and, in the installed app, as a real file.',linkFolder:'Link /books folder',delete:'Delete',imported:'Imported',show2nd:'Show on 2nd screen',pdfControlHint:'You control from this screen — students see only the open page on the 2nd screen.',presentTitle:'Present',presentFiles:'Presentation / Media',presentHint:'Images, videos, PDFs & PowerPoint (.pptx) play fully offline. The stage opens by itself.',chooseFiles:'Choose files',openPresenter:'Open presenter (2nd screen)',stage:'Stage (what students see)',stageHint:'Pick a file to preview here. Presenter window mirrors this.',newPpt:'New presentation',newPptHint:'“New presentation” picks files from this computer to present.',addStudent:'Add student',cancel:'Cancel',save:'Save',close:'Close',open2nd:'2nd screen',localPres:'Saved on this computer',about:'About',terms:'Terms & Conditions',team:'Team',playCredits:'Play credits',stopCredits:'Stop',roleLead:'LEAD DESIGNER & DEVELOPER',roleTesters:'PLAY TESTERS',thanksWatching:'Thanks for teaching',backup:'Backup',restore:'Restore',backupHint:'One file holds everything: students, theory/practical marks, books, presentations, settings.',exportBk:'Export',importBk:'Import',fullMarks:'Full marks',fullMarksHint:'Rename subjects, set full marks, delete, or add new ones. Totals follow automatically.',theory:'Theory',practical:'Practical',exams:'Exams',examsHint:'Each exam keeps its own marksheet. Rename freely; deleting an exam erases its marks everywhere.',notes:'Notes',newNote:'New note',whichClass:'Which class are you in?',classPopupHint:'Pick your class — books and marksheets follow it.',startClass:'Start teaching',connectScreen:'Connect Second Screen',connectScreenHint:'plug in the projector/TV; the stage opens by itself.'},
-  ne: {classLabel:'कक्षा',offline:'अफलाइन तयार',appTitle:'कक्षाकोठा ड्यासबोर्ड',appSub:'सरल • अफलाइन • सजिलो',students:'विद्यार्थी',books:'पाठ्यपुस्तक',present:'प्रस्तुत गर्नुहोस्',home:'गृहपृष्ठ',studentsTitle:'विद्यार्थी र मार्कसिट',studentList:'विद्यार्थी सूची',add:'थप्नुहोस्',marksheet:'मार्कसिट',marksheetHint:'विद्यार्थी छान्नुहोस्, नम्बर हाल्नुहोस्, अफलाइन सेभ हुन्छ।',selectStudent:'विद्यार्थी छान्नुहोस्',subject:'विषय',total:'जम्मा',percent:'प्रतिशत',name:'नाम',action:'कार्य',booksTitle:'पाठ्यपुस्तक',govt:'सरकारी किताब',pvt:'निजी किताब',booksHint:'PDF हरू /books मा राख्नुहोस् वा Import गर्नुहोस्। अफलाइन चल्छ।',importBook:'किताब आयात',importHint:'PDF छान्नुहोस्। ब्राउजरमा र इन्स्टल गरिएको एपमा वास्तविक फाइलका रूपमा सेभ हुन्छ।',linkFolder:'Link /books फोल्डर',delete:'हटाउनुहोस्',imported:'आयातित',show2nd:'दोस्रो स्क्रिनमा देखाउनुहोस्',pdfControlHint:'तपाईं यस स्क्रिनबाट नियन्त्रण गर्नुहोस् — विद्यार्थीले दोस्रो स्क्रिनमा खुला पेज मात्र देख्छन्।',presentTitle:'प्रस्तुत',presentFiles:'प्रस्तुति / मिडिया',presentHint:'फोटो, भिडियो, PDF र PowerPoint (.pptx) अफलाइन चल्छ। स्टेज आफैं खुल्छ।',chooseFiles:'फाइल छान्नुहोस्',openPresenter:'प्रस्तोता खोल्नुहोस् (दोस्रो स्क्रिन)',stage:'स्टेज (विद्यार्थीले देख्ने)',stageHint:'यहाँ हेर्न फाइल छान्नुहोस्। प्रस्तोता विन्डोमा उही देखिन्छ।',newPpt:'नयाँ प्रस्तुति',newPptHint:'"नयाँ प्रस्तुति" ले यस कम्प्युटरबाट फाइल छानेर प्रस्तुत गर्छ।',addStudent:'विद्यार्थी थप्नुहोस्',cancel:'रद्द',save:'सेभ',close:'बन्द',open2nd:'दोस्रो स्क्रिन',localPres:'यस कम्प्युटरमा सेभ',about:'बारेमा',terms:'नियम तथा सर्तहरू',team:'टिम',playCredits:'क्रेडिट चलाउनुहोस्',stopCredits:'रोक्नुहोस्',roleLead:'प्रमुख डिजाइनर तथा विकासकर्ता',roleTesters:'प्ले टेस्टरहरू',thanksWatching:'पढाउनुभएकोमा धन्यवाद',backup:'ब्याकअप',restore:'रिस्टोर',backupHint:'एउटै फाइलमा सबै: विद्यार्थी, थ्योरी/प्राक्टिकल नम्बर, किताब, प्रस्तुति, सेटिङ।',exportBk:'एक्सपोर्ट',importBk:'इम्पोर्ट',fullMarks:'पूर्णाङ्क',fullMarksHint:'विषयको नाम बदल्नुहोस्, पूर्णाङ्क तोक्नुहोस्, हटाउनुहोस् वा नयाँ थप्नुहोस्।',theory:'थ्योरी',practical:'प्राक्टिकल',exams:'परीक्षाहरू',examsHint:'प्रत्येक परीक्षाको छुट्टै मार्कसिट हुन्छ। नाम स्वतन्त्र रूपमा बदल्नुहोस्; परीक्षा हटाउँदा त्यसका सबै नम्बर मेटिन्छ।',notes:'नोटहरू',newNote:'नयाँ नोट',whichClass:'तपाईं कुन कक्षामा हुनुहुन्छ?',classPopupHint:'आफ्नो कक्षा छान्नुहोस् — किताब र मार्कसिट त्यसै अनुसार आउँछ।',startClass:'पढाउन सुरु',connectScreen:'दोस्रो स्क्रिन जोड्नुहोस्',connectScreenHint:'प्रोजेक्टर/टिभी जोड्नुहोस् — स्टेज आफैं खुल्छ।'}
+  en: {classLabel:'Class',offline:'Offline Ready',appTitle:'Classroom Dashboard',appSub:'Simple • Offline • Easy to use',students:'Students',books:'Textbooks',present:'Present',home:'Home',studentsTitle:'Students & Marksheet',studentList:'Student List',add:'Add',marksheet:'Marksheet',marksheetHint:'Select a student, enter marks, auto-saved offline.',selectStudent:'Select student',subject:'Subject',total:'Total',percent:'Percent',name:'Name',action:'Action',booksTitle:'Textbooks',govt:'Govt Books',pvt:'Private Books',booksHint:'Put PDFs in /books folder, or Import. Works offline.',importBook:'Import Book',importHint:'Choose a PDF. It is saved in the browser and, in the installed app, as a real file.',linkFolder:'Link /books folder',delete:'Delete',imported:'Imported',show2nd:'Show on 2nd screen',pdfControlHint:'You control from this screen — students see only the open page on the 2nd screen.',presentTitle:'Present',presentFiles:'Presentation / Media',presentHint:'Images, videos, PDFs & PowerPoint (.pptx) play fully offline. The stage opens by itself.',chooseFiles:'Choose files',openPresenter:'Open presenter (2nd screen)',stage:'Stage (what students see)',stageHint:'Pick a file to preview here. Presenter window mirrors this.',newPpt:'New presentation',newPptHint:'“New presentation” picks files from this computer to present.',addStudent:'Add student',cancel:'Cancel',save:'Save',close:'Close',open2nd:'2nd screen',localPres:'Saved on this computer',about:'About',terms:'Terms & Conditions',team:'Team',playCredits:'Play credits',stopCredits:'Stop',roleLead:'LEAD DESIGNER & DEVELOPER',roleTesters:'PLAY TESTERS',thanksWatching:'Thanks for teaching',backup:'Backup',restore:'Restore',backupHint:'One file holds everything: students, theory/practical marks, books, presentations, settings.',exportBk:'Export',importBk:'Import',fullMarks:'Full marks',fullMarksHint:'Rename subjects, set full marks, delete, or add new ones. Totals follow automatically.',theory:'Theory',practical:'Practical',exams:'Exams',examsHint:'Each exam keeps its own marksheet. Rename freely; deleting an exam erases its marks everywhere.',notes:'Notes',newNote:'New note',whichClass:'Which class are you in?',classPopupHint:'Pick your class — books and marksheets follow it.',startClass:'Start teaching',connectScreen:'Connect Second Screen',connectScreenHint:'plug in the projector/TV; the stage opens by itself.',hello:'Hello',signOut:'Sign out',authTitle:'Sign in to continue',authHint:'Enter the email and password of your school account.',signIn:'Sign in',authNoAccount:'No account? Ask your coordinator — accounts are created in the school cloud.'},
+  ne: {classLabel:'कक्षा',offline:'अफलाइन तयार',appTitle:'कक्षाकोठा ड्यासबोर्ड',appSub:'सरल • अफलाइन • सजिलो',students:'विद्यार्थी',books:'पाठ्यपुस्तक',present:'प्रस्तुत गर्नुहोस्',home:'गृहपृष्ठ',studentsTitle:'विद्यार्थी र मार्कसिट',studentList:'विद्यार्थी सूची',add:'थप्नुहोस्',marksheet:'मार्कसिट',marksheetHint:'विद्यार्थी छान्नुहोस्, नम्बर हाल्नुहोस्, अफलाइन सेभ हुन्छ।',selectStudent:'विद्यार्थी छान्नुहोस्',subject:'विषय',total:'जम्मा',percent:'प्रतिशत',name:'नाम',action:'कार्य',booksTitle:'पाठ्यपुस्तक',govt:'सरकारी किताब',pvt:'निजी किताब',booksHint:'PDF हरू /books मा राख्नुहोस् वा Import गर्नुहोस्। अफलाइन चल्छ।',importBook:'किताब आयात',importHint:'PDF छान्नुहोस्। ब्राउजरमा र इन्स्टल गरिएको एपमा वास्तविक फाइलका रूपमा सेभ हुन्छ।',linkFolder:'Link /books फोल्डर',delete:'हटाउनुहोस्',imported:'आयातित',show2nd:'दोस्रो स्क्रिनमा देखाउनुहोस्',pdfControlHint:'तपाईं यस स्क्रिनबाट नियन्त्रण गर्नुहोस् — विद्यार्थीले दोस्रो स्क्रिनमा खुला पेज मात्र देख्छन्।',presentTitle:'प्रस्तुत',presentFiles:'प्रस्तुति / मिडिया',presentHint:'फोटो, भिडियो, PDF र PowerPoint (.pptx) अफलाइन चल्छ। स्टेज आफैं खुल्छ।',chooseFiles:'फाइल छान्नुहोस्',openPresenter:'प्रस्तोता खोल्नुहोस् (दोस्रो स्क्रिन)',stage:'स्टेज (विद्यार्थीले देख्ने)',stageHint:'यहाँ हेर्न फाइल छान्नुहोस्। प्रस्तोता विन्डोमा उही देखिन्छ।',newPpt:'नयाँ प्रस्तुति',newPptHint:'"नयाँ प्रस्तुति" ले यस कम्प्युटरबाट फाइल छानेर प्रस्तुत गर्छ।',addStudent:'विद्यार्थी थप्नुहोस्',cancel:'रद्द',save:'सेभ',close:'बन्द',open2nd:'दोस्रो स्क्रिन',localPres:'यस कम्प्युटरमा सेभ',about:'बारेमा',terms:'नियम तथा सर्तहरू',team:'टिम',playCredits:'क्रेडिट चलाउनुहोस्',stopCredits:'रोक्नुहोस्',roleLead:'प्रमुख डिजाइनर तथा विकासकर्ता',roleTesters:'प्ले टेस्टरहरू',thanksWatching:'पढाउनुभएकोमा धन्यवाद',backup:'ब्याकअप',restore:'रिस्टोर',backupHint:'एउटै फाइलमा सबै: विद्यार्थी, थ्योरी/प्राक्टिकल नम्बर, किताब, प्रस्तुति, सेटिङ।',exportBk:'एक्सपोर्ट',importBk:'इम्पोर्ट',fullMarks:'पूर्णाङ्क',fullMarksHint:'विषयको नाम बदल्नुहोस्, पूर्णाङ्क तोक्नुहोस्, हटाउनुहोस् वा नयाँ थप्नुहोस्।',theory:'थ्योरी',practical:'प्राक्टिकल',exams:'परीक्षाहरू',examsHint:'प्रत्येक परीक्षाको छुट्टै मार्कसिट हुन्छ। नाम स्वतन्त्र रूपमा बदल्नुहोस्; परीक्षा हटाउँदा त्यसका सबै नम्बर मेटिन्छ।',notes:'नोटहरू',newNote:'नयाँ नोट',whichClass:'तपाईं कुन कक्षामा हुनुहुन्छ?',classPopupHint:'आफ्नो कक्षा छान्नुहोस् — किताब र मार्कसिट त्यसै अनुसार आउँछ।',startClass:'पढाउन सुरु',connectScreen:'दोस्रो स्क्रिन जोड्नुहोस्',connectScreenHint:'प्रोजेक्टर/टिभी जोड्नुहोस् — स्टेज आफैं खुल्छ।',hello:'नमस्ते',signOut:'साइन आउट',authTitle:'जारी राख्न साइन इन गर्नुहोस्',authHint:'विद्यालयको खाताको इमेल र पासवर्ड हाल्नुहोस्।',signIn:'साइन इन',authNoAccount:'खाता छैन? संयोजकसँग सोध्नुहोस् — खाता विद्यालयको क्लाउडमा बनाइएको छ।'}
 };
 let LANG = localStorage.getItem('coach-lang') || 'en';
 function applyLang() {
@@ -64,8 +64,23 @@ function applyLang() {
 $('#langToggle').onclick = () => { LANG = LANG === 'en' ? 'ne' : 'en'; applyLang(); };
 applyLang();
 
-/* ---------- 2b. Launch popup: ask which class every time the app opens ---------- */
-(function(){
+/* ---------- 2b. Sign-in gate → class picker → stage boot ---------- */
+/* Flow: if a Supabase session exists (same app version), go straight to the
+   class picker; otherwise a full-screen lock asks for email + password
+   (first open, after every update, or after Sign out). */
+const AUTH_VER_KEY = 'coach-auth-version';
+const HELLO_KEY = 'coach-hello-name';
+function greet(name){
+  const s = $('#helloName');
+  if (s) s.textContent = (name && String(name).trim()) ? String(name).trim() : 'Teacher';
+}
+function lockApp(){ const l = $('#authLock'); if (l) l.classList.remove('hidden'); }
+function unlockApp(){ const l = $('#authLock'); if (l) l.classList.add('hidden'); }
+function bootFlowOnce(){
+  if (bootFlowOnce._done) return;
+  bootFlowOnce._done = true;
+  // Stage boot: LOADING.... until the class below is picked
+  try{ if(window.Stage) Stage.loading(); }catch{}
   const dlg = $('#classDialog'), pop = $('#popupClassSelect'), src = $('#classSelect');
   if(!dlg || !pop) return;
   // Dropdown always mirrors the topbar class list (edit options in index.html)
@@ -74,19 +89,81 @@ applyLang();
   if(!pop.value && pop.options.length) pop.value = pop.options[0].value;
   $('#classStartBtn')?.addEventListener('click', () => {
     const v = pop.value || (src && src.value) || '';
-    if(src && v && src.value !== v){
+    if (src && v) {
+      // Apply even when unchanged — the dispatched 'change' is what flips
+      // the stage from LOADING.... to Welcome + Class pill.
       src.value = v;
-      src.dispatchEvent(new Event('change')); // reuses chip/save/books/stage refresh
+      src.dispatchEvent(new Event('change'));
     }
     dlg.close();
   });
   try{ dlg.addEventListener('cancel', e => e.preventDefault()); }catch{} // Esc must not skip the question
   dlg.showModal();
+}
+$('#authForm')?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = $('#authGo'), err = $('#authErr');
+  if (err) err.classList.add('hidden');
+  if (btn) btn.disabled = true;
+  try{
+    const email = ($('#authEmail')?.value || '').trim();
+    const pass = $('#authPass')?.value || '';
+    await SB.signIn(email, pass);
+    // Remember which app version this login was for → sign-in again after updates
+    let appVer = '';
+    try{ appVer = window.electron ? await window.electron.appVersion() : ''; }catch{}
+    try{ localStorage.setItem(AUTH_VER_KEY, appVer || 'web'); }catch{}
+    let name = '';
+    try{ name = await SB.myName(); }catch{}
+    try{ localStorage.setItem(HELLO_KEY, name || ''); }catch{}
+    greet(name);
+    unlockApp();
+    if ($('#authEmail')) $('#authEmail').value = '';
+    if ($('#authPass')) $('#authPass').value = '';
+    bootFlowOnce();
+    toast('Signed in ✓');
+  }catch(ex){
+    if (err){
+      const msg = (ex && ex.message) ? String(ex.message) : 'Sign-in failed';
+      err.textContent = msg.indexOf('Invalid login') >= 0 ? 'Wrong email or password' : msg;
+      err.classList.remove('hidden');
+    }
+  }finally{
+    if (btn) btn.disabled = false;
+  }
+});
+// Sign out (About / Team page) → app locks until the next sign-in
+$$('[data-signout]').forEach(b => b.addEventListener('click', async () => {
+  try{ if (window.SB) await SB.signOut(); }catch{}
+  try{ localStorage.removeItem(AUTH_VER_KEY); localStorage.removeItem(HELLO_KEY); }catch{}
+  greet('');
+  try{ if (window.Stage) Stage.loading(); }catch{}
+  lockApp();
+}));
+(async function bootAuth(){
+  try{
+    if (window.SB && SB.configured) {
+      const sess = await SB.currentSession(); // null when offline/never signed in
+      const stamped = localStorage.getItem(AUTH_VER_KEY) || '';
+      if (!sess) {
+        // Offline-first: never lock a computer that can't reach the cloud —
+        // (past login stays cached, a first-ever offline run just works).
+        if (stamped || !navigator.onLine) {
+          greet(localStorage.getItem(HELLO_KEY));
+          bootFlowOnce();
+          return;
+        }
+        lockApp();
+        return; // success path unlocks + boots in the form handler
+      }
+      const appVer = await (window.electron ? window.electron.appVersion().catch(()=> '') : Promise.resolve(''));
+      if (appVer && appVer !== stamped) { lockApp(); return; } // updated → sign in again
+      try{ localStorage.setItem(AUTH_VER_KEY, appVer || 'web'); }catch{}
+    }
+  }catch{}
+  try{ greet(await SB.myName()); }catch{ greet(); }
+  bootFlowOnce();
 })();
-
-/* Stage boot: shows LOADING.... on the 2nd screen until the class is picked;
-   picking a class in the popup then flips it to Welcome + Class pill. */
-try{ if(window.Stage) Stage.loading(); }catch{}
 
 /* Connected display banner ("Connect Second Screen" until a display shows up) */
 try{

@@ -29,7 +29,13 @@ function createMainWindow() {
   mainWin.on('closed', () => { mainWin = null; });
   // Tell the UI once the page exists: is a 2nd display connected?
   mainWin.webContents.on('did-finish-load', () => {
-    try { notifyConnect(screen.getAllDisplays().length >= 2); } catch {}
+    // Banner truth check: also treat "2 monitors wired (e.g. duplicate mode)"
+    // as connected so the app doesn't nag while it is switching to Extend.
+    try {
+      physicalMonitorCount().then((n) => {
+        notifyConnect(screen.getAllDisplays().length >= 2 || n >= 2);
+      }).catch(() => notifyConnect(screen.getAllDisplays().length >= 2));
+    } catch { notifyConnect(screen.getAllDisplays().length >= 2); }
   });
   // Closing the teacher window always closes the stage with it.
   mainWin.on('close', () => {
@@ -84,8 +90,19 @@ function ensureStage() {
   stageWin.on('closed', () => { stageWin = null; });
   return stageWin;
 }
-ipcMain.handle('coach:stage-open', () => {
-  const count = screen.getAllDisplays().length;
+ipcMain.handle('coach:stage-open', async () => {
+  let count = screen.getAllDisplays().length;
+  if (count < 2) {
+    // Duplicate mode shows one logical display — check the real wiring and
+    // switch to Extend if both monitors are physically there.
+    const phys = await physicalMonitorCount();
+    if (phys >= 2) {
+      weExtended = true;
+      setDisplayMode('extend');
+      await new Promise((done) => afterScreensAppear(done));
+      count = screen.getAllDisplays().length;
+    }
+  }
   if (count < 2) {
     notifyConnect(false); // no stage over the teacher's own screen
     return { screens: count, fullscreen: false, blocked: true };
@@ -132,6 +149,33 @@ function reseatStage() {
 // Registered AFTER app is ready — `screen` throws before that, and a silent
 // catch here would disable the whole flow (that's how the stage ended up
 // opening fullscreen over the teacher's only display).
+// Windows Duplicate mode reports ONE logical display, so Electron thinks
+// there is no projector even when one is wired. WMI counts PHYSICAL
+// monitors — >1 means "hardware there, mode wrong" → switch to Extend.
+function physicalMonitorCount() {
+  return new Promise((res) => {
+    try {
+      const { execFile } = require('child_process');
+      execFile('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command',
+        '(Get-CimInstance -Namespace root/wmi -ClassName WmiMonitorBasicDisplayParams | Where-Object { $_.Active } | Measure-Object).Count'],
+        { windowsHide: true, timeout: 9000 }, (err, stdout) => {
+          const n = parseInt(String(stdout || '').trim(), 10);
+          res(isFinite(n) && n > 0 ? n : 0);
+        });
+    } catch { res(0); }
+  });
+}
+function afterScreensAppear(cb) {
+  // After displayswitch /extend Windows needs a moment; poll until Electron
+  // sees 2 logical displays (~8s max — else the banner/silent path applies).
+  let tries = 40;
+  const tick = () => {
+    if (screen.getAllDisplays().length >= 2) { try { cb(); } catch {} return; }
+    if (--tries <= 0) return;
+    setTimeout(tick, 200);
+  };
+  tick();
+}
 function setupDisplayFlow() {
   // On launch: 2+ displays → Extend + auto-start the stage (it shows
   // LOADING.... until the class is picked). Small delay lets Extend settle.
@@ -141,7 +185,16 @@ function setupDisplayFlow() {
       setDisplayMode('extend');
       setTimeout(() => { try { ensureStage(); } catch {} }, 1800);
     } else {
-      notifyConnect(false); // "Connect Second Screen" banner
+      // Duplicate mode: monitors exist but Electron sees one display → Extend.
+      physicalMonitorCount().then((n) => {
+        if (n >= 2) {
+          weExtended = true;
+          setDisplayMode('extend');
+          afterScreensAppear(() => { try { ensureStage(); } catch {} });
+        } else {
+          notifyConnect(false); // "Connect Second Screen" banner
+        }
+      }).catch(() => notifyConnect(false));
     }
   } catch {}
   try {
@@ -156,13 +209,19 @@ function setupDisplayFlow() {
     });
     screen.on('display-removed', () => {
       try {
-        if (screen.getAllDisplays().length < 2) {
-          notifyConnect(false);
-          try { if (stageWin && !stageWin.isDestroyed()) stageWin.close(); } catch {}
-          stageWin = null;
-          return;
-        }
-        reseatStage();
+        // Careful: extend↔duplicate transitions also look like display removal.
+        // Only close the stage when no second MONITOR is physically there.
+        physicalMonitorCount().then((n) => {
+          try {
+            if (screen.getAllDisplays().length < 2 && n < 2) {
+              notifyConnect(false);
+              try { if (stageWin && !stageWin.isDestroyed()) stageWin.close(); } catch {}
+              stageWin = null;
+              return;
+            }
+            reseatStage();
+          } catch {}
+        }).catch(() => { try { reseatStage(); } catch {} });
       } catch {}
     });
   } catch {}

@@ -41,7 +41,7 @@ Presentations are **never** uploaded — they stay on each computer by design.
 ## 4. 2nd screen (projector/TV)
 
 - **Installed app does the display setup itself:**
-  - On launch with a projector/TV connected, it switches Windows to **Extend** automatically and opens the fullscreen stage — no F11, no settings hunting.
+  - On launch it counts **physical** monitors (handles Windows **Duplicate** mode, where Electron sees only one display): projector/TV wired → switches to **Extend** and opens the fullscreen stage automatically. No F11, no settings hunting.
   - While the app runs: plug in a display → Extend + the stage opens by itself; unplug it → the stage closes.
   - Closing the app returns Windows to **Duplicate** (only if the app had switched to Extend itself).
 - **Stage states:** fresh launch until the class is picked → **LOADING....** → after picking, **Welcome + green Class pill** → any content (book/present/marks/notes) replaces it, and closing the reader returns to Welcome.
@@ -59,6 +59,12 @@ Presentations are **never** uploaded — they stay on each computer by design.
 - **Books:** **Import Book** saves the PDF in the browser + (installed app) as a real file in the app's books folder — same pattern as presentations. Cloud copy included. Delete removes all of them. On the 2nd screen the stage loads the **real file from disk** (the installed app), so PDFs page-turn reliably offline.
 - **Notes:** full blank pages with rich text (bold/italic/headings/lists/colors/links). Saved in the browser forever, renameable files, included in Backup. **Show on 2nd screen** displays text-only (no editing controls there); keeps following while shown.
 - **Class picker:** a centered popup asks "Which class are you in?" **every time the app opens** — dropdown mirrors the topbar class list; your pick filters books/marksheets and updates the stage pill.
+
+## 3d. Teacher accounts (sign-in)
+
+- Accounts come from the school's Supabase (Supabase → Authentication). Run `supabase/migrate-auth.sql` once — it creates the `coach_users` **uuid → name** table that feeds the "Hello, {name}" line.
+- The app **asks for email + password** on first open, after every app update, and after **Sign out** (button on the About/Team pages). Signed-in teachers skip straight to the class picker; the greeting shows **Hello, {name}** (name from `coach_users`, editable with `update public.coach_users set name = '...'`).
+- **Offline-first rule:** a computer that can't reach the cloud is never locked out — sign-in is enforced only when online.
 
 ## 6. How to edit
 

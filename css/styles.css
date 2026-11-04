@@ -37,6 +37,19 @@ main{flex:1;position:relative}
 #page-home{max-width:none;padding:0;display:none}
 #page-home.active{display:flex;flex-direction:column;min-height:calc(100vh - 57px)}
 .home-center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:20px;text-align:center}
+/* Hello, {name} — sits above the big title, black + green */
+.hello-line{font-size:22px;font-weight:600;color:#111;margin:0;display:flex;gap:6px;align-items:baseline}
+.hello-name{color:var(--accent);font-weight:800}
+/* Sign-in lock (full overlay until a Supabase login succeeds) */
+.auth-lock{position:fixed;inset:0;z-index:300;background:#eef2f7;display:flex;align-items:center;justify-content:center;padding:16px}
+.auth-lock.hidden{display:none}
+.auth-card{background:#fff;border:1px solid var(--border);border-radius:18px;box-shadow:0 18px 50px rgba(15,23,42,.18);padding:26px 26px 20px;width:min(420px,94vw);text-align:center}
+.auth-logo{font-size:40px;line-height:1}
+.auth-card h2{margin:8px 0 2px;font-size:22px}
+.auth-card label{display:block;text-align:left;font-weight:600;font-size:13px;margin:12px 0 0;color:#334155}
+.auth-card input{width:100%;margin-top:4px;padding:10px 12px;font-size:15px;border:1px solid var(--border);border-radius:10px}
+.auth-card .btn{margin-top:14px}
+.auth-card .hint{margin:6px 0 0}
 .app-title{margin:0;font-size:clamp(24px,4vw,40px)}
 .app-sub{margin:0;color:var(--muted)}
 .squircle-row{display:flex;gap:32px;margin-top:28px;flex-wrap:wrap;justify-content:center}

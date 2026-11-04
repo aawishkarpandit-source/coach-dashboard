@@ -71,6 +71,48 @@
     on(evt, cb) { if (evt === 'sync') window.addEventListener(EVT, (e) => cb(e.detail)); },
     async ready() { return !!(await getClient()); },
 
+    // ---- auth (Supabase email + password) ----
+    // Session persists in the local storage, so returning teachers skip the
+    // sign-in lock unless they signed out or the app was updated.
+    async currentSession() {
+      const sb = await getClient(); if (!sb) return null;
+      try {
+        const { data } = await sb.auth.getSession();
+        return (data && data.session) || null;
+      } catch { return null; }
+    },
+    async signIn(email, password) {
+      const sb = await getClient();
+      if (!sb) throw new Error('Cloud not available — go online and try again');
+      const { data, error } = await sb.auth.signInWithPassword({
+        email: String(email || '').trim(),
+        password: String(password || '')
+      });
+      if (error) throw error;
+      setState('cloud', 'signed in');
+      return data;
+    },
+    async signOut() {
+      const sb = await getClient(); if (!sb) return;
+      try { await sb.auth.signOut(); } catch {}
+      setState('local');
+    },
+    // Display name for the "Hello, {name}" line: public.coach_users row
+    // (uuid → name), falling back to the email's local part.
+    async myName() {
+      const sb = await getClient(); if (!sb) return '';
+      try {
+        const s = await this.currentSession();
+        if (!s || !s.user || !s.user.id) return '';
+        try {
+          const { data } = await sb.from('coach_users').select('name').eq('id', s.user.id).maybeSingle();
+          if (data && data.name && String(data.name).trim()) return String(data.name).trim();
+        } catch {}
+        const em = String(s.user.email || '');
+        return em ? em.split('@')[0] : '';
+      } catch { return ''; }
+    },
+
     async configure(url, anonKey) {
       localStorage.setItem(LS_KEY, JSON.stringify({ url: url.trim(), anonKey: anonKey.trim() }));
       client = null;
