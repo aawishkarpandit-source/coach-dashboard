@@ -66,7 +66,7 @@
             const badge = document.querySelector('#screenInfo');
             if (badge && info && info.screens) badge.textContent = info.screens + (info.screens > 1 ? ' screens (stage fullscreen ✓)' : ' screen');
           } catch {}
-          if ((!info || info.screens < 2) && window.toast) window.toast('Only 1 display — connect the projector (Extend) for auto-fullscreen.');
+          if ((!info || info.screens < 2) && window.toast) window.toast('Connect Second Screen — no projector/TV detected.');
         }).catch(() => {});
         return null;
       }

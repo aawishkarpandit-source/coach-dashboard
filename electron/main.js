@@ -49,6 +49,9 @@ function targetDisplay() {
   return all.find((d) => d.id !== primary.id) || primary;
 }
 function ensureStage() {
+  // Never open a fullscreen stage over the teacher's only display —
+  // ask for a second screen instead (banner updates on the teacher window).
+  try { if (screen.getAllDisplays().length < 2) { notifyConnect(false); return null; } } catch {}
   if (stageWin && !stageWin.isDestroyed()) return stageWin;
   const d = targetDisplay();
   stageWin = new BrowserWindow({
@@ -82,13 +85,18 @@ function ensureStage() {
   return stageWin;
 }
 ipcMain.handle('coach:stage-open', () => {
+  const count = screen.getAllDisplays().length;
+  if (count < 2) {
+    notifyConnect(false); // no stage over the teacher's own screen
+    return { screens: count, fullscreen: false, blocked: true };
+  }
   ensureStage();
-  return { screens: screen.getAllDisplays().length, fullscreen: true };
+  return { screens: count, fullscreen: true };
 });
 ipcMain.handle('coach:stage-show', (_evt, msg) => {
   lastStageMsg = msg;
   const w = ensureStage();
-  try { w.webContents.send('coach:stage-msg', msg); } catch {}
+  try { if (w) w.webContents.send('coach:stage-msg', msg); } catch {}
   return true;
 });
 ipcMain.handle('coach:stage-close', () => {
@@ -113,43 +121,52 @@ function setDisplayMode(mode) {
 function notifyConnect(connected) {
   try { if (mainWin && !mainWin.isDestroyed()) mainWin.webContents.send('coach:connect-screen', { connected: !!connected }); } catch {}
 }
-try {
-  const reseat = () => {
-    try {
-      if (!stageWin || stageWin.isDestroyed()) return;
-      const d = targetDisplay();
-      stageWin.setBounds({ x: d.bounds.x, y: d.bounds.y, width: d.bounds.width, height: d.bounds.height });
-      stageWin.setFullScreen(true);
-    } catch {}
-  };
-  screen.on('display-added', () => {
-    try {
-      if (screen.getAllDisplays().length >= 2) { weExtended = true; setDisplayMode('extend'); }
-      notifyConnect(screen.getAllDisplays().length >= 2);
-      // If the stage doesn't exist yet (opened before the projector was), open it now.
-      if (!stageWin || stageWin.isDestroyed()) { ensureStage(); return; }
-      reseat();
-    } catch {}
-  });
-  screen.on('display-removed', () => {
-    try {
-      if (screen.getAllDisplays().length < 2) {
-        notifyConnect(false);
-        try { if (stageWin && !stageWin.isDestroyed()) stageWin.close(); } catch {}
-        stageWin = null;
-        return;
-      }
-      reseat();
-    } catch {}
-  });
-  // On launch: Extend + auto-start the stage (it shows LOADING.... until the
-  // class is picked in the teacher window). Small delay lets Extend settle.
-  if (screen.getAllDisplays().length >= 2) {
-    weExtended = true;
-    setDisplayMode('extend');
-    setTimeout(() => { try { ensureStage(); } catch {} }, 1800);
-  }
-} catch {}
+function reseatStage() {
+  try {
+    if (!stageWin || stageWin.isDestroyed()) return;
+    const d = targetDisplay();
+    stageWin.setBounds({ x: d.bounds.x, y: d.bounds.y, width: d.bounds.width, height: d.bounds.height });
+    stageWin.setFullScreen(true);
+  } catch {}
+}
+// Registered AFTER app is ready — `screen` throws before that, and a silent
+// catch here would disable the whole flow (that's how the stage ended up
+// opening fullscreen over the teacher's only display).
+function setupDisplayFlow() {
+  // On launch: 2+ displays → Extend + auto-start the stage (it shows
+  // LOADING.... until the class is picked). Small delay lets Extend settle.
+  try {
+    if (screen.getAllDisplays().length >= 2) {
+      weExtended = true;
+      setDisplayMode('extend');
+      setTimeout(() => { try { ensureStage(); } catch {} }, 1800);
+    } else {
+      notifyConnect(false); // "Connect Second Screen" banner
+    }
+  } catch {}
+  try {
+    screen.on('display-added', () => {
+      try {
+        if (screen.getAllDisplays().length >= 2) { weExtended = true; setDisplayMode('extend'); }
+        notifyConnect(screen.getAllDisplays().length >= 2);
+        // Stage not open yet (opened before the projector was)? Open it now.
+        if (!stageWin || stageWin.isDestroyed()) { ensureStage(); return; }
+        reseatStage();
+      } catch {}
+    });
+    screen.on('display-removed', () => {
+      try {
+        if (screen.getAllDisplays().length < 2) {
+          notifyConnect(false);
+          try { if (stageWin && !stageWin.isDestroyed()) stageWin.close(); } catch {}
+          stageWin = null;
+          return;
+        }
+        reseatStage();
+      } catch {}
+    });
+  } catch {}
+}
 
 
 // ---- local presentations/books folders (presentations saved LOCALLY) ----
@@ -264,6 +281,7 @@ function setupAutoUpdate() {
 
 app.whenReady().then(() => {
   createMainWindow();
+  setupDisplayFlow();
   setupAutoUpdate();
   app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) createMainWindow(); });
 });

@@ -1,6 +1,10 @@
-# 🎓 Coach Dashboard v1.1.1 — Official Release
+# 🎓 Coach Dashboard v1.1.2 — Official Release
 
 A classroom teaching app **built by a student, for classrooms**. One install gives teachers textbooks, notes, presentations, marks data and a second-screen stage for the projector — online or offline.
+
+## 🐛 fixed in v1.1.2
+
+- **Stage no longer opens fullscreen with no second display** — the launch display logic ran before Electron was ready and silently died, so every launch dropped a fullscreen stage over the teacher's only screen. Now: 1 display → yellow **Connect Second Screen** banner, no stage. 2+ displays → Extend + auto-stage as intended. Plug/unplug now works while teaching, too.
 
 ## 🖥️ new in v1.1.1
 
