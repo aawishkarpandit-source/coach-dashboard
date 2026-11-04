@@ -6,6 +6,7 @@
 const { app, BrowserWindow, ipcMain, shell, screen } = require('electron');
 const path = require('path');
 const fs = require('fs');
+const { pathToFileURL } = require('url');
 
 let mainWin = null;
 
@@ -119,6 +120,19 @@ ipcMain.handle('coach:save-file', async (_evt, { folder, fileName, data }) => {
 ipcMain.handle('coach:list-files', async (_evt, folder) => {
   const dir = appDataDir(folder === 'books' ? 'books' : 'presentations');
   try { return await fs.promises.readdir(dir); } catch { return []; }
+});
+
+// Real file path -> file:// URL for the stage. Chromium's PDF viewer renders
+// file:// URLs natively but blank-screens on huge data: URLs, so books load
+// from disk. Only files inside the app's own data folder are allowed.
+ipcMain.handle('coach:path-url', (_evt, fullPath) => {
+  try {
+    const full = path.resolve(String(fullPath));
+    const base = path.resolve(app.getPath('userData'));
+    if (!full.startsWith(base)) return '';
+    if (!fs.existsSync(full)) return '';
+    return pathToFileURL(full).href;
+  } catch { return ''; }
 });
 
 ipcMain.handle('coach:open-external', (_evt, target) => {

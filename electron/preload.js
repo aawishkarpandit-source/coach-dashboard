@@ -9,6 +9,8 @@ contextBridge.exposeInMainWorld('electron', {
   listFiles: (folder) => ipcRenderer.invoke('coach:list-files', folder),
   removeDir: (dir) => ipcRenderer.invoke('coach:remove-dir', dir),
   deleteFile: (fullPath) => ipcRenderer.invoke('coach:delete-file', fullPath),
+  // Real file path -> file:// URL (books load from disk, not data: URLs)
+  pathUrl: (fullPath) => ipcRenderer.invoke('coach:path-url', fullPath),
   openExternal: (target) => ipcRenderer.invoke('coach:open-external', target),
   openPath: (fullPath) => ipcRenderer.invoke('coach:open-path', fullPath),
   quitAndInstall: () => ipcRenderer.invoke('coach:quit-and-install'),

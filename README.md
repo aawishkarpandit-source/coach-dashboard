@@ -53,12 +53,13 @@ Presentations are **never** uploaded — they stay on each computer by design.
 - **Present page:** one **＋ New presentation** button opens the file window (images, video, PDF, `.pptx` — all offline, stage opens by itself). ◀ Prev / Next ▶ turn slides on both screens.
 - **Google Slides / web links:** supported in the engine if you re-add a link button; stock build is offline-first.
 - **Other presentations:** chosen files + PowerPoint records save on the computer (browser IndexedDB; installed app also copies real files to its data folder → “Saved on this computer” list to reopen/delete). Re-installs on the same machine keep them.
-- **Books:** **Import Book** saves the PDF in the browser + (installed app) as a real file in the app's books folder — same pattern as presentations. Cloud copy included. Delete removes all of them.
+- **Books:** **Import Book** saves the PDF in the browser + (installed app) as a real file in the app's books folder — same pattern as presentations. Cloud copy included. Delete removes all of them. On the 2nd screen the stage loads the **real file from disk** (the installed app), so PDFs page-turn reliably offline.
 - **Notes:** full blank pages with rich text (bold/italic/headings/lists/colors/links). Saved in the browser forever, renameable files, included in Backup. **Show on 2nd screen** displays text-only (no editing controls there); keeps following while shown.
+- **Class picker:** a centered popup asks "Which class are you in?" **every time the app opens** — dropdown mirrors the topbar class list; your pick filters books/marksheets and updates the stage pill.
 
 ## 6. How to edit
 
-1. **Classes** – `<select id="classSelect">` in `index.html`.
+1. **Classes** – `<select id="classSelect">` in `index.html` (the launch popup mirrors this list automatically).
 2. **New page** – copy a `<section id="page-xxx" class="page">` block, link with `<button data-goto="xxx">`.
 3. **Books** – drop PDFs in `/books/`, add rows in `data/books.json` (`class`: `9`/`10`/`9A`/`all`, `type`: `govt`/`pvt`).
 4. **Subjects & exams** – defaults live in `js/app.js` (`DEFAULT_SUBJECTS`, default Exam 1); per-PC overrides persist in localStorage. **Language** – `I18N` in `js/app.js` + `data-i18n`.
