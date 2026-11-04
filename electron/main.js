@@ -27,11 +27,22 @@ function createMainWindow() {
   mainWin.removeMenu();
   mainWin.loadFile(path.join(__dirname, '..', 'index.html'));
   mainWin.on('closed', () => { mainWin = null; });
+  // Tell the UI once the page exists: is a 2nd display connected?
+  mainWin.webContents.on('did-finish-load', () => {
+    try { notifyConnect(screen.getAllDisplays().length >= 2); } catch {}
+  });
+  // Closing the teacher window always closes the stage with it.
+  mainWin.on('close', () => {
+    try { if (stageWin && !stageWin.isDestroyed()) stageWin.close(); } catch {}
+    stageWin = null;
+  });
 }
 
 // ---- 2nd-screen stage: a REAL fullscreen window pinned to the 2nd display ----
 // No browser gesture limits here — the installed app fullscreenes automatically.
 let stageWin = null;
+let lastStageMsg = null;   // re-sent when the stage window (re)loads
+let weExtended = false;    // did WE switch Windows to Extend? Then restore Duplicate on exit
 function targetDisplay() {
   const all = screen.getAllDisplays();
   const primary = screen.getPrimaryDisplay();
@@ -62,6 +73,11 @@ function ensureStage() {
   stageWin.showInactive(); // show without stealing the teacher's focus
   try { stageWin.setFullScreen(true); } catch {}
   try { stageWin.moveTop(); } catch {}
+  // On every stage (re)load, replay the current state: last shown content,
+  // or LOADING.... until the teacher picks the class after a fresh launch.
+  stageWin.webContents.on('did-finish-load', () => {
+    try { stageWin.webContents.send('coach:stage-msg', lastStageMsg || { type: 'loading', className: '' }); } catch {}
+  });
   stageWin.on('closed', () => { stageWin = null; });
   return stageWin;
 }
@@ -70,6 +86,7 @@ ipcMain.handle('coach:stage-open', () => {
   return { screens: screen.getAllDisplays().length, fullscreen: true };
 });
 ipcMain.handle('coach:stage-show', (_evt, msg) => {
+  lastStageMsg = msg;
   const w = ensureStage();
   try { w.webContents.send('coach:stage-msg', msg); } catch {}
   return true;
@@ -80,8 +97,22 @@ ipcMain.handle('coach:stage-close', () => {
   return true;
 });
 
-// If a projector is plugged in (or unplugged) while the stage is open,
-// re-seat the stage on the current 2nd display (or back to primary).
+// ---- Windows display-mode choreography (extends projector automatically) ----
+// Launch:   2nd display detected → switch Windows to Extend, open the stage.
+// Plug in:  a display is added while running → Extend + open stage (or re-seat).
+// Unplug:   last display removed → close the stage + "Connect Second Screen".
+// Quit:     back to Duplicate (only when this app switched to Extend itself).
+function setDisplayMode(mode) {
+  try {
+    const { execFile } = require('child_process');
+    // displayswitch.exe ships with Windows: /extend = Extend, /clone = Duplicate
+    execFile('displayswitch.exe', [mode === 'extend' ? '/extend' : '/clone'],
+      { windowsHide: true }, () => {});
+  } catch { /* not Windows / blocked */ }
+}
+function notifyConnect(connected) {
+  try { if (mainWin && !mainWin.isDestroyed()) mainWin.webContents.send('coach:connect-screen', { connected: !!connected }); } catch {}
+}
 try {
   const reseat = () => {
     try {
@@ -91,9 +122,35 @@ try {
       stageWin.setFullScreen(true);
     } catch {}
   };
-  screen.on('display-added', reseat);
-  screen.on('display-removed', reseat);
+  screen.on('display-added', () => {
+    try {
+      if (screen.getAllDisplays().length >= 2) { weExtended = true; setDisplayMode('extend'); }
+      notifyConnect(screen.getAllDisplays().length >= 2);
+      // If the stage doesn't exist yet (opened before the projector was), open it now.
+      if (!stageWin || stageWin.isDestroyed()) { ensureStage(); return; }
+      reseat();
+    } catch {}
+  });
+  screen.on('display-removed', () => {
+    try {
+      if (screen.getAllDisplays().length < 2) {
+        notifyConnect(false);
+        try { if (stageWin && !stageWin.isDestroyed()) stageWin.close(); } catch {}
+        stageWin = null;
+        return;
+      }
+      reseat();
+    } catch {}
+  });
+  // On launch: Extend + auto-start the stage (it shows LOADING.... until the
+  // class is picked in the teacher window). Small delay lets Extend settle.
+  if (screen.getAllDisplays().length >= 2) {
+    weExtended = true;
+    setDisplayMode('extend');
+    setTimeout(() => { try { ensureStage(); } catch {} }, 1800);
+  }
 } catch {}
+
 
 // ---- local presentations/books folders (presentations saved LOCALLY) ----
 function appDataDir(name) {
@@ -209,6 +266,13 @@ app.whenReady().then(() => {
   createMainWindow();
   setupAutoUpdate();
   app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) createMainWindow(); });
+});
+
+app.on('before-quit', () => {
+  // Closing the app returns Windows to Duplicate mode (when we switched it),
+  // and the stage window goes away with everything else.
+  try { if (weExtended) setDisplayMode('clone'); } catch {}
+  try { if (stageWin && !stageWin.isDestroyed()) stageWin.close(); } catch {}
 });
 
 app.on('window-all-closed', () => { if (process.platform !== 'darwin') app.quit(); });

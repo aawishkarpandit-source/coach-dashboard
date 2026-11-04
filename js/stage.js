@@ -117,6 +117,12 @@
       this.open();
       rawSend({ type: 'welcome', className: this.currentClass() });
     },
+    // Fresh launch state: stage says LOADING.... until the teacher picks a class.
+    loading() {
+      mode = 'idle';
+      this.open();
+      rawSend({ type: 'loading', className: '' });
+    },
     refreshWelcome() { if (mode === 'idle') rawSend({ type: 'welcome', className: this.currentClass() }); },
     // src may be a URL string OR a Blob/File — Blobs travel via postMessage natively.
     showPdf(src, page, title) {

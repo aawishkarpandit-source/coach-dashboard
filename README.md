@@ -40,11 +40,14 @@ Presentations are **never** uploaded — they stay on each computer by design.
 
 ## 4. 2nd screen (projector/TV)
 
-- Extend display in Windows, then press **🖥️ 2nd Screen** (top bar).
-  - **Installed app:** a real stage window opens **automatically fullscreen on the 2nd display** (no clicks, no F11). Plug/unplug the projector any time — it re-seats itself.
-  - **Plain browser:** best-effort window — drag it to the projector and press F11.
-- **Idle:** white background, **Welcome** centered, green rectangle below with white text **Class 9A** (follows the class dropdown).
-- **Books, presentations AND the marksheet share the SAME stage window** — opening any of them replaces what's shown; closing the reader returns to idle.
+- **Installed app does the display setup itself:**
+  - On launch with a projector/TV connected, it switches Windows to **Extend** automatically and opens the fullscreen stage — no F11, no settings hunting.
+  - While the app runs: plug in a display → Extend + the stage opens by itself; unplug it → the stage closes.
+  - Closing the app returns Windows to **Duplicate** (only if the app had switched to Extend itself).
+- **Stage states:** fresh launch until the class is picked → **LOADING....** → after picking, **Welcome + green Class pill** → any content (book/present/marks/notes) replaces it, and closing the reader returns to Welcome.
+- **Books, presentations AND the marksheet share the SAME stage window** — one stage for everything.
+- **Plain browser:** best-effort window — drag it to the projector and press F11.
+- **No second display detected?** The main window shows a yellow **Connect Second Screen** banner until one is connected.
 - Teacher changes pages/slides on the main screen; students see only the open content — no controls.
 
 ## 5. Local files & presentations

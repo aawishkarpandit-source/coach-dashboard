@@ -42,7 +42,7 @@
 <body>
   <!-- IDLE: white background, Welcome center, green Class pill below -->
   <div id="idle">
-    <h1>Welcome</h1>
+    <h1 id="idleTitle">Welcome</h1>
     <div id="classPill">Class 9A</div>
   </div>
   <div id="content"></div>
@@ -55,11 +55,20 @@
 // with a localStorage fallback ('coach-stage-msg') for file:// contexts.
 (function () {
   const idle = document.getElementById('idle');
+  const title = document.getElementById('idleTitle');
   const pill = document.getElementById('classPill');
   const content = document.getElementById('content');
   const err = document.getElementById('err');
 
+  function showLoading() {
+    // Fresh launch: no class picked yet in the teacher window.
+    title.textContent = 'LOADING....';
+    pill.style.display = 'none';
+    idle.style.display = 'flex'; content.classList.remove('show'); content.innerHTML = ''; err.style.display = 'none';
+  }
   function showIdle(cls) {
+    title.textContent = 'Welcome';
+    pill.style.display = '';
     if (cls) pill.textContent = 'Class ' + cls;
     idle.style.display = 'flex'; content.classList.remove('show'); content.innerHTML = ''; err.style.display = 'none';
   }
@@ -145,6 +154,7 @@
     if (msg && msg.className) pill.textContent = 'Class ' + msg.className;
     err.style.display = 'none';
     if (!msg || msg.type === 'welcome' || msg.type === 'clear') { forgetVideo(); showIdle(msg && msg.className); return; }
+    if (msg.type === 'loading') { forgetVideo(); showLoading(); return; }
     if (msg.type === 'video-sync') { syncVideo(msg); return; }
     // Self-contained content (slide HTML / marksheet rows) carries no URL —
     // handle it before the URL guard below (which is only for file media).
@@ -242,8 +252,8 @@
   try {
     const raw = localStorage.getItem('coach-stage-msg');
     if (raw) { const m = JSON.parse(raw); if (m && m.__coachStage) show(m); }
-    else showIdle(localStorage.getItem('coach-class') || '9A');
-  } catch { showIdle('9A'); }
+    else showLoading();
+  } catch { showLoading(); }
 })();
 </script>
 </body>

@@ -20,6 +20,8 @@ contextBridge.exposeInMainWorld('electron', {
   startDownload: () => ipcRenderer.invoke('coach:start-download'),
   appVersion: () => ipcRenderer.invoke('coach:app-version'),
   onUpdateStatus: (cb) => ipcRenderer.on('coach:update-status', (_e, info) => { try { cb(info); } catch {} }),
+  // 2nd display connected? (drives the "Connect Second Screen" banner)
+  onConnectScreen: (cb) => ipcRenderer.on('coach:connect-screen', (_e, d) => { try { cb(d); } catch {} }),
   // 2nd-screen stage transport (installed app: true auto-fullscreen, no popups)
   stageOpen: () => ipcRenderer.invoke('coach:stage-open'),
   stageShow: (msg) => ipcRenderer.invoke('coach:stage-show', msg),

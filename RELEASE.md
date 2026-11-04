@@ -1,6 +1,13 @@
-# 🎓 Coach Dashboard v1.1.0 — Official Release
+# 🎓 Coach Dashboard v1.1.1 — Official Release
 
 A classroom teaching app **built by a student, for classrooms**. One install gives teachers textbooks, notes, presentations, marks data and a second-screen stage for the projector — online or offline.
+
+## 🖥️ new in v1.1.1
+
+- **Automatic display mode** — with a projector/TV connected, opening the app switches Windows to **Extend** and starts the fullscreen stage by itself. Closing the app returns to **Duplicate**. Plugging/unplugging while teaching is handled too.
+- **Connect Second Screen** — with no second display the app shows a yellow banner so the teacher knows what's missing.
+- **LOADING....** — until the class is picked on launch, the stage reads LOADING.... instead of jumping to Welcome; picking the class flips it to Welcome + Class pill.
+- Stage now always closes with the main window.
 
 ## 🆕 in v1.1.0
 
@@ -25,7 +32,7 @@ A classroom teaching app **built by a student, for classrooms**. One install giv
 
 ## 📥 New install (school computer)
 
-1. Download `Coach-Dashboard-Setup-1.1.0.exe` from GitHub Releases
+1. Download `Coach-Dashboard-Setup-1.1.1.exe` from GitHub Releases
 2. Run it → open **Coach Dashboard** → pick your class → extend display to the projector and press **🖥️ 2nd Screen**
 
 ## 🔄 Updating from an older version
