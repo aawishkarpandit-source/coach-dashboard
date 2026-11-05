@@ -1,6 +1,12 @@
-# 🎓 Coach Dashboard v1.2.2 — Official Release
+# 🎓 Coach Dashboard v1.2.3 — Official Release
 
 A classroom teaching app **built by a student, for classrooms**. One install gives teachers textbooks, notes, presentations, marks data and a second-screen stage for the projector — online or offline.
+
+## 🚪 in v1.2.3
+
+- **✕ Close now quits the app** — the stage closes and the dashboard shuts down completely (display mode returns to Duplicate automatically).
+- **Continue as Guest** — new 👥 button on the sign-in screen for machines with no internet (or no account): books still open to read — including the cloud catalogue when online — but the **Import Book button and all delete buttons are hidden** during guest use, and the greeting says **Hello, Guest**.
+  - Guest mode is remembered after a restart (works fully offline); a real sign-in switches back to the teacher account.
 
 ## 🎬 in v1.2.2
 
@@ -57,7 +63,7 @@ A classroom teaching app **built by a student, for classrooms**. One install giv
 
 ## 📥 New install (school computer)
 
-1. Download `Coach-Dashboard-Setup-1.2.2.exe` from GitHub Releases
+1. Download `Coach-Dashboard-Setup-1.2.3.exe` from GitHub Releases
 2. Run it → open **Coach Dashboard** → pick your class → extend display to the projector and press **🖥️ 2nd Screen**
 
 ## 🔄 Updating from an older version

@@ -43,8 +43,8 @@ $('#classSelect').addEventListener('change', e => {
 
 /* ---------- 2. Eng / Nep toggle ---------- */
 const I18N = {
-  en: {classLabel:'Class',offline:'Offline Ready',appTitle:'Classroom Dashboard',appSub:'Simple • Offline • Easy to use',students:'Students',books:'Textbooks',present:'Present',home:'Home',studentsTitle:'Students & Marksheet',studentList:'Student List',add:'Add',marksheet:'Marksheet',marksheetHint:'Select a student, enter marks, auto-saved offline.',selectStudent:'Select student',subject:'Subject',total:'Total',percent:'Percent',name:'Name',action:'Action',booksTitle:'Textbooks',govt:'Govt Books',pvt:'Private Books',booksHint:'Put PDFs in /books folder, or Import. Works offline.',importBook:'Import Book',importHint:'Choose a PDF. It is saved in the browser and, in the installed app, as a real file.',linkFolder:'Link /books folder',delete:'Delete',imported:'Imported',show2nd:'Show on 2nd screen',pdfControlHint:'You control from this screen — students see only the open page on the 2nd screen.',presentTitle:'Present',presentFiles:'Presentation / Media',presentHint:'Images, videos, PDFs & PowerPoint (.pptx) play fully offline. The stage opens by itself.',chooseFiles:'Choose files',openPresenter:'Open presenter (2nd screen)',stage:'Stage (what students see)',stageHint:'Pick a file to preview here. Presenter window mirrors this.',newPpt:'New presentation',newPptHint:'“New presentation” picks files from this computer to present.',addStudent:'Add student',cancel:'Cancel',save:'Save',close:'Close',open2nd:'2nd screen',localPres:'Saved on this computer',about:'About',terms:'Terms & Conditions',team:'Team',playCredits:'Play credits',stopCredits:'Stop',roleLead:'LEAD DESIGNER & DEVELOPER',roleTesters:'PLAY TESTERS',thanksWatching:'Thanks for teaching',backup:'Backup',restore:'Restore',backupHint:'One file holds everything: students, theory/practical marks, books, presentations, settings.',exportBk:'Export',importBk:'Import',fullMarks:'Full marks',fullMarksHint:'Rename subjects, set full marks, delete, or add new ones. Totals follow automatically.',theory:'Theory',practical:'Practical',exams:'Exams',examsHint:'Each exam keeps its own marksheet. Rename freely; deleting an exam erases its marks everywhere.',notes:'Notes',newNote:'New note',whichClass:'Which class are you in?',classPopupHint:'Pick your class — books and marksheets follow it.',startClass:'Start teaching',connectScreen:'Connect Second Screen',connectScreenHint:'plug in the projector/TV; the stage opens by itself.',hello:'Hello',signOut:'Sign out',authTitle:'Sign in to continue',authHint:'Enter the email and password of your school account.',signIn:'Sign in',authNoAccount:'No account? Ask your coordinator — accounts are created in the school cloud.',close2nd:'Close stage'},
-  ne: {classLabel:'कक्षा',offline:'अफलाइन तयार',appTitle:'कक्षाकोठा ड्यासबोर्ड',appSub:'सरल • अफलाइन • सजिलो',students:'विद्यार्थी',books:'पाठ्यपुस्तक',present:'प्रस्तुत गर्नुहोस्',home:'गृहपृष्ठ',studentsTitle:'विद्यार्थी र मार्कसिट',studentList:'विद्यार्थी सूची',add:'थप्नुहोस्',marksheet:'मार्कसिट',marksheetHint:'विद्यार्थी छान्नुहोस्, नम्बर हाल्नुहोस्, अफलाइन सेभ हुन्छ।',selectStudent:'विद्यार्थी छान्नुहोस्',subject:'विषय',total:'जम्मा',percent:'प्रतिशत',name:'नाम',action:'कार्य',booksTitle:'पाठ्यपुस्तक',govt:'सरकारी किताब',pvt:'निजी किताब',booksHint:'PDF हरू /books मा राख्नुहोस् वा Import गर्नुहोस्। अफलाइन चल्छ।',importBook:'किताब आयात',importHint:'PDF छान्नुहोस्। ब्राउजरमा र इन्स्टल गरिएको एपमा वास्तविक फाइलका रूपमा सेभ हुन्छ।',linkFolder:'Link /books फोल्डर',delete:'हटाउनुहोस्',imported:'आयातित',show2nd:'दोस्रो स्क्रिनमा देखाउनुहोस्',pdfControlHint:'तपाईं यस स्क्रिनबाट नियन्त्रण गर्नुहोस् — विद्यार्थीले दोस्रो स्क्रिनमा खुला पेज मात्र देख्छन्।',presentTitle:'प्रस्तुत',presentFiles:'प्रस्तुति / मिडिया',presentHint:'फोटो, भिडियो, PDF र PowerPoint (.pptx) अफलाइन चल्छ। स्टेज आफैं खुल्छ।',chooseFiles:'फाइल छान्नुहोस्',openPresenter:'प्रस्तोता खोल्नुहोस् (दोस्रो स्क्रिन)',stage:'स्टेज (विद्यार्थीले देख्ने)',stageHint:'यहाँ हेर्न फाइल छान्नुहोस्। प्रस्तोता विन्डोमा उही देखिन्छ।',newPpt:'नयाँ प्रस्तुति',newPptHint:'"नयाँ प्रस्तुति" ले यस कम्प्युटरबाट फाइल छानेर प्रस्तुत गर्छ।',addStudent:'विद्यार्थी थप्नुहोस्',cancel:'रद्द',save:'सेभ',close:'बन्द',open2nd:'दोस्रो स्क्रिन',localPres:'यस कम्प्युटरमा सेभ',about:'बारेमा',terms:'नियम तथा सर्तहरू',team:'टिम',playCredits:'क्रेडिट चलाउनुहोस्',stopCredits:'रोक्नुहोस्',roleLead:'प्रमुख डिजाइनर तथा विकासकर्ता',roleTesters:'प्ले टेस्टरहरू',thanksWatching:'पढाउनुभएकोमा धन्यवाद',backup:'ब्याकअप',restore:'रिस्टोर',backupHint:'एउटै फाइलमा सबै: विद्यार्थी, थ्योरी/प्राक्टिकल नम्बर, किताब, प्रस्तुति, सेटिङ।',exportBk:'एक्सपोर्ट',importBk:'इम्पोर्ट',fullMarks:'पूर्णाङ्क',fullMarksHint:'विषयको नाम बदल्नुहोस्, पूर्णाङ्क तोक्नुहोस्, हटाउनुहोस् वा नयाँ थप्नुहोस्।',theory:'थ्योरी',practical:'प्राक्टिकल',exams:'परीक्षाहरू',examsHint:'प्रत्येक परीक्षाको छुट्टै मार्कसिट हुन्छ। नाम स्वतन्त्र रूपमा बदल्नुहोस्; परीक्षा हटाउँदा त्यसका सबै नम्बर मेटिन्छ।',notes:'नोटहरू',newNote:'नयाँ नोट',whichClass:'तपाईं कुन कक्षामा हुनुहुन्छ?',classPopupHint:'आफ्नो कक्षा छान्नुहोस् — किताब र मार्कसिट त्यसै अनुसार आउँछ।',startClass:'पढाउन सुरु',connectScreen:'दोस्रो स्क्रिन जोड्नुहोस्',connectScreenHint:'प्रोजेक्टर/टिभी जोड्नुहोस् — स्टेज आफैं खुल्छ।',hello:'नमस्ते',signOut:'साइन आउट',authTitle:'जारी राख्न साइन इन गर्नुहोस्',authHint:'विद्यालयको खाताको इमेल र पासवर्ड हाल्नुहोस्।',signIn:'साइन इन',authNoAccount:'खाता छैन? संयोजकसँग सोध्नुहोस् — खाता विद्यालयको क्लाउडमा बनाइएको छ।',close2nd:'स्टेज बन्द'}
+  en: {classLabel:'Class',offline:'Offline Ready',appTitle:'Classroom Dashboard',appSub:'Simple • Offline • Easy to use',students:'Students',books:'Textbooks',present:'Present',home:'Home',studentsTitle:'Students & Marksheet',studentList:'Student List',add:'Add',marksheet:'Marksheet',marksheetHint:'Select a student, enter marks, auto-saved offline.',selectStudent:'Select student',subject:'Subject',total:'Total',percent:'Percent',name:'Name',action:'Action',booksTitle:'Textbooks',govt:'Govt Books',pvt:'Private Books',booksHint:'Put PDFs in /books folder, or Import. Works offline.',importBook:'Import Book',importHint:'Choose a PDF. It is saved in the browser and, in the installed app, as a real file.',linkFolder:'Link /books folder',delete:'Delete',imported:'Imported',show2nd:'Show on 2nd screen',pdfControlHint:'You control from this screen — students see only the open page on the 2nd screen.',presentTitle:'Present',presentFiles:'Presentation / Media',presentHint:'Images, videos, PDFs & PowerPoint (.pptx) play fully offline. The stage opens by itself.',chooseFiles:'Choose files',openPresenter:'Open presenter (2nd screen)',stage:'Stage (what students see)',stageHint:'Pick a file to preview here. Presenter window mirrors this.',newPpt:'New presentation',newPptHint:'“New presentation” picks files from this computer to present.',addStudent:'Add student',cancel:'Cancel',save:'Save',close:'Close',open2nd:'2nd screen',localPres:'Saved on this computer',about:'About',terms:'Terms & Conditions',team:'Team',playCredits:'Play credits',stopCredits:'Stop',roleLead:'LEAD DESIGNER & DEVELOPER',roleTesters:'PLAY TESTERS',thanksWatching:'Thanks for teaching',backup:'Backup',restore:'Restore',backupHint:'One file holds everything: students, theory/practical marks, books, presentations, settings.',exportBk:'Export',importBk:'Import',fullMarks:'Full marks',fullMarksHint:'Rename subjects, set full marks, delete, or add new ones. Totals follow automatically.',theory:'Theory',practical:'Practical',exams:'Exams',examsHint:'Each exam keeps its own marksheet. Rename freely; deleting an exam erases its marks everywhere.',notes:'Notes',newNote:'New note',whichClass:'Which class are you in?',classPopupHint:'Pick your class — books and marksheets follow it.',startClass:'Start teaching',connectScreen:'Connect Second Screen',connectScreenHint:'plug in the projector/TV; the stage opens by itself.',hello:'Hello',signOut:'Sign out',authTitle:'Sign in to continue',authHint:'Enter the email and password of your school account.',signIn:'Sign in',authNoAccount:'No account? Ask your coordinator — accounts are created in the school cloud.',close2nd:'Close stage',continueGuest:'Continue as Guest'},
+  ne: {classLabel:'कक्षा',offline:'अफलाइन तयार',appTitle:'कक्षाकोठा ड्यासबोर्ड',appSub:'सरल • अफलाइन • सजिलो',students:'विद्यार्थी',books:'पाठ्यपुस्तक',present:'प्रस्तुत गर्नुहोस्',home:'गृहपृष्ठ',studentsTitle:'विद्यार्थी र मार्कसिट',studentList:'विद्यार्थी सूची',add:'थप्नुहोस्',marksheet:'मार्कसिट',marksheetHint:'विद्यार्थी छान्नुहोस्, नम्बर हाल्नुहोस्, अफलाइन सेभ हुन्छ।',selectStudent:'विद्यार्थी छान्नुहोस्',subject:'विषय',total:'जम्मा',percent:'प्रतिशत',name:'नाम',action:'कार्य',booksTitle:'पाठ्यपुस्तक',govt:'सरकारी किताब',pvt:'निजी किताब',booksHint:'PDF हरू /books मा राख्नुहोस् वा Import गर्नुहोस्। अफलाइन चल्छ।',importBook:'किताब आयात',importHint:'PDF छान्नुहोस्। ब्राउजरमा र इन्स्टल गरिएको एपमा वास्तविक फाइलका रूपमा सेभ हुन्छ।',linkFolder:'Link /books फोल्डर',delete:'हटाउनुहोस्',imported:'आयातित',show2nd:'दोस्रो स्क्रिनमा देखाउनुहोस्',pdfControlHint:'तपाईं यस स्क्रिनबाट नियन्त्रण गर्नुहोस् — विद्यार्थीले दोस्रो स्क्रिनमा खुला पेज मात्र देख्छन्।',presentTitle:'प्रस्तुत',presentFiles:'प्रस्तुति / मिडिया',presentHint:'फोटो, भिडियो, PDF र PowerPoint (.pptx) अफलाइन चल्छ। स्टेज आफैं खुल्छ।',chooseFiles:'फाइल छान्नुहोस्',openPresenter:'प्रस्तोता खोल्नुहोस् (दोस्रो स्क्रिन)',stage:'स्टेज (विद्यार्थीले देख्ने)',stageHint:'यहाँ हेर्न फाइल छान्नुहोस्। प्रस्तोता विन्डोमा उही देखिन्छ।',newPpt:'नयाँ प्रस्तुति',newPptHint:'"नयाँ प्रस्तुति" ले यस कम्प्युटरबाट फाइल छानेर प्रस्तुत गर्छ।',addStudent:'विद्यार्थी थप्नुहोस्',cancel:'रद्द',save:'सेभ',close:'बन्द',open2nd:'दोस्रो स्क्रिन',localPres:'यस कम्प्युटरमा सेभ',about:'बारेमा',terms:'नियम तथा सर्तहरू',team:'टिम',playCredits:'क्रेडिट चलाउनुहोस्',stopCredits:'रोक्नुहोस्',roleLead:'प्रमुख डिजाइनर तथा विकासकर्ता',roleTesters:'प्ले टेस्टरहरू',thanksWatching:'पढाउनुभएकोमा धन्यवाद',backup:'ब्याकअप',restore:'रिस्टोर',backupHint:'एउटै फाइलमा सबै: विद्यार्थी, थ्योरी/प्राक्टिकल नम्बर, किताब, प्रस्तुति, सेटिङ।',exportBk:'एक्सपोर्ट',importBk:'इम्पोर्ट',fullMarks:'पूर्णाङ्क',fullMarksHint:'विषयको नाम बदल्नुहोस्, पूर्णाङ्क तोक्नुहोस्, हटाउनुहोस् वा नयाँ थप्नुहोस्।',theory:'थ्योरी',practical:'प्राक्टिकल',exams:'परीक्षाहरू',examsHint:'प्रत्येक परीक्षाको छुट्टै मार्कसिट हुन्छ। नाम स्वतन्त्र रूपमा बदल्नुहोस्; परीक्षा हटाउँदा त्यसका सबै नम्बर मेटिन्छ।',notes:'नोटहरू',newNote:'नयाँ नोट',whichClass:'तपाईं कुन कक्षामा हुनुहुन्छ?',classPopupHint:'आफ्नो कक्षा छान्नुहोस् — किताब र मार्कसिट त्यसै अनुसार आउँछ।',startClass:'पढाउन सुरु',connectScreen:'दोस्रो स्क्रिन जोड्नुहोस्',connectScreenHint:'प्रोजेक्टर/टिभी जोड्नुहोस् — स्टेज आफैं खुल्छ।',hello:'नमस्ते',signOut:'साइन आउट',authTitle:'जारी राख्न साइन इन गर्नुहोस्',authHint:'विद्यालयको खाताको इमेल र पासवर्ड हाल्नुहोस्।',signIn:'साइन इन',authNoAccount:'खाता छैन? संयोजकसँग सोध्नुहोस् — खाता विद्यालयको क्लाउडमा बनाइएको छ।',close2nd:'स्टेज बन्द',continueGuest:'पाहुनाको रूपमा जारी राख्नुहोस्'}
 };
 let LANG = localStorage.getItem('coach-lang') || 'en';
 function applyLang() {
@@ -76,6 +76,27 @@ function greet(name){
 }
 function lockApp(){ const l = $('#authLock'); if (l) l.classList.remove('hidden'); }
 function unlockApp(){ const l = $('#authLock'); if (l) l.classList.add('hidden'); }
+/* ---- Guest mode (used from the lock screen when there's no internet) ----
+   Books — including the cloud catalogue — stay readable, but Import/Delete
+   are hidden and the greeting says Guest. The flag persists so a purely
+   guest machine keeps working after a restart, even offline. */
+const GUEST_KEY = 'coach-guest';
+let GUEST = false;
+function applyGuestMode(on){
+  GUEST = !!on;
+  try{ $('#importBookBtn')?.classList.toggle('hidden', GUEST); }catch{}
+  try{ if (GUEST) localStorage.setItem(GUEST_KEY, '1'); else localStorage.removeItem(GUEST_KEY); }catch{}
+  // Defer the re-render: early boot calls land before renderBooks' data is set.
+  try{ setTimeout(()=>{ try{ renderBooks(); }catch{} }, 0); }catch{}
+}
+function enterGuest(){
+  applyGuestMode(true);
+  greet('Guest');
+  unlockApp();
+  bootFlowOnce();
+  toast('Guest mode — books open to read; Import/Delete hidden.');
+}
+$('#guestBtn')?.addEventListener('click', enterGuest);
 function bootFlowOnce(){
   if (bootFlowOnce._done) return;
   bootFlowOnce._done = true;
@@ -118,6 +139,7 @@ $('#authForm')?.addEventListener('submit', async (e) => {
     try{ localStorage.setItem(HELLO_KEY, name || ''); }catch{}
     greet(name);
     unlockApp();
+    try{ applyGuestMode(false); }catch{} // leaving guest mode for the real account
     if ($('#authEmail')) $('#authEmail').value = '';
     if ($('#authPass')) $('#authPass').value = '';
     bootFlowOnce();
@@ -136,6 +158,7 @@ $('#authForm')?.addEventListener('submit', async (e) => {
 $$('[data-signout]').forEach(b => b.addEventListener('click', async () => {
   try{ if (window.SB) await SB.signOut(); }catch{}
   try{ localStorage.removeItem(AUTH_VER_KEY); localStorage.removeItem(HELLO_KEY); }catch{}
+  try{ applyGuestMode(false); }catch{}
   greet('');
   try{ if (window.Stage) Stage.loading(); }catch{}
   lockApp();
@@ -146,12 +169,16 @@ $$('[data-signout]').forEach(b => b.addEventListener('click', async () => {
       const sess = await SB.currentSession(); // null when offline/never signed in
       const stamped = localStorage.getItem(AUTH_VER_KEY) || '';
       if (!sess) {
-        // Offline-first: never lock a computer that can't reach the cloud —
-        // (past login stays cached, a first-ever offline run just works).
+        // Signed in before on this app version → keep working with the cached
+        // name (even offline). Guest flag applies only to guest-only machines.
         if (stamped || !navigator.onLine) {
           greet(localStorage.getItem(HELLO_KEY));
           bootFlowOnce();
           return;
+        }
+        // Returning guest (no sign-in ever): straight back into guest mode.
+        if (localStorage.getItem(GUEST_KEY) === '1') {
+          applyGuestMode(true); greet('Guest'); bootFlowOnce(); return;
         }
         lockApp();
         return; // success path unlocks + boots in the form handler
@@ -766,7 +793,8 @@ function renderBooks(){
     const tag = b.cloud ? ' • ☁ cloud' : b.imported ? ` • ✅ ${I18N[LANG].imported}` : '';
     const cover = b.cloud ? '📘' : b.imported ? '📗' : '📕';
     const where = b.imported ? (b.savedToBooks ? `<div><span class="badge" title="Saved as a real file in the app books folder">📁 ${escapeHtml(b.fileName||'')}</span></div>` : `<div><span class="badge" style="background:#fff7ed;color:#9a3412;border-color:#fed7aa">browser only</span></div>`) : b.cloud ? `<div><span class="badge">☁ ${escapeHtml(b.fileName||b.file_path||'')}</span></div>` : '';
-    const actions = b.imported ? `<div style="margin-top:8px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap"><button class="btn ghost save-book" data-savebook="${b.id}" title="Write file into linked /books folder">💾 /books</button><button class="btn ghost del-book" data-delbook="${b.id}">✕ ${I18N[LANG].delete}</button></div>` : b.cloud ? `<div style="margin-top:8px"><button class="btn ghost del-book" data-delcloud="${escapeHtml(b.file_path||b.fileName||'')}">✕ ${I18N[LANG].delete}</button></div>` : '';
+    const cardActions = b.imported ? `<div style="margin-top:8px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap"><button class="btn ghost save-book" data-savebook="${b.id}" title="Write file into linked /books folder">💾 /books</button><button class="btn ghost del-book" data-delbook="${b.id}">✕ ${I18N[LANG].delete}</button></div>` : b.cloud ? `<div style="margin-top:8px"><button class="btn ghost del-book" data-delcloud="${escapeHtml(b.file_path||b.fileName||'')}">✕ ${I18N[LANG].delete}</button></div>` : '';
+    const actions = GUEST ? '' : cardActions; // guest: read books, no import/delete
     return `<div class="book-card" data-book="${key}"><div class="book-cover">${cover}</div><b>${label}</b><small>${b.class==='all'?'All classes':'Class '+escapeHtml(b.class)} • ${escapeHtml(b.type)}${tag}</small>${where}${actions}</div>`;
   }).join('')
     || `<p class="hint">No books found. Use <b>Import Book</b> or add entries in <code>data/books.json</code>.</p>`;
@@ -1195,6 +1223,9 @@ $('#secondScreenCloseBtnTop').onclick = ()=>{
   // Stage closed → preview audio comes back here so a playing video keeps sound.
   try{ if(teacherVideoEl) teacherVideoEl.muted = false; }catch{}
   toast('Stage closed.');
+  // ✕ now quits the app too: closing the main window makes Electron exit
+  // (closing the stage with it, and restoring Duplicate display mode).
+  setTimeout(()=>{ try{ window.close(); }catch{} }, 250);
 };
 async function updateScreenInfo(){
   try{

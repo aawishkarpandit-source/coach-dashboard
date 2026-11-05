@@ -49,7 +49,7 @@ Presentations are **never** uploaded — they stay on each computer by design.
 - **Plain browser:** best-effort window — drag it to the projector and press F11.
 - **No second display detected?** The main window shows a yellow **Connect Second Screen** banner until one is connected.
 - **One sound at a time (videos):** with the stage open, the teacher's preview player is silent — the students' screen carries the audio. The volume slider on the main screen still controls the **stage** volume, and closing the stage returns sound to the preview.
-- **Full-screen main window:** the control window starts full-screen too (F11 exits); a **✕ Close stage** button sits next to **🖥️ 2nd Screen** in the top bar.
+- **Full-screen main window:** the control window starts full-screen too (F11 exits); a **✕ Close stage** button sits next to **🖥️ 2nd Screen** — closing the stage quits the app (display mode returns to Duplicate).
 - Teacher changes pages/slides on the main screen; students see only the open content — no controls.
 
 ## 5. Local files & presentations
@@ -66,7 +66,7 @@ Presentations are **never** uploaded — they stay on each computer by design.
 
 - Accounts come from the school's Supabase (Supabase → Authentication). Run `supabase/migrate-auth.sql` once — it creates the `coach_users` **uuid → name** table that feeds the "Hello, {name}" line.
 - The app **asks for email + password** on first open, after every app update, and after **Sign out** (button on the About/Team pages). Signed-in teachers skip straight to the class picker; the greeting shows **Hello, {name}** (name from `coach_users`, editable with `update public.coach_users set name = '...'`).
-- **Offline-first rule:** a computer that can't reach the cloud is never locked out — sign-in is enforced only when online.
+- **Continue as Guest:** a 👥 button on the lock screen opens the app without signing in — books still open to read (the cloud catalogue too when online), but **Import/Delete buttons are hidden** and the greeting says **Hello, Guest**. Guest machines keep working in guest mode after a restart; signing in returns everything.
 
 ## 6. How to edit
 

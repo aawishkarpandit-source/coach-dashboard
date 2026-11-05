@@ -50,6 +50,8 @@ main{flex:1;position:relative}
 .auth-card input{width:100%;margin-top:4px;padding:10px 12px;font-size:15px;border:1px solid var(--border);border-radius:10px}
 .auth-card .btn{margin-top:14px}
 .auth-card .hint{margin:6px 0 0}
+/* Guest mode hides the Import Book button (all .hidden rules here are scoped) */
+#importBookBtn.hidden{display:none}
 .app-title{margin:0;font-size:clamp(24px,4vw,40px)}
 .app-sub{margin:0;color:var(--muted)}
 .squircle-row{display:flex;gap:32px;margin-top:28px;flex-wrap:wrap;justify-content:center}
