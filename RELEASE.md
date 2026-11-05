@@ -1,6 +1,12 @@
-# 🎓 Coach Dashboard v1.2.1 — Official Release
+# 🎓 Coach Dashboard v1.2.2 — Official Release
 
 A classroom teaching app **built by a student, for classrooms**. One install gives teachers textbooks, notes, presentations, marks data and a second-screen stage for the projector — online or offline.
+
+## 🎬 in v1.2.2
+
+- **Fixed double audio on video presentations** — the teacher preview now goes silent whenever the stage is open; students' screen carries the sound (volume slider still controls the stage). Close the stage and preview sound returns.
+- **Main window is fullscreen by default** (F11 exits).
+- **✕ Close stage** button next to 🖥️ 2nd Screen in the top bar.
 
 ## 🔧 in v1.2.1
 
@@ -51,7 +57,7 @@ A classroom teaching app **built by a student, for classrooms**. One install giv
 
 ## 📥 New install (school computer)
 
-1. Download `Coach-Dashboard-Setup-1.2.1.exe` from GitHub Releases
+1. Download `Coach-Dashboard-Setup-1.2.2.exe` from GitHub Releases
 2. Run it → open **Coach Dashboard** → pick your class → extend display to the projector and press **🖥️ 2nd Screen**
 
 ## 🔄 Updating from an older version

@@ -16,6 +16,7 @@
   let mode = 'idle'; // idle | content
   let lastMsg = null;
   let lastType = 'welcome';
+  let elecStageUp = false; // does the stage window really exist (installed app)?
 
   function blobToDataUrl(blob) {
     return new Promise((res, rej) => {
@@ -62,6 +63,7 @@
       // 2nd display automatically (also re-seats it if displays change).
       if (ELEC) {
         ELEC.stageOpen().then((info) => {
+          elecStageUp = !!(info && info.screens >= 2 && !info.blocked);
           try {
             const badge = document.querySelector('#screenInfo');
             if (badge && info && info.screens) badge.textContent = info.screens + (info.screens > 1 ? ' screens (stage fullscreen ✓)' : ' screen');
@@ -188,9 +190,13 @@
         className: this.currentClass() });
     },
     clear() { this.welcome(); },
+    // Is the stage window actually open right now? (Electron: real window on
+    // the 2nd display; browser: our popup.) Used to keep ONE audio source
+    // for videos — the students' screen — and silence the preview here.
+    isStageUp() { return ELEC ? elecStageUp : !!(win && !win.closed); },
     close() {
-      if (ELEC) { try { ELEC.stageClose(); } catch {} mode = 'idle'; return; }
-      try { win && win.close(); } catch {} win = null; mode = 'idle';
+      if (ELEC) { try { ELEC.stageClose(); } catch {} elecStageUp = false; mode = 'idle'; return; }
+      try { win && win.close(); } catch {} win = null; elecStageUp = false; mode = 'idle';
     }
   };
 

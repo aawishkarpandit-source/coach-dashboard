@@ -14,6 +14,8 @@ function createMainWindow() {
   mainWin = new BrowserWindow({
     width: 1280,
     height: 800,
+    fullscreen: true, // the main screen is also fullscreen by default (F11 exits)
+    autoHideMenuBar: true,
     backgroundColor: '#ffffff',
     title: 'Coach Dashboard',
     icon: path.join(__dirname, 'icon.png'),

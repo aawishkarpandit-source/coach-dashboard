@@ -48,6 +48,8 @@ Presentations are **never** uploaded — they stay on each computer by design.
 - **Books, presentations AND the marksheet share the SAME stage window** — one stage for everything.
 - **Plain browser:** best-effort window — drag it to the projector and press F11.
 - **No second display detected?** The main window shows a yellow **Connect Second Screen** banner until one is connected.
+- **One sound at a time (videos):** with the stage open, the teacher's preview player is silent — the students' screen carries the audio. The volume slider on the main screen still controls the **stage** volume, and closing the stage returns sound to the preview.
+- **Full-screen main window:** the control window starts full-screen too (F11 exits); a **✕ Close stage** button sits next to **🖥️ 2nd Screen** in the top bar.
 - Teacher changes pages/slides on the main screen; students see only the open content — no controls.
 
 ## 5. Local files & presentations

@@ -146,8 +146,8 @@
       try {
         v.muted = true; v.controls = true;
         const q = v.play(); if (q && q.catch) q.catch(() => {});
+        if (!v._mutedNoticed) { v._mutedNoticed = true; notifyTeacher('muted'); } // one notice, not spam
       } catch {}
-      notifyTeacher('muted');
     });
   }
   function show(msg) {
